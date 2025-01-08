@@ -1,0 +1,323 @@
+<template>
+  <div class="">
+
+  <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div class="bg-white rounded-lg p-6 w-96">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Подтверждение удаления</h3>
+        <p class="text-sm text-gray-600 mb-6">
+          Вы уверены, что хотите удалить этот спорт? Это действие необратимо.
+        </p>
+        <div class="flex justify-end gap-4">
+          <button
+            @click="isModalOpen = false"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+          >
+            Отмена
+          </button>
+          <button
+            @click="deleteTournament"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+          >
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Header -->
+    <div class="flex flex-col mb-6">
+      <h1 class="text-xl font-medium dark:text-white text-[#1E1E2D]">Пользователи</h1>
+      <!-- <div class="flex items-center text-sm dark:text-white text-[#1E1E2D] mt-1">
+        <span>Главная</span>
+        <span class="mx-1"> {{ '->' }}</span>
+        <span class="dark:text-white text-[#1E1E2D]">Пользователи</span>
+      </div> -->
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">
+      <div class="p-4">
+        <div class="flex  gap-4 w-full">
+          <div class="flex-1">
+            <input
+              v-model="search"
+              type="search"
+              placeholder="Поиск..."
+              class="2xl:w-[15rem] w-[10rem] px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
+            />
+
+            
+          </div>
+            <div class="flex gap-6">
+
+
+          <!-- <select v-model="userStatus"  class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500">
+            <option value="">Все типы оплаты</option>
+            <option value="Оплачено">Оплачено</option>
+            <option value="Не оплачено">Не оплачено	</option>
+          </select> -->
+          
+          <div>
+              
+          <el-date-picker
+          style="width: 20rem !important;"
+          v-model="dateRange"
+          type="daterange"
+          start-placeholder="Весь период"
+          end-placeholder="Весь период"
+        />
+          </div>
+          <select  v-model="userType" class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500">
+            <option value="">Все типы пользователей</option>
+            <option value="trener" >Тренер</option>
+            <option value="sportsman" >Спортсмен</option>
+          </select>
+          <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <img src="../assets/img/up.svg" alt="up">
+            Экспорт
+          </button>
+
+          <div class="relative">
+          
+          
+          <button @click="isCreateToggle" class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-green-500 rounded-lg hover:bg-green-600">
+          <img src="../assets/img/up.svg" alt="up">
+            Добавить
+          </button>
+
+          <div v-if="isCreate" class="absolute w-[120px] top-12 -right-3 bg-white dark:bg-[#1E1E2D] rounded-xl border p-2">
+                <div class="flex flex-col divide-y divide-[#EFF0F3] gap-2 m-0">
+                  <p @click="navigate('/create-user-athletes')"  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold">Спортсмены</p>
+                  <!-- <p @click="navigate('/create-user-trener')"  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold">Тренеры</p> -->
+                </div>
+
+                
+              </div>
+          </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-lg shadow w-full">
+      <div class=" overflow-x-scroll no-scrollbar  "> 
+        <table class="min-w-full divide-y divide-gray-200"> 
+          <thead class="bg-gray-50">
+            <tr>
+              <th v-for="header in headers" :key="header" scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y text-center divide-gray-200 !w-full">
+            <tr v-for="(user, index) in filteredUsers" :key="user.id" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ index + 1  }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
+                {{ user.first_name || user.last_name ? user.first_name + " " +  user.last_name : '-' }} 
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.phone_number ? user.phone_number : '-'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.email ? user.email : '-'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.user_role ? user.user_role : '-' }}
+              </td>
+              <!-- <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 py-1 text-xs rounded-full" :class="getStatusClass(user.status)">
+                  {{ user.status }}
+                </span>
+              </td> -->
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.created_time ? user.created_time : '-' }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button @click="handleAction('/player-id')" class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                  Действие
+                </button>
+              </td>
+
+              <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
+                <!-- <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <router-link 
+                  :to="`/sport/edit/${user.id}`" 
+                  >
+                  Обновлять
+                </router-link>
+                </button> -->
+
+
+                <button
+                  @click="confirmDelete(user.id)"
+                  class=" hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
+                >
+                  Удалить
+                </button>
+
+
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    
+    
+    <ExportModal
+    :is-open="showExportModal"
+    @close="showExportModal = false"
+    @export="handleExport"
+  />
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onUnmounted, onMounted } from 'vue'
+import ExportModal from '../components/ExportModal.vue';
+import { useRoute, useRouter } from 'vue-router'
+import api from "../utils/axios"
+
+
+const route = useRoute()
+const router = useRouter()
+const search = ref("");
+const userStatus = ref("");
+const userType = ref("");
+const dateRange = ref(null);
+const showExportModal = ref(false);
+const isCreate = ref(false);
+const data = ref([])
+const isModalOpen = ref(false);
+const sportToDelete = ref(null);
+
+
+const confirmDelete = (id) => {
+  sportToDelete.value = id;
+  isModalOpen.value = true;
+};
+
+const deleteTournament = async () => {
+  try {
+    await api.delete(`https://api.7srating.uz/api/user/profile/sportsman/${sportToDelete.value}/`);
+    data.value = data.value.filter((user) => user.id !== sportToDelete.value);
+    isModalOpen.value = false;
+  } catch (e) {
+    console.error("Failed to delete tournament:", e);
+  }
+};
+
+
+const getData = async() => {
+  try {
+    const res = await api.get(
+      'https://api.7srating.uz/api/dashboard/users/');
+
+    data.value = res.data.data
+      console.log(res.data.data);
+      
+  } catch (e) {
+    console.log(e);
+    
+  }
+}
+onMounted(() => {
+  getData()
+  localStorage.removeItem('schools')
+  localStorage.removeItem('results')
+  localStorage.removeItem('media_ids')
+  localStorage.removeItem('photos')
+  localStorage.removeItem('videos')
+})
+
+
+const headers = ref(["#", "Name", "Phone", "Email", "Тип пользователя",  "Date", "Actions", "Actions"]);
+
+const filteredUsers = computed(() => {
+  return data.value.filter(user => {
+    const matchesSearch = user.first_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+    user.phone_number.toLowerCase().includes(search.value.toLowerCase()) ||
+    user.email.toLowerCase().includes(search.value.toLowerCase());
+
+    // const matchesStatus = userStatus.value ? user.status === userStatus.value : true;
+    const matchesUserType = userType.value ? user.user_role === userType.value : true;
+    const matchesDateRange = dateRange.value ? (new Date(user.date) >= new Date(dateRange.value[0]) && new Date(user.date) <= new Date(dateRange.value[1])) : true;
+
+    // matchesStatus
+    return matchesSearch  && matchesUserType && matchesDateRange;
+  });
+});
+
+const handleAction = (project) => {
+  // console.log('Action clicked for project:', project.id)
+  router.push(project)
+}
+
+const handleExport = (data) => {
+  console.log('Export data:', data)
+}
+
+const isCreateToggle = () => {
+  isCreate.value = !isCreate.value
+}
+
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.relative')) {
+    isCreate.value = false;
+  }
+};
+
+const navigate = (path) => {
+  router.push(path)
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+const getStatusClass = (status) => {
+  return status === 'Оплачено' 
+    ? 'bg-[#E2FFEF] text-[#27A950]' 
+    : 'bg-[#FEECEC] text-[#E7273D]'
+}
+</script>
+
+
+<style>
+.no-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e1e1e1;
+  border: 7px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scroll-margin-block-start: 0;
+}
+
+.el-date-editor.el-range-editor {
+  border: 1px solid #e1e1e1; 
+  background-color: #fafafb;
+  border-radius: 5px;
+  padding: 5px ;
+  transition: border-color 0.3s ease;
+  height: 2.5rem;
+  cursor: pointer;  
+}
+
+
+</style>
