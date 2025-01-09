@@ -135,13 +135,14 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.created_time ? user.created_time : '-' }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <button @click="handleAction('/player-id')" class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
-                  Действие
-                </button>
-              </td>
+              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              </td> -->
 
               <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
+              <!-- @click="handleAction('/player-id')" -->
+                <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                  Действие
+                </button>
                 <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   :to="`/user-athletes/edit/${user.id}`" 
@@ -235,7 +236,7 @@ onMounted(() => {
 })
 
 
-const headers = ref(["#", "Name", "Phone", "Email", "Тип пользователя",  "Date", "Actions", "Actions"]);
+const headers = ref(["#", "Name", "Phone", "Email", "Тип пользователя",  "Date", "Actions"]);
 
 const filteredUsers = computed(() => {
   return data.value.filter(user => {
