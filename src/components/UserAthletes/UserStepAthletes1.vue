@@ -187,6 +187,20 @@
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
           </div>
 
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Обо мне</label>
+            
+
+            <textarea
+              v-model="form.sportsman_profile.about_me"
+              type="textarea"
+
+              placeholder="Выберите Обо мне"
+              class="mt-1 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.about_me">{{ errors.about_me }}</span>
+          </div>
+
         </div>
       </section>
 

@@ -190,21 +190,21 @@ const menuItems = [
     path: '/sport-list',
     icon: GlobeAltIcon      
   },
-  {
-    name: 'Заявки на регистрацию',
-    path: '/applications-for-registration',
-    icon: ClipboardDocumentListIcon
-  },
-  {
-    name: 'Фонд "Бирлик"',
-    path: '/foundation',
-    icon: BuildingLibraryIcon
-  },
-  {
-    name: 'Спортивные комплексы',
-    path: '/complexes',
-    icon: CpuChipIcon      
-  },
+  // {
+  //   name: 'Заявки на регистрацию',
+  //   path: '/applications-for-registration',
+  //   icon: ClipboardDocumentListIcon
+  // },
+  // {
+  //   name: 'Фонд "Бирлик"',
+  //   path: '/foundation',
+  //   icon: BuildingLibraryIcon
+  // },
+  // {
+  //   name: 'Спортивные комплексы',
+  //   path: '/complexes',
+  //   icon: CpuChipIcon      
+  // },
   
 ];
 

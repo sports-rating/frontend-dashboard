@@ -184,6 +184,7 @@ const data = ref([])
 const showModal = ref(false)
 const errors = ref({}); 
 const editingSchool = ref(null)
+
 const currentSchool = ref({
   id: '',
   name: '',
@@ -192,6 +193,7 @@ const currentSchool = ref({
   end_year: '',
   currently_studying: false,
 })
+
 
 const getData = async() => {
   try {
@@ -211,7 +213,21 @@ const emit = defineEmits(['update-education']);
 const currentEducation = ref({ ...props.education });
 currentEducation.value = schools.value
 
+
 onMounted(() => {
+  if (props.education.length > 0) {
+    schools.value = props.education.map((edu) => ({
+      id: edu.id || '',
+      name: edu.name || '',
+      sport_type: edu.sport_id || '',
+      // sport_id: edu.sport_id || '',
+      start_year: edu.start_year || '',
+      end_year: edu.end_year || '',
+      currently_studying: edu.currently_studying || false,
+    }));
+  }
+
+  
   const savedSchools = localStorage.getItem('schools')
   if (savedSchools) {
     schools.value = JSON.parse(savedSchools)
@@ -294,8 +310,19 @@ const submitForm = () => {
 }
 
 const editSchool = (school) => {
+  const selectedSchool = data.value.find(item => item.id === school.sport_id);
+
   editingSchool.value = school
-  currentSchool.value = { ...school }
+  currentSchool.value = {
+      id: school.id || '',
+      name: school.name || '',
+      sport_type: selectedSchool?.id ? selectedSchool?.id : school.sport_type,
+      // sport_id: school.sport_id || '',
+      start_year: school.start_year || '',
+      end_year: school.end_year || '',
+      currently_studying: school.currently_studying || false,
+    };
+
   errors.value = {};
   showModal.value = true
 }

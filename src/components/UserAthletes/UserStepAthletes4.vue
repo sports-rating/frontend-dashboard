@@ -70,6 +70,10 @@ const props = defineProps({
   media_ids: {
     type: Array,
     required: true,
+  },
+  media_bay: {
+    type: Array,
+    required: true,
   }
 });
 
@@ -200,6 +204,29 @@ const handleVideoUpload = async (event) => {
   });
 };
 
+// Function to fetch media data from the API
+const fetchMediaData = async () => {
+  try {
+    const fetchedPhotos = props.media_bay.filter(item => item.media_type === "image").map(item => ({
+      id: item.id,
+      url: `https://api.7srating.uz${item.file}`, 
+      name: `Image (${item.extension.toUpperCase()})`, 
+    }));
+
+    const fetchedVideos = props.media_bay.filter(item => item.media_type === "video").map(item => ({
+      id: item.id,
+      thumbnail: `https://api.7srating.uz${item.file}`, 
+      name: `Video (${item.extension.toUpperCase()})`,
+    }));
+
+
+    photos.value = fetchedPhotos;
+    videos.value = fetchedVideos;
+  } catch (error) {
+    console.error("Failed to fetch media data:", error.response?.data || error.message);
+  }
+};
+
 
 onMounted(() => {
   const storedMediaIds = JSON.parse(localStorage.getItem("media_ids"));
@@ -216,5 +243,7 @@ onMounted(() => {
   if (storedVideos) {
     videos.value = storedVideos;
   }
+
+  fetchMediaData();
 });
 </script>

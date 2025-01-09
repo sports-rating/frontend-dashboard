@@ -72,10 +72,10 @@
             <option value="trener" >Тренер</option>
             <option value="sportsman" >Спортсмен</option>
           </select>
-          <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <!-- <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
           <img src="../assets/img/up.svg" alt="up">
             Экспорт
-          </button>
+          </button> -->
 
           <div class="relative">
           
@@ -142,13 +142,13 @@
               </td>
 
               <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
-                <!-- <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
-                  :to="`/sport/edit/${user.id}`" 
+                  :to="`/user-athletes/edit/${user.id}`" 
                   >
                   Обновлять
                 </router-link>
-                </button> -->
+                </button>
 
 
                 <button
@@ -219,7 +219,6 @@ const getData = async() => {
       'https://api.7srating.uz/api/dashboard/users/');
 
     data.value = res.data.data
-      console.log(res.data.data);
       
   } catch (e) {
     console.log(e);
@@ -240,13 +239,13 @@ const headers = ref(["#", "Name", "Phone", "Email", "Тип пользовате
 
 const filteredUsers = computed(() => {
   return data.value.filter(user => {
-    const matchesSearch = user.first_name?.toLowerCase().includes(search.value.toLowerCase()) ||
-    user.phone_number.toLowerCase().includes(search.value.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.value.toLowerCase());
+    const matchesSearch = user.first_name?.toLowerCase().includes(search.value?.toLowerCase()) ||
+    user.phone_number?.toLowerCase().includes(search.value?.toLowerCase()) ||
+    user.email?.toLowerCase().includes(search.value?.toLowerCase());
 
     // const matchesStatus = userStatus.value ? user.status === userStatus.value : true;
     const matchesUserType = userType.value ? user.user_role === userType.value : true;
-    const matchesDateRange = dateRange.value ? (new Date(user.date) >= new Date(dateRange.value[0]) && new Date(user.date) <= new Date(dateRange.value[1])) : true;
+    const matchesDateRange = dateRange.value ? (new Date(user.created_time) >= new Date(dateRange.value[0]) && new Date(user.created_time) <= new Date(dateRange.value[1])) : true;
 
     // matchesStatus
     return matchesSearch  && matchesUserType && matchesDateRange;

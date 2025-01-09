@@ -270,11 +270,22 @@ const close = () =>{
 const editResult = (result) => {
   
   const selectedTournament = data.value.find(item => item.name === result.name);
+  // newResult.value = {
+  //   ...result,
+  //   tournament_id: selectedTournament ? selectedTournament.id : '',
+  //   name:selectedTournament ? selectedTournament.id : '',
+  // };
+
   newResult.value = {
-    ...result,
-    tournament_id: selectedTournament ? selectedTournament.id : '',
-    name:selectedTournament ? selectedTournament.id : '',
-  };
+      id: result.id || '',
+      country: result.country || '',
+      year: result.year || '',
+      tournament_id: selectedTournament ? selectedTournament.id : '',
+      rating: result.rating || '',
+      name: selectedTournament ? selectedTournament.id : '',
+      currently_participating: result.currently_participating || false,
+  }
+
   showModal.value = true;
 };
 
@@ -318,6 +329,19 @@ const addResult = () => {
 
 onMounted(() => {
   getData()
+
+  if (props.typeResults.length > 0) {
+    results.value = props.typeResults.map((res) => ({
+      id: res.id || '',
+      country: res.country || '',
+      year: res.year || '',
+      tournament_id: res.tournament_id || '',
+      rating: res.rating || '',
+      name: res.name || '',
+      currently_participating: res.currently_participating || false,
+    }));
+  }
+
   const savedResults = localStorage.getItem('results')
   if (savedResults) {
     results.value = JSON.parse(savedResults)

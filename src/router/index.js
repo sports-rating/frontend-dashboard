@@ -11,6 +11,14 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
+
+      // children: [
+      //   {
+      //     path: "/user-athletes/edit/:id",
+      //     name: "user-athletes-edit",
+      //     component: () => import("../view/UserAthletesUpdate.vue"),
+      //   },
+      // ],
     },
 
     {
@@ -18,6 +26,13 @@ const router = createRouter({
       name: "Athletes",
       component: () => import("../view/UserAthletes.vue"),
     },
+
+    {
+      path: "/user-athletes/edit/:id",
+      name: "user-athletes-edit",
+      component: () => import("../view/UserAthletesUpdate.vue"),
+    },
+
     {
       path: "/create-user-trener",
       name: "Trener",

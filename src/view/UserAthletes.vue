@@ -107,6 +107,7 @@ const form = reactive({
     height: '',
     weight: '',
     gender: '',
+    about_me:'',
     region: '',
     city: '',
     street: '',
@@ -148,7 +149,7 @@ const validateForm = () => {
     if (!form.sportsman_profile.motto) errors.motto = 'Девизион спортсмена обязательно.';
     if (!form.birth_date) errors.birth_date = 'Дата рождения обязательна.';
     if (!form.sportsman_profile.gender) errors.gender = 'Пол обязателен.';
-    
+    if (!form.sportsman_profile.about_me) errors.about_me = 'Обо мне обязателен.';
     if (!form.sportsman_profile.height) errors.height = 'Рост обязатлен.';
     if (!form.sportsman_profile.weight) errors.weight = 'Вес обязателен.';
     if (!form.sportsman_profile.region) errors.region = 'Регион обязателен.';
