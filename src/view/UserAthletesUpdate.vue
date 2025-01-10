@@ -1,7 +1,7 @@
 <template>
   <div class=" mx-auto  p-4 rounded-xl border">
   <Loading :isLoading="isLoading || isUploading" />
-    <h2 class="text-2xl font-bold mb-6">Добавить спортсменов</h2>
+    <h2 class="text-2xl font-bold mb-6">Обновлять спортсменов</h2>
     
       <el-steps style="max-width: 600px" :active="active" finish-status="success"></el-steps>
     
@@ -17,6 +17,7 @@
     :cities="cities"
     :countries="countries"
     :errors="errors"
+    :text="text"
     />
 
     <UserStepAthletes2
@@ -88,6 +89,7 @@ const active = ref(1)
 const isLoading = ref(false);
 const data = ref([])
 const mediaBay = ref([])
+const text = ref('Обновлять')
 
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
 const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
