@@ -99,7 +99,7 @@ const form = reactive({
   phone_number: '',
   user_role:'sportsman',
   email: '',
-  photo_id: '',
+  photo_id: [],
   sportsman_profile: {
     sport_type: '',
     sport_id: '',
@@ -200,11 +200,10 @@ const handleFileUpload = async (event) => {
 
     isUploading.value = true;
     // Ensure form.photo_id is an array and append the new id
-    // if (!Array.isArray(form.photo_id)) {
-    //   form.photo_id = [];
-    // }
-    // form.photo_id.push(response.data.data.id);
-    form.photo_id = response.data.data.id; 
+    if (!Array.isArray(form.photo_id)) {
+      form.photo_id = [];
+    }
+    form.photo_id.push(response.data.data.id);
 
     // Optionally, store the file name
     form.photoName = file.name;

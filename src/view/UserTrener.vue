@@ -1,11 +1,12 @@
 <template>
   <div class=" mx-auto  p-4 rounded-xl border">
+  <Loading :isLoading="isLoading || isUploading" />
     <h2 class="text-2xl font-bold mb-6">Добавить тренера</h2>
     
       <el-steps style="max-width: 600px" :active="active" finish-status="success"></el-steps>
     
     
-    <UserStepTrener1 
+    <UserStepTrener1  
     v-if="active === 1"
     :form="form"
     :handleFileUpload="handleFileUpload" 
@@ -18,43 +19,46 @@
     :errors="errors"
     />
 
-    <UserStepTrener2
+    <UserStepTrener2 
     v-if="active === 2"
-    :education="form.education" 
-    @update-education="(updatedEducation) => form.education = updatedEducation"
+    :education="form.trainer_profile.educations" 
+    @update-education="(updatedEducation) => form.trainer_profile.educations = updatedEducation"
     />
 
     <UserStepTrener3 
     v-if="active === 3"
-    :type-results="form.results" 
-    @update-result="(updatedResults) => form.results = updatedResults"
+    :type-results="form.trainer_profile.results" 
+    @update-result="(updatedResults) => form.trainer_profile.results = updatedResults"
+    @update-games="(updatedGames) => form.trainer_profile.number_of_games = updatedGames"
+    @update-awards="(updatedAwards) => form.trainer_profile.number_of_awards = updatedAwards"
+    @update-students="(updatedStudents) => form.trainer_profile.number_of_students = updatedStudents"
+    :games="form.trainer_profile.number_of_games"
+    :awards="form.trainer_profile.number_of_awards"
+    :students="form.trainer_profile.number_of_students"
+    :errors="errors"
     />
     <UserStepTrener4 
     v-if="active === 4"
-    :media="form.media" 
-    @update-media="(updatedMedia) => form.media = updatedMedia"
+    :media_ids="form.trainer_profile.media_ids" 
+    @update-media="(updatedMedia) => form.trainer_profile.media_ids = updatedMedia"
     />
     
-      <!-- Form Actions -->
       <div class="flex justify-end space-x-4 mt-5">
         <button
           type="button"
-          @click="resetForm"
+          @click="goBack"
           class="px-4 py-2 border border-gray-300 rounded-md  p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Отмена
-        </button>
-        <button
-          type="button"
-          @click="saveAsDraft"
-          class="px-4 py-2 border border-green-300 rounded-md shadow-sm text-sm font-medium text-green-700 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-        >
-          Сохранить как черновик
+          Назад
         </button>
         <button
           type="submit"
           @click="handleSubmit"
-          :disabled="isSubmitting"
+          :disabled="isSubmitting ||
+          (active === 2 && (form.trainer_profile.educations.length === 0)) ||
+          (active === 3 && (form.trainer_profile.results.length === 0 ))
+
+          "
           class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
         >
           {{ isSubmitting ? 'Сохранение...' : active === 4 ? 'Сохранить' :'Продолжить' }}
@@ -66,157 +70,234 @@
   </div>
 </template>
 
-
-
-
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import UserStepTrener1 from '../components/UserTrener/UserStepTrener1.vue';
 import UserStepTrener2 from '../components/UserTrener/UserStepTrener2.vue';
 import UserStepTrener3 from '../components/UserTrener/UserStepTrener3.vue';
 import UserStepTrener4 from '../components/UserTrener/UserStepTrener4.vue';
+import Loading from "../components/Loading.vue"
+import api from "../utils/axios"
+import router from '../router';
 
-const errors = reactive({});
-const isSubmitting = ref(false);
-const active = ref(1);
 
-const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий'];
-const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис'];
-const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3'];
-const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск'];
-const cities = ['Город 1', 'Город 2', 'Город 3'];
-const countries = ['Россия', 'Казахстан', 'Беларусь'];
+const errors = reactive({})
+const isSubmitting = ref(false)
+const isUploading = ref(false);
+const active = ref(1)
+const isLoading = ref(false);
+
+const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
+const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
+const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3']
+const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск']
+const cities = ['Город 1', 'Город 2', 'Город 3']
+const countries = ['Россия', 'Казахстан', 'Беларусь']
+
+
 
 const form = reactive({
-  firstName: '',
-  lastName: '',
-  surName: '',
-  athleteType: '',
-  sportsDirection: '',
-  sportsDivision: '',
-  birthDate: '',
-  gender: '',
-  photo: null,
-  region: '',
-  city: '',
-  street: '',
-  movingDateMonth: '',
-  movingDateYear: '',
-  phone: '',
-  birthPlace: '',
-  citizenship: '',
-  telegram: '',
-  instagram: '',
+  first_name: '',
+  last_name: '',
+  middle_name: '',
+  birth_date: '',
+  phone_number: '',
+  user_role:'trainer',
   email: '',
-  photoName: '',
-  education: {
-    school: '',
-    sport: '',
-    date: '',
-    period: '',
+  photo_id: '',
+  trainer_profile: {
+    sport_type: '',
+    sport_id: '',
+    motto: '',
+    height: '',
+    weight: '',
+    gender: '',
+    about_me:'',
+    region: '',
+    city: '',
+    street: '',
+    place_of_birth: '',
+    citizenship: '',
+    telegram: '',
+    instagram: '',
+    moving_date_month: '',
+    moving_date_year:'',
+    number_of_games:'5',
+    number_of_students:'5',
+    number_of_awards:'5',
+    educations: [],
+    media_ids: [],
+    results: [],
   },
-  results: {
-    name: '',
-    icon: '',
-    country: '',
-    date: '',
-    rating: '',
-  },
-  media: {
-    photos: {
-      url: '',
-      name: '',
-    },
-    videos: {
-      thumbnail: '',
-      name: '',
-    },
-  },
-});
+
+})
+
+
+
 
 const validateForm = () => {
-  // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);
 
-  // Validate required fields
-  // if (active.value === 1) {
+  if (active.value === 1) {
+    if (!form.first_name) errors.first_name = 'Имя обязательно.';
+    if (!form.last_name) errors.last_name = 'Фамилия обязательна.';
+    if (!form.phone_number) {
+      errors.phone_number = 'Номер телефона обязателен.';
+    } else {
+      const digitsOnly = form.phone_number.replace(/\D/g, '');
+      if (digitsOnly.length > 17) {
+        errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
+      } else if (digitsOnly.length < 9) {
+        errors.phone_number = 'Номер телефона слишком короткий.';
+      }
+    }
     
-  //   if (!form.firstName) errors.firstName = 'Имя обязательно.';
-  //   if (!form.lastName) errors.lastName = 'Фамилия обязательна.';
-  //   if (!form.surName) errors.surName = 'Отчество обязательна.';
-  //   if (!form.athleteType) errors.athleteType = 'Тип спортсмена обязателен.';
-  //   if (!form.sportsDirection) errors.sportsDirection = 'Направление спорта обязательно.';
-  //   if (!form.sportsDivision) errors.sportsDivision = 'Девизион спортсмена обязательно.';
-  //   if (!form.birthDate) errors.birthDate = 'Дата рождения обязательна.';
-  //   if (!form.gender) errors.gender = 'Пол обязателен.';
-  //   if (!form.region) errors.region = 'Регион обязателен.';
-  //   if (!form.movingDateYear) errors.movingDateYear = 'Год обязателен.';
-  //   if (!form.movingDateMonth) errors.movingDateMonth = 'Месяц обязателен.';
-  //   if (!form.street) errors.street = 'Улица обязателен.';
-  //   if (!form.city) errors.city = 'Город обязателен.';
-  //   if (!form.phone) errors.phone = 'Телефон обязателен.';
-  //   if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) errors.email = 'Введите корректный адрес электронной почты.';
-  //   if (!form.photo) errors.photo = 'Фотография обязательна.';
-  //   if (!form.birthPlace) errors.birthPlace = 'Место рождения обязательна.';
-  //   if (!form.citizenship) errors.citizenship = 'Гражданство обязательна.';
-  //   if (!form.telegram) errors.telegram = 'Телеграм обязательна.';
-  //   if (!form.instagram) errors.instagram = 'Инстаграм обязательна.';
+    if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
+    if (!form.trainer_profile.sport_type) errors.sport_type = 'Тип спортсмена обязателен.';
+    if (!form.trainer_profile.sport_id) errors.sport_direction = 'Направление спорта обязательно.';
+    if (!form.trainer_profile.motto) errors.motto = 'Девизион спортсмена обязательно.';
+    if (!form.birth_date) errors.birth_date = 'Дата рождения обязательна.';
+    if (!form.trainer_profile.gender) errors.gender = 'Пол обязателен.';
+    if (!form.trainer_profile.about_me) errors.about_me = 'Обо мне обязателен.';
+    if (!form.trainer_profile.height) errors.height = 'Рост обязатлен.';
+    if (!form.trainer_profile.weight) errors.weight = 'Вес обязателен.';
+    if (!form.trainer_profile.region) errors.region = 'Регион обязателен.';
+    if (!form.trainer_profile.city) errors.city = 'Город обязателен.';
+    if (!form.trainer_profile.street) errors.street = 'Улица обязателен.';
+    if (!form.trainer_profile.moving_date_year) errors.moving_date_year = 'Год обязателен.';
+    if (!form.trainer_profile.moving_date_month) errors.moving_date_month = 'Месяц обязателен.';
+    if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) errors.email = 'Введите корректный адрес электронной почты.';
+    if (!form.trainer_profile.place_of_birth) errors.place_of_birth = 'Место рождения обязательна.';
+    if (!form.trainer_profile.citizenship) errors.citizenship = 'Гражданство обязательна.';
+    // if (!form.sportsman_profile.telegram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.telegram)) {
+    // errors.telegram = 'Введите корректный линк в Телеграм (например, https://t.me/username).';
+    // }
+
+    //  if (!form.sportsman_profile.instagram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.instagram)) {
+    // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
+    // }
+  }
+  // else if(active.value === 3){
+  //   if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Отчество обязательна.';
+  //   if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Отчество обязательна.';
+  //   if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Отчество обязательна.';
   // }
 
-  // if (active.value === 2) {
-    
-  //   // Validation for nested objects
-  //   if (!form.education.school) errors['education.school'] = 'Школа обязательна.';
-  //   if (!form.education.sport) errors['education.sport'] = 'Спорт обязателен.';
-  //   if (!form.education.date) errors['education.date'] = 'Дата обязательна.';
-  //   if (!form.results.name) errors['results.name'] = 'Название результата обязательно.';
-  //   if (!form.results.country) errors['results.country'] = 'Страна обязательна.';
-  // }
-
-
-  // Return validation result
   return Object.keys(errors).length === 0;
 };
 
-const handleFileUpload = (event) => {
+
+const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  if (file) {
-    form.photo = file;
+
+  if (!file) {
+    console.error("No file selected.");
+    return;
+  }
+  isUploading.value = true;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("owner", "sportsman");
+
+  try {
+    // Send the file using axios
+    const response = await api.post(
+      "https://api.7srating.uz/api/user/media-upload/",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    isUploading.value = true;
+    // Ensure form.photo_id is an array and append the new id
+    // if (!Array.isArray(form.photo_id)) {
+    //   form.photo_id = [];
+    // }
+    // form.photo_id.push(response.data.data.id);
+    form.photo_id = response.data.data.id; 
+
+    // Optionally, store the file name
     form.photoName = file.name;
-    console.log('File uploaded:', file);
+  } catch (error) {
+    console.error("File upload failed:", error.response?.data || error.message);
+  }
+  finally {
+    isUploading.value = false;
   }
 };
+
+
 
 const handleSubmit = async () => {
   if (!validateForm()) {
-    console.error('Validation failed:', errors);
+    const firstErrorKey = Object.keys(errors)[0]; 
+if (firstErrorKey) {
+  toast.error(errors[firstErrorKey], {
+    autoClose: 3000,
+  });
+}
     return;
   }
 
-  if (active.value < 4) active.value++;
-  else {
-    console.log('Final step submitted');
+  if (active.value < 4) {
+    active.value++;
+    
+    
+  } else {
+    isSubmitting.value = true;
+    isLoading.value = true;
+
+    try {
+      const payload = {
+        ...form,
+        phone_number: form.phone_number.replaceAll(' ', ''),
+      };
+
+      await api.post(
+        "https://api.7srating.uz/api/user/profile/sportsman/",
+        payload, 
+        {
+          headers: {
+            'Content-Type': 'application/json', // JSON formatda yuborish
+          },
+        }
+      );
+      toast.success('Success to Sportsman', {
+      autoClose: 3000,
+    })
+        router.push('/')
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error(error.response.data.message, {
+      autoClose: 3000,
+    })
+    } finally {
+      isSubmitting.value = false;
+      isLoading.value = false;
+    }
   }
+};
 
-  isSubmitting.value = true;
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Form submitted:', form);
-  } catch (error) {
-    console.error('Submission error:', error);
-  } finally {
-    isSubmitting.value = false;
+
+const goBack = () => {
+  if (active.value > 1) {
+    active.value -= 1; 
+  } else {
+    window.history.go(-1);
+    localStorage.removeItem('schools');
+
+    Object.keys(form).forEach((key) => {
+    form[key] = Array.isArray(form[key]) ? [] : '';
+    });
+    Object.keys(errors).forEach((key) => delete errors[key]);
   }
 };
 
-const saveAsDraft = () => {
-  console.log('Saved as draft:', form);
-};
 
-const resetForm = () => {
-  Object.keys(form).forEach((key) => {
-    form[key] = key === 'photo' ? null : typeof form[key] === 'object' ? {} : '';
-  });
-  Object.keys(errors).forEach((key) => delete errors[key]);
-};
 </script>

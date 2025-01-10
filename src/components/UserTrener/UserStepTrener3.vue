@@ -1,3 +1,7 @@
+
+
+
+
 <template>
   <div>
     <!-- Header -->
@@ -5,30 +9,40 @@
       <h1 class="text-2xl font-semibold text-gray-900">Результаты</h1>
     </div>
 
-    <!-- Results Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-      <table class="min-w-full divide-y divide-gray-200">
+    <div v-if="results.length > 0" class="bg-white rounded-lg shadow overflow-hidden mb-6">
+      <table class="min-w-full divide-y  divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Название</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Страна</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дата</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Рейтинг</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="result in results" :key="result.id">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.id }}</td>
+        <tbody class="bg-white divide-y  divide-gray-200">
+          <tr v-for="(result, index) in results" :key="result.id">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index +1 }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <img :src="result.icon" class="h-8 w-8 rounded-full" />
                 <span class="ml-2 text-sm text-gray-900">{{ result.name }}</span>
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.country }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.date }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.year }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.rating }}</td>
+            <td class="px-6 py-4 whitespace-nowrap  text-sm font-medium space-x-4 text-start">
+                
+
+
+                <button @click="editResult(result)" class="text-blue-600 hover:text-blue-800">
+                    <img src="../../assets/img/edit.svg"  alt="edit" >
+                  </button>
+                  <button @click="deleteResult(result.id)" class="text-red-600 hover:text-red-800">
+                    <img src="../../assets/img/delete.svg" alt="delete" >
+                  </button>
+              </td>
           </tr>
         </tbody>
       </table>
@@ -42,48 +56,52 @@
       Добавить новый результат
     </button>
 
-
-     <div class="my-6">
+    <div class="my-6">
       <h1 class="text-2xl font-semibold text-gray-900">Общие показатели игрока</h1>
     </div>
 
 
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-12">
+    <div   class="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-12">
           <div>
             <label class="block text-sm font-medium text-gray-700">Количество игр</label>
             <input
-              v-model="newResult.name"
+              v-model="props.games"
               type="text"
               placeholder="Введите количество игр"
               class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
+            <span class="text-red-500 mt-1" v-if="props.errors.number_of_games">{{ props.errors.number_of_games }}</span>
           </div>
           
           <div>
             <label class="block text-sm font-medium text-gray-700">Количество учеников</label>
             <input
-              v-model="newResult.name"
+              v-model="props.students"
               type="text"
               placeholder="Введите количество учеников"
               class="mt-1  bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
+            <span class="text-red-500 mt-1" v-if="props.errors.number_of_students">{{ props.errors.number_of_students }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Количество наград</label>
             <input
-              v-model="newResult.name"
+              v-model="props.awards"
               type="text"
               placeholder="Введите количество наград"
               class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
+            <span class="text-red-500 mt-1" v-if="props.errors.number_of_awards">{{ props.errors.number_of_awards }}</span>
           </div>
 
-          </div>
+    </div>
+
+
 
     <!-- Modal -->
-    <div v-if="showModal" class="fixed  inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg border max-w-lg w-full p-6">
+    <div v-if="showModal" class="fixed inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg border max-w-md w-full p-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold">Добавить новую результат</h2>
           <button @click="showModal = false" class="text-gray-400 hover:text-gray-500">
@@ -94,71 +112,66 @@
 
         <form @submit.prevent="addResult">
            <div class="space-y-4">
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Name Field -->
+      <!-- Name Field -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Название турнира</label>
-        <input
+        
+        <select
           v-model="newResult.name"
-          type="text"
-          placeholder="Финал мировой Серии в помещении"
-          class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        />
+          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+        >
+          <option value="">Выберите турнир</option>
+          <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
+          
+        </select>
         <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
       </div>
 
       <!-- Country Field -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Страна</label>
-        <select
+
+        <input
           v-model="newResult.country"
-          class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Выберите страну</option>
-          <option value="США">США</option>
-          <option value="Россия">Россия</option>
-        </select>
+          type="text"
+          placeholder="Выберите страна"
+          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+        />
         <p v-if="errors.country" class="text-sm text-red-500">{{ errors.country }}</p>
-      </div>
       </div>
 
       <!-- Dates -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Период оценки</label>
-        <div class="grid grid-cols-2 gap-4 mt-1">
+        <div class="grid  gap-4 mt-1">
           <el-date-picker
-            v-model="newResult.startDate"
+            v-model="newResult.year"
             type="date"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
             placeholder="Pick a day"
             :size="size"
             class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
           />
-          <el-date-picker
-            v-model="newResult.endDate"
-            type="date"
-            placeholder="Pick a day"
-            :size="size"
-            class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-          />
+          
         </div>
-        <p v-if="errors.startDate || errors.endDate" class="text-sm text-red-500">
-          {{ errors.startDate || errors.endDate }}
+        <p v-if="errors.year " class="text-sm text-red-500">
+          {{ errors.year }}
         </p>
       </div>
 
       <div class="flex items-center gap-4">
               <input 
-                v-model="newResult.check"
+                v-model="newResult.currently_participating"
                 type="checkbox"
-                placeholder="Школа молодых спортсменов"
                 class="px-3 py-2 "
               />
               <label class=" text-sm font-medium text-gray-700 ">
-                Учусь в настоящий время
+                участвую в настоящий время
               </label>
             </div>
 
-      <!-- Rating -->
+            <!-- Rating -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Ваш рейтинг</label>
         <div class="grid grid-cols-2 gap-4">
@@ -196,27 +209,19 @@
         <p v-if="errors.rating" class="text-sm text-red-500">{{ errors.rating }}</p>
       </div>
 
-      <!-- File Upload -->
-      <div>
-      <label class="block text-sm font-medium text-gray-700">Логотип турнира</label>
-        <div class="mt-1 flex items-center">
+      <!-- Rating -->
+      <!-- <div>
+        <label class="block text-sm font-medium text-gray-700">Рейтинг</label>
+        <input
+          v-model="newResult.rating"
+          type="number"
+          placeholder="Введите свой рейтинг"
+          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+        />
+        <p v-if="errors.rating" class="text-sm text-red-500">{{ errors.rating }}</p>
+      </div> -->
 
-          <input
-            id="upload"
-            type="file"
-            @change="handleFileUpload"
-            accept="image/*"
-            class="hidden"
-          />
-          <label
-            for="upload"
-            class="mt-1 w-full bg-[#EFF0F3] flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
-          >
-            <span class="text-sm text-gray-600">{{ fileName || 'Выберите файл' }}</span>
-          </label>
-        </div>
-        <p v-if="errors.icon" class="text-sm text-red-500">{{ errors.icon }}</p>
-      </div>
+     
     </div>
 
           <div class="mt-6 flex justify-center ">
@@ -235,61 +240,59 @@
 </template>
 
 <script setup>
-import { ref , watch} from 'vue'
-// import { XIcon } from 'lucide-vue-next'
+import { ref , watch, onMounted} from 'vue'
+import api from "../../utils/axios"
 
 const emit = defineEmits(['update-result']);
 
 const showModal = ref(false)
 const fileName = ref('')
 
-const results = ref([
-  {
-    id: '0001',
-    name: 'Финал мировой Серии в помещении',
-    icon: '/placeholder.svg?height=32&width=32',
-    country: 'США',
-    date: '2.02.2024 Г.',
-    rating: 2
-  },
-  {
-    id: '0002',
-    name: 'Осенка в Боске',
-    icon: '/placeholder.svg?height=32&width=32',
-    country: 'США',
-    date: '2.02.2024 Г.',
-    rating: 2
-  },
-  {
-    id: '0003',
-    name: 'Турнир по стрельбе из лука в Нями',
-    icon: '/placeholder.svg?height=32&width=32',
-    country: 'США',
-    date: '2.02.2024 Г.',
-    rating: 2
-  }
-])
+const results = ref([])
+const data = ref([])
 
 const props = defineProps({
   typeResults: {
     type: Object,
     required: true
-  }
+  },
+  handleFileUploadd: {
+    type: Function,
+    required: true,
+  },
+  games:String,
+  students:String,
+  awards:String,
+  errors:Array,
 });
-const currentResults = ref({ ...props.education });
+
+
+
+const currentResults = ref({ ...props.typeResults });
 
 currentResults.value = results.value
 
+const getData = async() => {
+  try {
+    const res = await api.get(
+      'https://api.7srating.uz/api/dashboard/tournament/');
 
+    data.value = res.data.data
+      
+  } catch (e) {
+    console.log(e);
+    
+  }
+}
 
 
 const errors = ref({
-  name: '',
+  tournament_id: '',
   country: '',
-  startDate: '',
-  endDate: '',
+  year:'',
   rating: '',
-  icon: '',
+  logo: '',
+  name:'',
 });
 
 const validateForm = () => {
@@ -311,17 +314,17 @@ const validateForm = () => {
   }
 
   // Validate Dates
-  if (!newResult.value.startDate) {
-    errors.value.startDate = 'Начальная дата обязательна.';
+  if (!newResult.value.year) {
+    errors.value.year = 'Начальная дата обязательна.';
     isValid = false;
   }
-  if (!newResult.value.endDate) {
-    errors.value.endDate = 'Конечная дата обязательна.';
-    isValid = false;
-  } else if (new Date(newResult.value.endDate) < new Date(newResult.value.startDate)) {
-    errors.value.endDate = 'Конечная дата не может быть раньше начальной.';
-    isValid = false;
-  }
+  // if (!newResult.value.end_year) {
+  //   errors.value.end_year = 'Конечная дата обязательна.';
+  //   isValid = false;
+  // } else if (new Date(newResult.value.end_year) < new Date(newResult.value.start_year)) {
+  //   errors.value.end_year = 'Конечная дата не может быть раньше начальной.';
+  //   isValid = false;
+  // }
 
   // Validate Rating
   if (!newResult.value.rating) {
@@ -332,71 +335,115 @@ const validateForm = () => {
     isValid = false;
   }
 
-  // Validate File Upload
-  if (!newResult.value.icon) {
-    errors.value.icon = 'Изображение обязательно.';
-    isValid = false;
-  }
-
   return isValid;
 };
 
 const newResult = ref({
-  name: '',
+  tournament_id: '',
   country: '',
-  startDate: '',
-  endDate: '',
+  year:'',
   rating: '',
-  icon: '',
-  check:false
+  currently_participating: false,
+  name:'',
 })
 
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      newResult.value.icon = e.target.result; // Save the base64 URL to display the image
-    };
-    reader.readAsDataURL(file);
-    fileName.value = file.name; // Save the file name for display
-    console.log('File uploaded:', fileName.value);
-  }
-};
+
 const close = () =>{
   showModal.value = false
-  fileName.value = ''
+  newResult.value.country = '',
+  newResult.value.year = '',
+  newResult.value.rating = '',
+  newResult.value.name = '',
+  newResult.value.currently_participating = false,
+  newResult.value.tournament_id = ''
 }
 
-const addResult = () => {
+const editResult = (result) => {
+  
+  const selectedTournament = data.value.find(item => item.name === result.name);
+  // newResult.value = {
+  //   ...result,
+  //   tournament_id: selectedTournament ? selectedTournament.id : '',
+  //   name:selectedTournament ? selectedTournament.id : '',
+  // };
 
+  newResult.value = {
+      id: result.id || '',
+      country: result.country || '',
+      year: result.year || '',
+      tournament_id: selectedTournament ? selectedTournament.id : '',
+      rating: result.rating || '',
+      name: selectedTournament ? selectedTournament.id : '',
+      currently_participating: result.currently_participating || false,
+  }
+
+  showModal.value = true;
+};
+
+const deleteResult = (id) => {
+  // Filter out the record with the specified ID
+  results.value = results.value.filter((result) => result.id !== id);
+};
+
+const addResult = () => {
   if (!validateForm()) {
     console.log('Validation failed');
     return;
   }
-  // Add validation and form submission logic here
-  results.value.push({
-    id: String(results.value.length + 1).padStart(4, '0'),
-    name: newResult.value.name,
-    icon: newResult.value.icon,
-    country: newResult.value.country,
-    date: new Date(newResult.value.startDate).toLocaleDateString('ru-RU') + ' Г.',
-    rating: Number(newResult.value.rating),
-    check: newResult.value.check
-  })
+
+  const selectedTournament = data.value.find(item => item.id === newResult.value.name);
   
-  showModal.value = false
-  // Reset form
-  newResult.value = {
-    name: '',
-    country: '',
-    startDate: '',
-    endDate: '',
-    rating: '',
-    file: '',
-    check:false
+  const existingIndex = results.value.findIndex(r => r.id === newResult.value.id);
+
+  if (existingIndex !== -1) {
+    // Update existing result
+    results.value[existingIndex] = {
+      ...newResult.value,
+      tournament_id: selectedTournament ? selectedTournament.id : '',
+      name:selectedTournament ? selectedTournament.name : ''
+    };
+  } else {
+    // Add new result
+    results.value.push({
+      id: String(results.value.length + 1).padStart(4, '0'),
+      tournament_id: selectedTournament ? selectedTournament.id : '',
+      country: newResult.value.country,
+      year: new Date(newResult.value.year).toLocaleDateString('en-CA'),
+      rating: Number(newResult.value.rating),
+      currently_participating: newResult.value.currently_participating,
+      name:selectedTournament ? selectedTournament.name : ''
+    });
   }
-}
+
+  close();
+};
+
+onMounted(() => {
+  getData()
+
+  if (props.typeResults.length > 0) {
+    results.value = props.typeResults.map((res) => ({
+      id: res.id || '',
+      country: res.country || '',
+      year: res.year || '',
+      tournament_id: res.tournament_id || '',
+      rating: res.rating || '',
+      name: res.name || '',
+      currently_participating: res.currently_participating || false,
+    }));
+  }
+
+  const savedResults = localStorage.getItem('results')
+  if (savedResults) {
+    results.value = JSON.parse(savedResults)
+  }
+  
+  
+})
+watch(results, (newResults) => {
+  localStorage.setItem('results', JSON.stringify(newResults))
+  currentResults.value = newResults
+}, { deep: true })
 
 watch(currentResults, (newValue) => {
   emit('update-result', newValue);

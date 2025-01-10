@@ -442,13 +442,5 @@ const getData = async() => {
   }
 }
 
-
 getData()
-
-
-
-
-
-
-
 </script>

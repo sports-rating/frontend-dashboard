@@ -30,7 +30,7 @@
     :type-results="form.sportsman_profile.results" 
     @update-result="(updatedResults) => form.sportsman_profile.results = updatedResults"
     />
-    <UserStepAthletes4 
+    <UserStepAthletes5 
     v-if="active === 4"
     :media_ids="form.sportsman_profile.media_ids" 
     :media_bay="mediaBay"
@@ -71,7 +71,7 @@ import 'vue3-toastify/dist/index.css';
 import UserStep1 from '../components/UserAthletes/UserStepAthletes1.vue';
 import UserStepAthletes2 from '../components/UserAthletes/UserStepAthletes2.vue';
 import UserStepAthletes3 from '../components/UserAthletes/UserStepAthletes3.vue';
-import UserStepAthletes4 from '../components/UserAthletes/UserStepAthletes4.vue';
+import UserStepAthletes5 from '../components/UserAthletes/UserStepAthletes5.vue';
 import Loading from "../components/Loading.vue"
 import api from "../utils/axios"
 import router from '../router';

@@ -1,6 +1,5 @@
 <template>
-<div>   
-    
+<div>     
     <form @submit.prevent="handleSubmit" class="space-y-8" >
       <!-- Personal Information Section -->
       <section>
@@ -9,111 +8,152 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Имя</label>
             <input
-              v-model="form.firstName"
+              v-model="form.first_name"
               type="text"
               placeholder="Введите имя"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.firstName">{{ errors.firstName }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.first_name">{{ errors.first_name }}</span>
           </div>
           
           <div>
             <label class="block text-sm font-medium text-gray-700">Фамилия</label>
             <input
-              v-model="form.lastName"
+              v-model="form.last_name"
               type="text"
               placeholder="Введите фамилию"
-              class="mt-1  bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.lastName">{{ errors.lastName }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.last_name">{{ errors.last_name }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Отчество</label>
             <input
-              v-model="form.surName"
+              v-model="form.middle_name"
               type="text"
               placeholder="Введите oтчество"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.surName">{{ errors.surName }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.middle_name">{{ errors.middle_name }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Тип спортсмена</label>
             <select
-              v-model="form.athleteType"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              v-model="form.trainer_profile.sport_type"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите тип спортсмена</option>
               <option v-for="type in athleteTypes" :key="type" :value="type">{{ type }}</option>
             </select>
 
-            <span class="text-red-500 mt-1" v-if="errors.athleteType">{{ errors.athleteType }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{ errors.sport_type }}</span>
           </div>
-
-
           
-
           <div>
             <label class="block text-sm font-medium text-gray-700">Спортивное направление</label>
             <select
-              v-model="form.sportsDirection"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              v-model="form.trainer_profile.sport_id"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите спортивное направление</option>
-              <option v-for="direction in sportsDirections" :key="direction" :value="direction">
-                {{ direction }}
+              <option v-for="direction in data" :key="direction.id" :value="direction.id">
+                {{ direction.name }}
               </option>
             </select>
-            <span class="text-red-500 mt-1" v-if="errors.sportsDirection">{{ errors.sportsDirection }}</span>
-          </div>
 
+            <!-- <input
+              v-model="form.trainer_profile.sport_direction"
+              type="text"
+              placeholder="Выберите спортивное направление"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            /> -->
+            <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{ errors.sport_direction }}</span>
+          </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Девизион спортсмена</label>
-            <select
-              v-model="form.sportsDivision"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            <!-- <select
+              v-model="form.trainer_profile.motto"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите девизион</option>
               <option v-for="direction in sportsDivisions" :key="direction" :value="direction">
                 {{ direction }}
               </option>
-            </select>
+            </select> -->
 
-            <span class="text-red-500 mt-1" v-if="errors.sportsDivision">{{ errors.sportsDivision }}</span>
+            <input
+              v-model="form.trainer_profile.motto"
+              type="text"
+              placeholder="Выберите девизион"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+
+            <span class="text-red-500 mt-1" v-if="errors.motto">{{ errors.motto }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
-             <el-date-picker
-              v-model="form.birthDate"
+            <el-date-picker
+              v-model="form.birth_date"
               type="date"
               placeholder="Pick a day"
               :size="size"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              class="!h-10 !w-full !mt-1 !border !rounded-md "
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.birthDate">{{ errors.birthDate }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.birth_date">{{ errors.birth_date }}</span>
           </div>
+
+          <div class="w-full flex gap-4">
+          
+          <div class="w-full">
+            <label class="block text-sm font-medium text-gray-700">Рост (см)</label>
+            <input
+              v-model="form.trainer_profile.height"
+              type="text"
+              placeholder="Введите рост"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+
+            <span class="text-red-500 mt-1" v-if="errors.height">{{ errors.height }}</span>
+          </div>
+
+          <div class="w-full">
+            <label class="block text-sm font-medium text-gray-700">Вес (кг)</label>
+            <input
+              v-model="form.trainer_profile.weight"
+              type="text"
+              placeholder="Введите вес"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+
+            <span class="text-red-500 mt-1" v-if="errors.weight">{{ errors.weight }}</span>
+          </div>
+          </div>
+
+          
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Пол</label>
             <div class="mt-1 w-full flex gap-4">
-              <label class="inline-flex items-center w-[49%]  bg-[#EFF0F3]  px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
+              <label class="inline-flex items-center w-[49%]   px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
                 <input
-                  v-model="form.gender"
+                  v-model="form.trainer_profile.gender"
                   type="radio"
                   value="male"
                   class="form-radio text-blue-500"
                 />
                 <span class="ml-2">Мужчина</span>
               </label>
-              <label class="inline-flex items-center w-[49%]  bg-[#EFF0F3]  px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
+              <label class="inline-flex items-center w-[49%]   px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
                 <input
-                  v-model="form.gender"
+                  v-model="form.trainer_profile.gender"
                   type="radio"
                   value="female"
                   class="form-radio text-blue-500"
@@ -139,12 +179,26 @@
             >
             <label
               for="upload"
-              class="mt-1 w-full bg-[#EFF0F3] flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+              class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
             >
               <span class="text-sm text-gray-600">{{ form.photoName || 'Выберите файл' }}</span>
             </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Обо мне</label>
+            
+
+            <textarea
+              v-model="form.trainer_profile.about_me"
+              type="textarea"
+
+              placeholder="Выберите Обо мне"
+              class="mt-1 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.about_me">{{ errors.about_me }}</span>
           </div>
 
         </div>
@@ -156,35 +210,49 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Область</label>
-            <select
-              v-model="form.region"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            <!-- <select
+              v-model="form.trainer_profile.region"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите название области</option>
               <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
-            </select>
+            </select> -->
+
+            <input
+              v-model="form.trainer_profile.region"
+              type="text"
+              placeholder="Выберите название области"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
             <span class="text-red-500 mt-1" v-if="errors.region">{{ errors.region }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Город</label>
-            <select
-              v-model="form.city"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            <!-- <select
+              v-model="form.trainer_profile.city"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите название города</option>
               <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
-            </select>
+            </select> -->
+
+            <input
+              v-model="form.trainer_profile.city"
+              type="text"
+              placeholder="Выберите название города"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
             <span class="text-red-500 mt-1" v-if="errors.city">{{ errors.city }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Улица</label>
             <input
-              v-model="form.street"
+              v-model="form.trainer_profile.street"
               type="text"
               placeholder="Введите название улицы"
-              class="mt-1 bg-[#EFF0F3]  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.street">{{ errors.street }}</span>
           </div>
@@ -195,24 +263,28 @@
            <div class="flex gap-4">
             <div class="flex flex-col ">
               <el-date-picker
-              v-model="form.movingDateYear"
+              v-model="form.trainer_profile.moving_date_year"
               type="year"
               placeholder="Год"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
+              format="YYYY"
+              value-format="YYYY"
+              class="!h-10 !w-full !mt-1 !border !rounded-md "
             />
-              <span class="text-red-500 mt-1" v-if="errors.movingDateYear">{{ errors.movingDateYear }}</span>
+              <span class="text-red-500 mt-1" v-if="errors.moving_date_year">{{ errors.moving_date_year }}</span>
             </div>
 
              <div class="flex flex-col ">
              
             <el-date-picker
-              v-model="form.movingDateMonth"
+              v-model="form.trainer_profile.moving_date_month"
               type="month"
+              format="MM"
+              value-format="MM"
               placeholder="Месяц"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
+              class="!h-10 !w-full !mt-1 !border !rounded-md "
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.movingDateMonth">{{ errors.movingDateMonth }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.moving_date_month">{{ errors.moving_date_month }}</span>
              </div>
            </div>
 
@@ -227,49 +299,79 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Номер телефона</label>
-            <input
-              v-model="form.phone"
-              type="tel"
-              placeholder="+998 90 000 00 00"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.phone">{{ errors.phone }}</span>
+            
+
+            <vue-tel-input
+              v-model="form.phone_number"
+              :autoFormat="true"
+              :inputOptions="{
+                showDialCode: true,
+                maxlength: 17,
+                valid: false,
+                required: true,
+                type: 'tel',
+                autocomplete: 'on',
+                autofocus: false,
+              }"
+              :dropdownOptions="{
+                showFlags: true,
+              }"
+              :onlyCountries="['UZ']"
+              :defaultCountry="'UZ'"
+              class="!bg-gray-200 mt-1 p-[2px] w-full rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
+            ></vue-tel-input>
+            <span class="text-red-500 mt-1" v-if="errors.phone_number">{{ errors.phone_number }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Место рождения</label>
-            <select
-              v-model="form.birthPlace"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            <!-- <select
+              v-model="form.trainer_profile.place_of_birth"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="" disabled selected>Введите место рождения</option>
               <option v-for="place in countries" :key="place" :value="place">
                 {{ place }}
               </option>
-            </select>
+            </select> -->
 
-            <span class="text-red-500 mt-1" v-if="errors.birthPlace">{{ errors.birthPlace }}</span>
+            <input
+              v-model="form.trainer_profile.place_of_birth"
+              type="text"
+              placeholder="Введите место рождения"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+
+            <span class="text-red-500 mt-1" v-if="errors.place_of_birth">{{ errors.place_of_birth }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Гражданство</label>
-            <select
-              v-model="form.citizenship"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            <!-- <select
+              v-model="form.trainer_profile.citizenship"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите гражданство</option>
               <option v-for="country in countries" :key="country" :value="country">{{ country }}</option>
-            </select>
+            </select> -->
+
+
+            <input
+              v-model="form.trainer_profile.citizenship"
+              type="text"
+              placeholder="Выберите гражданство"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
             <span class="text-red-500 mt-1" v-if="errors.citizenship">{{ errors.citizenship }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Телеграм</label>
             <input
-              v-model="form.telegram"
+              v-model="form.trainer_profile.telegram"
               type="text"
               placeholder="Введите линк в телеграм"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.telegram">{{ errors.telegram }}</span>
           </div>
@@ -277,10 +379,10 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Инстаграм</label>
             <input
-              v-model="form.instagram"
+              v-model="form.trainer_profile.instagram"
               type="text"
               placeholder="Введите  линк в инстаграм"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.instagram">{{ errors.instagram }}</span>
           </div>
@@ -291,7 +393,7 @@
               v-model="form.email"
               type="email"
               placeholder="Введите электронную почту"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.email">{{ errors.email }}</span>
           </div>
@@ -304,8 +406,12 @@
 </template>
 
 <script setup>
+import { VueTelInput } from 'vue-tel-input'
+import { ref, } from 'vue'
+import api from "../../utils/axios"
 
-defineProps({
+
+const props = defineProps({
   form: Object,
   athleteTypes: Array,
   sportsDirections: Array,
@@ -321,4 +427,20 @@ defineProps({
 });
 
 
+const data = ref([])
+
+const getData = async() => {
+  try {
+    const res = await api.get(
+      'https://api.7srating.uz/api/dashboard/sport/');
+
+    data.value = res.data.data
+      
+  } catch (e) {
+    console.log(e);
+    
+  }
+}
+
+getData()
 </script>
