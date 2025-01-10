@@ -17,7 +17,6 @@
     :cities="cities"
     :countries="countries"
     :errors="errors"
-    :text="text"
     />
 
     <UserStepAthletes2
@@ -108,7 +107,7 @@ const form = reactive({
   phone_number: '',
   user_role:'sportsman',
   email: '',
-  photo_id: [],
+  photo_id: '',
   sportsman_profile: {
     sport_type: '',
     sport_id: '',
@@ -263,10 +262,10 @@ const handleFileUpload = async (event) => {
     );
 
     isUploading.value = true;
-    if (!Array.isArray(form.photo_id)) {
-      form.photo_id = [];
-    }
-    form.photo_id.push(response.data.data.id);
+    // if (!Array.isArray(form.photo_id)) {
+    //   form.photo_id = '';
+    // }
+    form.photo_id.push(response.data.data.id); 
 
     form.photoName = file.name;
   } catch (error) {
