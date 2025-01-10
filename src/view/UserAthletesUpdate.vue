@@ -265,7 +265,7 @@ const handleFileUpload = async (event) => {
     // if (!Array.isArray(form.photo_id)) {
     //   form.photo_id = '';
     // }
-    form.photo_id.push(response.data.data.id); 
+    form.photo_id = response.data.data.id; 
 
     form.photoName = file.name;
   } catch (error) {
