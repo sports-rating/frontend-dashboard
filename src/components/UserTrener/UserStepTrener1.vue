@@ -40,12 +40,12 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Тип спортсмена</label>
+            <label class="block text-sm font-medium text-gray-700">Тип тренера</label>
             <select
               v-model="form.trainer_profile.sport_type"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
-              <option value="">Выберите тип спортсмена</option>
+              <option value="">Выберите тип тренера</option>
               <option v-for="type in athleteTypes" :key="type" :value="type">{{ type }}</option>
             </select>
 
@@ -74,7 +74,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Девизион спортсмена</label>
+            <label class="block text-sm font-medium text-gray-700">Девизион тренера</label>
             <!-- <select
               v-model="form.trainer_profile.motto"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"

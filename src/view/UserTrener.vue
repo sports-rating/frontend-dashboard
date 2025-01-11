@@ -152,9 +152,9 @@ const validateForm = () => {
     }
     
     if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
-    if (!form.trainer_profile.sport_type) errors.sport_type = 'Тип спортсмена обязателен.';
+    if (!form.trainer_profile.sport_type) errors.sport_type = 'Тип тренера обязателен.';
     if (!form.trainer_profile.sport_id) errors.sport_direction = 'Направление спорта обязательно.';
-    if (!form.trainer_profile.motto) errors.motto = 'Девизион спортсмена обязательно.';
+    if (!form.trainer_profile.motto) errors.motto = 'Девизион тренера обязательно.';
     if (!form.birth_date) errors.birth_date = 'Дата рождения обязательна.';
     if (!form.trainer_profile.gender) errors.gender = 'Пол обязателен.';
     if (!form.trainer_profile.about_me) errors.about_me = 'Обо мне обязателен.';
