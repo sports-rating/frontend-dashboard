@@ -141,9 +141,9 @@
 
               <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
               <!-- @click="handleAction('/player-id')" -->
-                <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <!-- <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                   Действие
-                </button>
+                </button> -->
                 <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   v-if="user.user_role !== 'trainer'"
