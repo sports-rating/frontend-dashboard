@@ -79,8 +79,6 @@ import { useRoute } from 'vue-router'
 
 
 const route = useRoute()
-
-
 const errors = reactive({})
 const isSubmitting = ref(false)
 const isUploading = ref(false);
@@ -88,7 +86,6 @@ const active = ref(1)
 const isLoading = ref(false);
 const data = ref([])
 const mediaBay = ref([])
-const text = ref('Обновлять')
 
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
 const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
@@ -128,6 +125,7 @@ const form = reactive({
     educations: [],
     media_ids: [],
     results: [],
+    trainer_id:'',
   },
 
 })
@@ -162,6 +160,7 @@ const getData = async () => {
     form.sportsman_profile.instagram = res.data.data.sportsman_profile.instagram
     form.sportsman_profile.moving_date_month = res.data.data.sportsman_profile.moving_date_month
     form.sportsman_profile.moving_date_year = res.data.data.sportsman_profile.moving_date_year
+    form.sportsman_profile.trainer_id = res.data.data.sportsman_profile.trainer_id
 
     form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map((edu) => ({
       id: edu.id || '',
@@ -213,6 +212,7 @@ const validateForm = () => {
         errors.phone_number = 'Номер телефона слишком короткий.';
       }
     }
+    if (!form.sportsman_profile.trainer_id) errors.trainer_id = 'Tренер  обязательна.';
     if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
     if (!form.sportsman_profile.sport_type) errors.sport_type = 'Тип спортсмена обязателен.';
     if (!form.sportsman_profile.sport_id) errors.sport_direction = 'Направление спорта обязательно.';

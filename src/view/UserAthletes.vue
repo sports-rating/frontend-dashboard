@@ -82,6 +82,7 @@ const isUploading = ref(false);
 const active = ref(1)
 const isLoading = ref(false);
 
+
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
 const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
 const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3']
@@ -120,9 +121,12 @@ const form = reactive({
     educations: [],
     media_ids: [],
     results: [],
+    trainer_id:'',
   },
 
 })
+
+
 
 
 
@@ -144,6 +148,7 @@ const validateForm = () => {
       }
     }
     if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
+    if (!form.sportsman_profile.trainer_id) errors.trainer_id = 'Tренер  обязательна.';
     if (!form.sportsman_profile.sport_type) errors.sport_type = 'Тип спортсмена обязателен.';
     if (!form.sportsman_profile.sport_id) errors.sport_direction = 'Направление спорта обязательно.';
     if (!form.sportsman_profile.motto) errors.motto = 'Девизион спортсмена обязательно.';

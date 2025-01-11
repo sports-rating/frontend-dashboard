@@ -15,6 +15,7 @@
             Отмена
           </button>
           <button
+
             @click="deleteTournament"
             class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
           >
@@ -69,7 +70,7 @@
           </div>
           <select  v-model="userType" class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500">
             <option value="">Все типы пользователей</option>
-            <option value="trener" >Тренер</option>
+            <option value="trainer" >Тренер</option>
             <option value="sportsman" >Спортсмен</option>
           </select>
           <!-- <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
@@ -88,7 +89,7 @@
           <div v-if="isCreate" class="absolute w-[120px] top-12 -right-3 bg-white dark:bg-[#1E1E2D] rounded-xl border p-2">
                 <div class="flex flex-col divide-y divide-[#EFF0F3] gap-2 m-0">
                   <p @click="navigate('/create-user-athletes')"  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold">Спортсмены</p>
-                  <!-- <p @click="navigate('/create-user-trener')"  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold">Тренеры</p> -->
+                  <p @click="navigate('/create-user-trener')"  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold">Тренеры</p>
                 </div>
 
                 
@@ -145,7 +146,14 @@
                 </button>
                 <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
+                  v-if="user.user_role !== 'trainer'"
                   :to="`/user-athletes/edit/${user.id}`" 
+                  >
+                  Обновлять
+                </router-link>
+                <router-link 
+                  v-if="user.user_role === 'trainer'"
+                  :to="`/user-trainer/edit/${user.id}`" 
                   >
                   Обновлять
                 </router-link>
@@ -153,7 +161,8 @@
 
 
                 <button
-                  @click="confirmDelete(user.id)"
+
+                  @click="confirmDelete(user.id, user.user_role)"
                   class=" hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
                 >
                   Удалить
@@ -196,18 +205,28 @@ const isCreate = ref(false);
 const data = ref([])
 const isModalOpen = ref(false);
 const sportToDelete = ref(null);
+const toRole = ref(null);
 
 
-const confirmDelete = (id) => {
+const confirmDelete = (id, role) => {
   sportToDelete.value = id;
+  toRole.value = role
   isModalOpen.value = true;
 };
 
 const deleteTournament = async () => {
   try {
-    await api.delete(`https://api.7srating.uz/api/user/profile/sportsman/${sportToDelete.value}/`);
-    data.value = data.value.filter((user) => user.id !== sportToDelete.value);
-    isModalOpen.value = false;
+    if (toRole.value === 'sportsman') {
+      
+      await api.delete(`https://api.7srating.uz/api/user/profile/sportsman/${sportToDelete.value}/`);
+      data.value = data.value.filter((user) => user.id !== sportToDelete.value);
+      isModalOpen.value = false;
+    }
+    else if (toRole.value === 'trainer') {
+      await api.delete(`https://api.7srating.uz/api/user/profile/trainer/${sportToDelete.value}/`);
+      data.value = data.value.filter((user) => user.id !== sportToDelete.value);
+      isModalOpen.value = false;
+    }
   } catch (e) {
     console.error("Failed to delete tournament:", e);
   }

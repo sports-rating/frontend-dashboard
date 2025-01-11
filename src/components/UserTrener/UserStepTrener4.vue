@@ -128,7 +128,7 @@ const handlePhotoUpload = async (event) => {
   isUploading.value = true;
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('owner', 'sportsman');
+  formData.append('owner', 'trainer');
 
   try {
     const response = await api.post(
@@ -173,7 +173,7 @@ const handleVideoUpload = async (event) => {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('owner', 'sportsman');
+    formData.append('owner', 'trainer');
 
     try {
       const response = await api.post(

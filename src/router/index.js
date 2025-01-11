@@ -38,6 +38,12 @@ const router = createRouter({
       name: "Trener",
       component: () => import("../view/UserTrener.vue"),
     },
+
+    {
+      path: "/user-trainer/edit/:id",
+      name: "user-trainer-edit",
+      component: () => import("../view/UserTrenerUpdate.vue"),
+    },
     {
       path: "/login",
       name: "Login",

@@ -29,12 +29,9 @@
     v-if="active === 3"
     :type-results="form.trainer_profile.results" 
     @update-result="(updatedResults) => form.trainer_profile.results = updatedResults"
-    @update-games="(updatedGames) => form.trainer_profile.number_of_games = updatedGames"
-    @update-awards="(updatedAwards) => form.trainer_profile.number_of_awards = updatedAwards"
-    @update-students="(updatedStudents) => form.trainer_profile.number_of_students = updatedStudents"
-    :games="form.trainer_profile.number_of_games"
-    :awards="form.trainer_profile.number_of_awards"
-    :students="form.trainer_profile.number_of_students"
+    v-model:games="form.trainer_profile.number_of_games"
+    v-model:students="form.trainer_profile.number_of_students"
+    v-model:awards="form.trainer_profile.number_of_awards"
     :errors="errors"
     />
     <UserStepTrener4 
@@ -106,13 +103,13 @@ const form = reactive({
   phone_number: '',
   user_role:'trainer',
   email: '',
-  photo_id: '',
+  photo_id: [],
   trainer_profile: {
     sport_type: '',
     sport_id: '',
     motto: '',
-    height: '',
-    weight: '',
+    height: null,
+    weight: null,
     gender: '',
     about_me:'',
     region: '',
@@ -124,9 +121,9 @@ const form = reactive({
     instagram: '',
     moving_date_month: '',
     moving_date_year:'',
-    number_of_games:'5',
-    number_of_students:'5',
-    number_of_awards:'5',
+    number_of_games:null,
+    number_of_students:null,
+    number_of_awards:null,
     educations: [],
     media_ids: [],
     results: [],
@@ -179,11 +176,11 @@ const validateForm = () => {
     // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
     // }
   }
-  // else if(active.value === 3){
-  //   if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Отчество обязательна.';
-  //   if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Отчество обязательна.';
-  //   if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Отчество обязательна.';
-  // }
+  else if(active.value === 3){
+    if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Количество наград обязательна.';
+    if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Количество студентов обязательна.';
+    if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Количество игр обязательна.';
+  }
 
   return Object.keys(errors).length === 0;
 };
@@ -200,7 +197,7 @@ const handleFileUpload = async (event) => {
 
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("owner", "sportsman");
+  formData.append("owner", "trainer");
 
   try {
     // Send the file using axios
@@ -215,12 +212,10 @@ const handleFileUpload = async (event) => {
     );
 
     isUploading.value = true;
-    // Ensure form.photo_id is an array and append the new id
-    // if (!Array.isArray(form.photo_id)) {
-    //   form.photo_id = [];
-    // }
-    // form.photo_id.push(response.data.data.id);
-    form.photo_id = response.data.data.id; 
+    if (!Array.isArray(form.photo_id)) {
+      form.photo_id = [];
+    }
+    form.photo_id.push(response.data.data.id);
 
     // Optionally, store the file name
     form.photoName = file.name;
@@ -260,7 +255,7 @@ if (firstErrorKey) {
       };
 
       await api.post(
-        "https://api.7srating.uz/api/user/profile/sportsman/",
+        "https://api.7srating.uz/api/user/profile/trainer/",
         payload, 
         {
           headers: {

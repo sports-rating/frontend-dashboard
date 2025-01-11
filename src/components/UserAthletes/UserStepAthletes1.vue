@@ -63,13 +63,6 @@
                 {{ direction.name }}
               </option>
             </select>
-
-            <!-- <input
-              v-model="form.sportsman_profile.sport_direction"
-              type="text"
-              placeholder="Выберите спортивное направление"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            /> -->
             <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{ errors.sport_direction }}</span>
           </div>
 
@@ -187,6 +180,8 @@
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
           </div>
 
+          
+
           <div>
             <label class="block text-sm font-medium text-gray-700">Обо мне</label>
             
@@ -199,6 +194,21 @@
               class="mt-1 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.about_me">{{ errors.about_me }}</span>
+          </div>
+
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Tренер</label>
+            <select
+              v-model="form.sportsman_profile.trainer_id"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            >
+              <option value="">Выберите тренер </option>
+              <option v-for="direction in dataTrainer" :key="direction.id" :value="direction.id">
+                {{ direction.first_name }} {{ direction.last_name }}
+              </option>
+            </select>
+            <span class="text-red-500 mt-1" v-if="errors.trainer_id">{{ errors.trainer_id }}</span>
           </div>
 
         </div>
@@ -428,6 +438,7 @@ const props = defineProps({
 
 
 const data = ref([])
+const dataTrainer = ref([])
 
 const getData = async() => {
   try {
@@ -441,6 +452,17 @@ const getData = async() => {
     
   }
 }
-
 getData()
+
+const getTrainer = async () => {
+  try {
+    const res = await api.get(
+      `https://api.7srating.uz/api/user/profile/trainer/`);
+    dataTrainer.value = res.data.data
+  } catch (e) {
+    console.log(e);
+  }
+};
+getTrainer()
+
 </script>
