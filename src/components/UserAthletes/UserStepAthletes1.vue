@@ -395,6 +395,7 @@
 
 <script setup>
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { ref, computed, watch, onMounted } from 'vue'
 import api from "../../utils/axios"
 
@@ -560,5 +561,3 @@ input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0.05; }
 input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0.15; }
 
 </style>
-
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

@@ -179,6 +179,7 @@
 
 <script setup>
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { ref , watch, onMounted,} from 'vue'
 import api from "../../utils/axios"
 
@@ -418,4 +419,3 @@ watch(currentResults, (newValue) => {
 }, { deep: true });
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

@@ -133,6 +133,7 @@
 
 <script setup>
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { reactive, ref, watch } from 'vue'
 import api from "../../utils/axios"
 import { useRoute, useRouter } from 'vue-router'
@@ -294,4 +295,3 @@ const handleSubmit = async () => {
 
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

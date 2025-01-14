@@ -162,6 +162,7 @@
 
 <script setup>
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { ref, onMounted, watch } from 'vue'
 import api from "../../utils/axios"
 
@@ -331,4 +332,3 @@ watch(currentEducation, (newValue) => {
 
 
 </script>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

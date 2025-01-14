@@ -165,6 +165,7 @@
 
 <script setup>
 import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { reactive, ref } from 'vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -310,4 +311,3 @@ const handleSubmit = async () => {
 </script>
 
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
