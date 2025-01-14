@@ -95,7 +95,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Вид спорта
               </label>
-              <select 
+              <!-- <select 
                 v-model="currentSchool.sport_type"
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
               >
@@ -103,14 +103,19 @@
                 <option v-for="direction in data" :key="direction.id" :value="direction.id">
                 {{ direction.name }}
               </option>
-              </select>
+              </select> -->
 
-              <!-- <input
+               <multiselect
               v-model="currentSchool.sport_type"
-              type="text"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
               placeholder="Выберите вид спорта"
-              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            /> -->
+              class="mt-1 "
+            />
+
+             
 
             <p v-if="errors.sport_type" class="text-red-500 text-sm mt-1">{{ errors.sport_type }}</p>
             </div>
@@ -118,24 +123,11 @@
             <div>
         <label class="block text-sm font-medium text-gray-700">Период времени</label>
         <div class="grid grid-cols-2 gap-4 mt-1">
-          <el-date-picker
-            v-model="currentSchool.start_year"
-            type="date"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-            placeholder="Pick a day"
-            :size="size"
-            class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-          />
-          <el-date-picker
-            v-model="currentSchool.end_year"
-            type="date"
-            placeholder="Pick a day"
-            :size="size"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-            class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-          />
+          
+
+          <input v-model="currentSchool.start_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+          <input v-model="currentSchool.end_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+          
 
           <p v-if="errors.start_year" class="text-red-500 text-sm mt-1">{{ errors.start_year }}</p>
             <p v-if="errors.end_year" class="text-red-500 text-sm mt-1">{{ errors.end_year }}</p>
@@ -169,6 +161,7 @@
 </template>
 
 <script setup>
+import Multiselect from 'vue-multiselect'
 import { ref, onMounted, watch } from 'vue'
 import api from "../../utils/axios"
 
@@ -220,7 +213,6 @@ onMounted(() => {
       id: edu.id || '',
       name: edu.name || '',
       sport_type: edu.sport_id || '',
-      // sport_id: edu.sport_id || '',
       start_year: edu.start_year || '',
       end_year: edu.end_year || '',
       currently_studying: edu.currently_studying || false,
@@ -291,7 +283,7 @@ const submitForm = () => {
   const newSchool = {
     id: id || String(Math.floor(10000 + Math.random() * 90000)),
     name,
-    sport_type,
+    sport_type: sport_type.id,
     start_year,
     end_year,
     currently_studying,
@@ -310,14 +302,13 @@ const submitForm = () => {
 }
 
 const editSchool = (school) => {
-  const selectedSchool = data.value.find(item => item.id === school.sport_id);
+  const selectedSchool = data.value.find(item => item.id === school.sport_type);
 
   editingSchool.value = school
   currentSchool.value = {
       id: school.id || '',
       name: school.name || '',
-      sport_type: selectedSchool?.id ? selectedSchool?.id : school.sport_type,
-      // sport_id: school.sport_id || '',
+      sport_type: selectedSchool,
       start_year: school.start_year || '',
       end_year: school.end_year || '',
       currently_studying: school.currently_studying || false,
@@ -340,3 +331,4 @@ watch(currentEducation, (newValue) => {
 
 
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

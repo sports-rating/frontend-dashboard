@@ -40,42 +40,30 @@
             <span class="text-red-500 mt-1" v-if="errors.division">{{ errors.division }}</span>
           </div>
 
-          <!-- <div>
-            <label class="block text-sm font-medium text-gray-700">Тип спорта</label>
-            <input
-              v-model="form.sport_type"
-              type="text"
-              placeholder="Введите Тип спорта"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{ errors.sport_type }}</span>
-          </div> -->
+          
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
-            <select
-          v-model="form.sport_id"
-          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Выберите sport</option>
-          <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
-          
-        </select>
+            
+
+        <multiselect
+              v-model="form.sport_id"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите sport"
+              class="mt-1 "
+            />
 
             <span class="text-red-500 mt-1" v-if="errors.sport_name">{{ errors.sport_name }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Время начала</label>
-            <el-date-picker
-              v-model="form.start_time"
-              type="date"
-              placeholder="Введите Время начала"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            />
+            
+
+            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
 
             <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
           </div>
@@ -83,15 +71,9 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Конец Времени</label>
-            <el-date-picker
-              v-model="form.end_time"
-              type="date"
-              placeholder="Введите Конец Времени"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            />
+           
+
+            <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
 
             <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
           </div>
@@ -150,7 +132,8 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import Multiselect from 'vue-multiselect'
+import { reactive, ref, watch } from 'vue'
 import api from "../../utils/axios"
 import { useRoute, useRouter } from 'vue-router'
 
@@ -269,13 +252,16 @@ const getData = async() => {
     form.start_time = res.data.data.start_time
     form.end_time = res.data.data.end_time
     form.photoName = res.data.data.logo[0]?.file.match(/[^/]+$/)[0]; 
-    form.sport_id = res.data.data.sport.id;
-    data.value.find((item) => item.id === res.data.data.sport.id)
+
+
+    const selectedSport = data.value.find((sport) => sport.id === res.data.data.sport.id);
+    form.sport_id = selectedSport || null; 
   } catch (e) {
     console.log(e);
     
   }
 }
+
 
 getData()
 
@@ -290,7 +276,7 @@ const handleSubmit = async () => {
     console.error('Validation failed:', errors);
     return;
   }
-
+  form.sport_id = form.sport_id.id;
     try {
       await api.patch(
         `https://api.7srating.uz/api/dashboard/tournament/${route.params.id}/`,
@@ -307,3 +293,5 @@ const handleSubmit = async () => {
 
 
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

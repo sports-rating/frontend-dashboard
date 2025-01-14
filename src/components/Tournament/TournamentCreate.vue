@@ -54,7 +54,7 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Время начала</label>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="form.start_time"
               type="date"
               placeholder=" Введите Время начала"
@@ -62,7 +62,9 @@
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            />
+            /> -->
+
+            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
 
             <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
           </div>
@@ -70,7 +72,7 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Конец Времени</label>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="form.end_time"
               type="date"
               placeholder="Введите Конец Времени"
@@ -78,23 +80,34 @@
               format="YYYY-MM-DD"
               value-format="YYYY-MM-DD"
               class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            />
+            /> -->
+              <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+
 
             <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
-            <select
+            <!-- <select
           v-model="form.sport_id"
           class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
         >
           <option value="">Выберите sport</option>
           <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
           
-        </select>
+        </select> -->
 
-            <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
+        <multiselect
+              v-model="form.sport_id"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите sport"
+              class="mt-1 "
+            />
+
           </div>
 
           <div class="col-span-1">
@@ -151,6 +164,7 @@
 </template>
 
 <script setup>
+import Multiselect from 'vue-multiselect'
 import { reactive, ref } from 'vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -270,25 +284,30 @@ const handleSubmit = async () => {
     return;
   }
 
-    try {
-      await api.post(
-        "https://api.7srating.uz/api/dashboard/tournament/",
-        form, 
-      );
-       toast.success("Success to Tournament", {
+  // Add sport_id directly to the form object
+  form.sport_id = form.sport_id.id;
+
+  try {
+    await api.post(
+      "https://api.7srating.uz/api/dashboard/tournament/",
+      form // form now contains sport_id
+    );
+    toast.success("Success to Tournament", {
       autoClose: 3000,
-    })
-        router.push('/tournament-list')
-    } catch (error) {
-      console.error('Submission error:', error);
-       toast.error(error.response.data.message, {
+    });
+    router.push('/tournament-list');
+  } catch (error) {
+    console.error('Submission error:', error);
+    toast.error(error.response?.data?.message || 'An error occurred', {
       autoClose: 3000,
-    })
-    } finally {
-      isSubmitting.value = false;
-    }
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 
-
 </script>
+
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

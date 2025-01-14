@@ -131,9 +131,14 @@ const router = createRouter({
     },
 
     {
-      path: "/player-id",
-      name: "PlayerId",
+      path: "/sportsman-view/:id",
+      name: "PlayerView",
       component: () => import("../view/PlayerProfile.vue"),
+    },
+    {
+      path: "/trainer-view/:id",
+      name: "TrainerView",
+      component: () => import("../view/TrainerProfile.vue"),
     },
 
     {

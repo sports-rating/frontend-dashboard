@@ -29,11 +29,11 @@
     v-if="active === 3"
     :type-results="form.trainer_profile.results" 
     @update-result="(updatedResults) => form.trainer_profile.results = updatedResults"
-    v-model:games="form.trainer_profile.number_of_games"
-    v-model:students="form.trainer_profile.number_of_students"
-    v-model:awards="form.trainer_profile.number_of_awards"
     :errors="errors"
     />
+    <!-- v-model:games="form.trainer_profile.number_of_games"
+    v-model:students="form.trainer_profile.number_of_students"
+    v-model:awards="form.trainer_profile.number_of_awards" -->
     <UserStepTrener5
     v-if="active === 4"
     :media_ids="form.trainer_profile.media_ids" 
@@ -108,6 +108,7 @@ const form = reactive({
   user_role: 'trainer',
   email: '',
   photo_id: '',
+  pinfl:'',
   trainer_profile: {
     sport_type: '',
     sport_id: '',
@@ -125,9 +126,9 @@ const form = reactive({
     instagram: '',
     moving_date_month: '',
     moving_date_year:'',
-    number_of_games:null,
-    number_of_students:null,
-    number_of_awards:null,
+    // number_of_games:null,
+    // number_of_students:null,
+    // number_of_awards:null,
     educations: [],
     media_ids: [],
     results: [],
@@ -146,6 +147,7 @@ const getData = async () => {
     form.middle_name = res.data.data.middle_name 
     form.birth_date = res.data.data.birth_date 
     form.phone_number = res.data.data.phone_number 
+    form.pinfl = res.data.data.pinfl 
     form.email = res.data.data.email 
     form.photo_id = res.data.data.photo[0]?.id
     form.trainer_profile.sport_type = res.data.data.trainer_profile.sport_type 
@@ -164,9 +166,9 @@ const getData = async () => {
     form.trainer_profile.instagram = res.data.data.trainer_profile.instagram
     form.trainer_profile.moving_date_month = res.data.data.trainer_profile.moving_date_month
     form.trainer_profile.moving_date_year = res.data.data.trainer_profile.moving_date_year
-    form.trainer_profile.number_of_students = res.data.data.trainer_profile.number_of_students
-    form.trainer_profile.number_of_awards = res.data.data.trainer_profile.number_of_awards
-    form.trainer_profile.number_of_games = res.data.data.trainer_profile.number_of_games
+    // form.trainer_profile.number_of_students = res.data.data.trainer_profile.number_of_students
+    // form.trainer_profile.number_of_awards = res.data.data.trainer_profile.number_of_awards
+    // form.trainer_profile.number_of_games = res.data.data.trainer_profile.number_of_games
 
     form.trainer_profile.educations = res.data.data.trainer_profile.educations.map((edu) => ({
       id: edu.id || '',
@@ -184,7 +186,9 @@ const getData = async () => {
       country: res.country || '',
       year: res.year || '',
       tournament_id: res.tournament.id || '',
-      rating: res.rating || '',
+      number_of_gold: res.number_of_gold || '',
+      number_of_silver: res.number_of_silver || '',
+      number_of_bronze: res.number_of_bronze || '',
       currently_participating: res.currently_participating || false,
 
     }));
@@ -219,6 +223,14 @@ const validateForm = () => {
         errors.phone_number = 'Номер телефона слишком короткий.';
       }
     }
+    if (!form.pinfl) {
+      errors.pinfl = 'ЖШШИР обязательна.';
+    } else {
+      const trimmedPinfl = form.pinfl.replace(/\s/g, '');
+      if (trimmedPinfl.length !== 14) {
+        errors.pinfl = 'ЖШШИР должен содержать ровно 14 символов';
+      }
+    }
     
     if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
     if (!form.trainer_profile.sport_type) errors.sport_type = 'Тип тренера обязателен.';
@@ -245,11 +257,11 @@ const validateForm = () => {
     // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
     // }
   }
-  else if(active.value === 3){
-    if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Количество наград обязательна.';
-    if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Количество студентов обязательна.';
-    if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Количество игр обязательна.';
-  }
+  // else if(active.value === 3){
+  //   if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Количество наград обязательна.';
+  //   if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Количество студентов обязательна.';
+  //   if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Количество игр обязательна.';
+  // }
 
   return Object.keys(errors).length === 0;
 };
@@ -336,7 +348,9 @@ if (firstErrorKey) {
       );
       toast.success('Success to Sportsman', {
       autoClose: 3000,
-    })
+      })
+      localStorage.removeItem('selectedSport');
+      localStorage.removeItem('selectedTrainer');
         router.push('/')
     } catch (error) {
       console.error('Submission error:', error);
@@ -357,7 +371,8 @@ const goBack = () => {
   } else {
     window.history.go(-1);
     localStorage.removeItem('schools');
-
+    localStorage.removeItem('selectedSport');
+    localStorage.removeItem('selectedTrainer');
     Object.keys(form).forEach((key) => {
     form[key] = Array.isArray(form[key]) ? [] : '';
     });

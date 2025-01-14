@@ -101,6 +101,7 @@ const form = reactive({
   user_role:'sportsman',
   email: '',
   photo_id: [],
+  pinfl:'',
   sportsman_profile: {
     sport_type: '',
     sport_id: '',
@@ -145,6 +146,15 @@ const validateForm = () => {
         errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
       } else if (digitsOnly.length < 9) {
         errors.phone_number = 'Номер телефона слишком короткий.';
+      }
+    }
+
+    if (!form.pinfl) {
+      errors.pinfl = 'ЖШШИР обязательна.';
+    } else {
+      const trimmedPinfl = form.pinfl.replace(/\s/g, '');
+      if (trimmedPinfl.length !== 14) {
+        errors.pinfl = 'ЖШШИР должен содержать ровно 14 символов';
       }
     }
     if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
@@ -235,8 +245,6 @@ if (firstErrorKey) {
 
   if (active.value < 4) {
     active.value++;
-    
-    
   } else {
     isSubmitting.value = true;
     isLoading.value = true;
@@ -258,7 +266,10 @@ if (firstErrorKey) {
       );
       toast.success('Success to Sportsman', {
       autoClose: 3000,
-    })
+      })
+    
+      localStorage.removeItem('selectedSport');
+      localStorage.removeItem('selectedTrainer');
         router.push('/')
     } catch (error) {
       console.error('Submission error:', error);
@@ -278,7 +289,10 @@ const goBack = () => {
     active.value -= 1; 
   } else {
     window.history.go(-1);
+    
     localStorage.removeItem('schools');
+    localStorage.removeItem('selectedSport');
+    localStorage.removeItem('selectedTrainer');
 
     Object.keys(form).forEach((key) => {
     form[key] = Array.isArray(form[key]) ? [] : '';

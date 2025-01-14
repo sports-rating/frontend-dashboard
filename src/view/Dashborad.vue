@@ -73,10 +73,10 @@
             <option value="trainer" >Тренер</option>
             <option value="sportsman" >Спортсмен</option>
           </select>
-          <!-- <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
           <img src="../assets/img/up.svg" alt="up">
             Экспорт
-          </button> -->
+          </button>
 
           <div class="relative">
           
@@ -140,10 +140,22 @@
               </td> -->
 
               <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
-              <!-- @click="handleAction('/player-id')" -->
-                <!-- <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+              
+                <button   class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <router-link 
+                v-if="user.user_role !== 'trainer'"
+                  :to="`/sportsman-view/${user.id}`" 
+                >
                   Действие
-                </button> -->
+                </router-link>
+
+                <router-link 
+                 v-if="user.user_role === 'trainer'"
+                  :to="`/trainer-view/${user.id}`" 
+                >
+                  Действие
+                </router-link>
+                </button>
                 <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   v-if="user.user_role !== 'trainer'"
@@ -252,6 +264,8 @@ onMounted(() => {
   localStorage.removeItem('media_ids')
   localStorage.removeItem('photos')
   localStorage.removeItem('videos')
+  localStorage.removeItem('selectedSport');
+  localStorage.removeItem('selectedTrainer');
 })
 
 

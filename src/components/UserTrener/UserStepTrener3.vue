@@ -31,7 +31,7 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.country }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.year }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.rating }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.number_of_gold }} {{ result.number_of_silver }} {{ result.number_of_bronze }}</td>
             <td class="px-6 py-4 whitespace-nowrap  text-sm font-medium space-x-4 text-start">
                 
 
@@ -56,47 +56,6 @@
       Добавить новый результат
     </button>
 
-    <div class="my-6">
-      <h1 class="text-2xl font-semibold text-gray-900">Общие показатели игрока</h1>
-    </div>
-
-
-    <div   class="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-12">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Количество игр</label>
-            <input
-              v-model="localGames"
-              type="text"
-              placeholder="Введите количество игр"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="props.errors.number_of_games">{{ props.errors.number_of_games }}</span>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Количество учеников</label>
-            <input
-              v-model="localStudents"
-              type="text"
-              placeholder="Введите количество учеников"
-              class="mt-1  bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="props.errors.number_of_students">{{ props.errors.number_of_students }}</span>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Количество наград</label>
-            <input
-              v-model="localAwards"
-              type="text"
-              placeholder="Введите количество наград"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="props.errors.number_of_awards">{{ props.errors.number_of_awards }}</span>
-          </div>
-
-    </div>
-
 
 
     <!-- Modal -->
@@ -104,26 +63,28 @@
       <div class="bg-white rounded-lg border max-w-md w-full p-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold">Добавить новую результат</h2>
-          <button @click="showModal = false" class="text-gray-400 hover:text-gray-500">
-            <!-- <XIcon class="h-5 w-5" /> -->
+          <button @click="show" class="text-gray-400 hover:text-gray-500">
             <el-icon><Close class="h-5 w-5" /></el-icon>
           </button>
         </div>
 
         <form @submit.prevent="addResult">
            <div class="space-y-4">
-      <!-- Name Field -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Название турнира</label>
         
-        <select
-          v-model="newResult.name"
-          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Выберите турнир</option>
-          <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
-          
-        </select>
+        
+
+        <multiselect
+              v-model="newResult.name"
+              @update:modelValue="handleSelection"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите турнир"
+              class="mt-1 "
+            />
         <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
       </div>
 
@@ -147,6 +108,7 @@
           <el-date-picker
             v-model="newResult.year"
             type="date"
+            disabled
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             placeholder="Pick a day"
@@ -160,31 +122,46 @@
         </p>
       </div>
 
-      <div class="flex items-center gap-4">
-              <input 
-                v-model="newResult.currently_participating"
-                type="checkbox"
-                class="px-3 py-2 "
-              />
-              <label class=" text-sm font-medium text-gray-700 ">
-                участвую в настоящий время
-              </label>
+            <div>
+            
+            <div class="relative">
+            <label class="block text-sm font-medium text-gray-700">Ваш рейтинг</label>
+            <input
+              v-model="newResult.number_of_gold"
+              type="number"
+              placeholder="Введите количество"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <div className="absolute right-3 top-2/3 -translate-y-1/2">
+              <div className="w-8 h-8 rounded-full bg-yellow-400 border-2 border-yellow-500 shadow-sm" />
+            </div>
             </div>
 
-            <!-- Rating -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Рейтинг</label>
-        <input
-          v-model="newResult.rating"
-          type="number"
-          placeholder="Введите свой рейтинг"
-          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        />
-        <p v-if="errors.rating" class="text-sm text-red-500">{{ errors.rating }}</p>
-      </div>
+            <div class="relative mt-2">
+            <input
+              v-model="newResult.number_of_silver"
+              type="number"
+              placeholder="Введите количество"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <div className="absolute right-3 top-1/3 -translate-y-1/3">
+              <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-gray-300 shadow-sm" />
+            </div>
+            </div>
 
-    </div>
-
+            <div class="relative mt-2">
+            <input
+              v-model="newResult.number_of_bronze"
+              type="number"
+              placeholder="Введите количество"
+              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <div className="absolute right-3 top-1/3 -translate-y-1/3">
+              <div className="w-8 h-8 rounded-full bg-orange-300 border-2 border-orange-400 shadow-sm" />
+            </div>
+            </div>
+            </div>
+        </div>
           <div class="mt-6 flex justify-center ">
             
             <button
@@ -201,13 +178,13 @@
 </template>
 
 <script setup>
-import { ref , watch, onMounted, computed} from 'vue'
+import Multiselect from 'vue-multiselect'
+import { ref , watch, onMounted,} from 'vue'
 import api from "../../utils/axios"
 
 const emit = defineEmits(['update-result',"update:games", "update:students", "update:awards"]);
 
 const showModal = ref(false)
-const fileName = ref('')
 
 const results = ref([])
 const data = ref([])
@@ -221,26 +198,29 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  games:Number,
-  students:Number,
-  awards:Number,
+  // games:Number,
+  // students:Number,
+  // awards:Number,
   errors:Array,
 });
 
-const localGames = computed({
-  get: () => props.games,
-  set: (value) => emit("update:games", value),
-});
 
-const localStudents = computed({
-  get: () => props.students,
-  set: (value) => emit("update:students", value),
-});
 
-const localAwards = computed({
-  get: () => props.awards,
-  set: (value) => emit("update:awards", value),
-});
+
+// const localGames = computed({
+//   get: () => props.games,
+//   set: (value) => emit("update:games", value),
+// });
+
+// const localStudents = computed({
+//   get: () => props.students,
+//   set: (value) => emit("update:students", value),
+// });
+
+// const localAwards = computed({
+//   get: () => props.awards,
+//   set: (value) => emit("update:awards", value),
+// });
 
 const currentResults = ref({ ...props.typeResults });
 
@@ -260,11 +240,22 @@ const getData = async() => {
 }
 
 
+const handleSelection = (selectedOption) => {
+  const selectedItem = data.value.find((item) => item.id === selectedOption.id);
+      if (selectedItem) {
+        newResult.value.year = selectedItem.start_time
+      }
+  
+}
+
+
 const errors = ref({
   tournament_id: '',
   country: '',
   year:'',
-  rating: '',
+  number_of_gold: '',
+  number_of_silver: '',
+  number_of_bronze: '',
   logo: '',
   name:'',
 });
@@ -276,7 +267,7 @@ const validateForm = () => {
   Object.keys(errors.value).forEach((key) => (errors.value[key] = ''));
 
   // Validate Name
-  if (!newResult.value.name.trim()) {
+  if (!newResult.value.name.id.trim()) {
     errors.value.name = 'Название турнира обязательно.';
     isValid = false;
   }
@@ -292,22 +283,7 @@ const validateForm = () => {
     errors.value.year = 'Начальная дата обязательна.';
     isValid = false;
   }
-  // if (!newResult.value.end_year) {
-  //   errors.value.end_year = 'Конечная дата обязательна.';
-  //   isValid = false;
-  // } else if (new Date(newResult.value.end_year) < new Date(newResult.value.start_year)) {
-  //   errors.value.end_year = 'Конечная дата не может быть раньше начальной.';
-  //   isValid = false;
-  // }
-
-  // Validate Rating
-  if (!newResult.value.rating) {
-    errors.value.rating = 'Рейтинг обязателен.';
-    isValid = false;
-  } else if (isNaN(newResult.value.rating) || Number(newResult.value.rating) <= 0) {
-    errors.value.rating = 'Рейтинг должен быть положительным числом.';
-    isValid = false;
-  }
+  
 
   return isValid;
 };
@@ -316,17 +292,33 @@ const newResult = ref({
   tournament_id: '',
   country: '',
   year:'',
-  rating: '',
+  number_of_gold: '',
+  number_of_silver: '',
+  number_of_bronze: '',
   currently_participating: false,
   name:'',
 })
+
+const show = () =>{
+  showModal.value = false
+  newResult.value.country = '',
+  newResult.value.year = '',
+  newResult.value.number_of_gold = '',
+  newResult.value.number_of_silver = '',
+  newResult.value.number_of_bronze = '',
+  newResult.value.name = '',
+  newResult.value.currently_participating = false,
+  newResult.value.tournament_id = ''
+}
 
 
 const close = () =>{
   showModal.value = false
   newResult.value.country = '',
   newResult.value.year = '',
-  newResult.value.rating = '',
+  newResult.value.number_of_gold = '',
+  newResult.value.number_of_silver = '',
+  newResult.value.number_of_bronze = '',
   newResult.value.name = '',
   newResult.value.currently_participating = false,
   newResult.value.tournament_id = ''
@@ -334,20 +326,18 @@ const close = () =>{
 
 const editResult = (result) => {
   
-  const selectedTournament = data.value.find(item => item.name === result.name);
-  // newResult.value = {
-  //   ...result,
-  //   tournament_id: selectedTournament ? selectedTournament.id : '',
-  //   name:selectedTournament ? selectedTournament.id : '',
-  // };
+  const selectedTournament = data.value.find(item => item.id === result.tournament_id);
+  
 
   newResult.value = {
       id: result.id || '',
       country: result.country || '',
       year: result.year || '',
-      tournament_id: selectedTournament ? selectedTournament.id : '',
-      rating: result.rating || '',
-      name: selectedTournament ? selectedTournament.id : '',
+      tournament_id: selectedTournament,
+      number_of_gold: result.number_of_gold || '',
+      number_of_silver: result.number_of_silver || '',
+      number_of_bronze: result.number_of_bronze || '',
+      name: selectedTournament,
       currently_participating: result.currently_participating || false,
   }
 
@@ -365,7 +355,7 @@ const addResult = () => {
     return;
   }
 
-  const selectedTournament = data.value.find(item => item.id === newResult.value.name);
+  const selectedTournament = data.value.find(item => item.id === newResult.value.name.id);
   
   const existingIndex = results.value.findIndex(r => r.id === newResult.value.id);
 
@@ -383,7 +373,9 @@ const addResult = () => {
       tournament_id: selectedTournament ? selectedTournament.id : '',
       country: newResult.value.country,
       year: new Date(newResult.value.year).toLocaleDateString('en-CA'),
-      rating: Number(newResult.value.rating),
+      number_of_gold: Number(newResult.value.number_of_gold),
+      number_of_silver: Number(newResult.value.number_of_silver),
+      number_of_bronze: Number(newResult.value.number_of_bronze),
       currently_participating: newResult.value.currently_participating,
       name:selectedTournament ? selectedTournament.name : ''
     });
@@ -401,7 +393,9 @@ onMounted(() => {
       country: res.country || '',
       year: res.year || '',
       tournament_id: res.tournament_id || '',
-      rating: res.rating || '',
+      number_of_gold: res.number_of_gold || '',
+      number_of_silver: res.number_of_silver || '',
+      number_of_bronze: res.number_of_bronze || '',
       name: res.name || '',
       currently_participating: res.currently_participating || false,
     }));
@@ -423,3 +417,5 @@ watch(currentResults, (newValue) => {
   emit('update-result', newValue);
 }, { deep: true });
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

@@ -58,7 +58,7 @@
       <div class="bg-white rounded-lg border max-w-md w-full p-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold">Добавить новую результат</h2>
-          <button @click="showModal = false" class="text-gray-400 hover:text-gray-500">
+          <button @click="show" class="text-gray-400 hover:text-gray-500">
             <!-- <XIcon class="h-5 w-5" /> -->
             <el-icon><Close class="h-5 w-5" /></el-icon>
           </button>
@@ -70,14 +70,16 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Название турнира</label>
         
-        <select
-          v-model="newResult.name"
-          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Выберите турнир</option>
-          <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
-          
-        </select>
+        <multiselect
+              v-model="newResult.name"
+              @update:modelValue="handleSelection"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите турнир"
+              class="mt-1 "
+            />
         <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
       </div>
 
@@ -102,6 +104,7 @@
             v-model="newResult.year"
             type="date"
             format="YYYY-MM-DD"
+            disabled
             value-format="YYYY-MM-DD"
             placeholder="Pick a day"
             :size="size"
@@ -114,16 +117,6 @@
         </p>
       </div>
 
-      <div class="flex items-center gap-4">
-              <input 
-                v-model="newResult.currently_participating"
-                type="checkbox"
-                class="px-3 py-2 "
-              />
-              <label class=" text-sm font-medium text-gray-700 ">
-                участвую в настоящий время
-              </label>
-            </div>
 
       <!-- Rating -->
       <div>
@@ -156,16 +149,9 @@
 </template>
 
 <script setup>
+import Multiselect from 'vue-multiselect'
 import { ref , watch, onMounted} from 'vue'
 import api from "../../utils/axios"
-
-const emit = defineEmits(['update-result']);
-
-const showModal = ref(false)
-const fileName = ref('')
-
-const results = ref([])
-const data = ref([])
 
 const props = defineProps({
   typeResults: {
@@ -177,6 +163,11 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emit = defineEmits(['update-result']);
+const showModal = ref(false)
+const results = ref([])
+const data = ref([])
 const currentResults = ref({ ...props.typeResults });
 
 currentResults.value = results.value
@@ -194,7 +185,6 @@ const getData = async() => {
   }
 }
 
-
 const errors = ref({
   tournament_id: '',
   country: '',
@@ -207,35 +197,21 @@ const errors = ref({
 const validateForm = () => {
   let isValid = true;
 
-  // Clear previous errors
   Object.keys(errors.value).forEach((key) => (errors.value[key] = ''));
 
-  // Validate Name
-  if (!newResult.value.name.trim()) {
+  if (!newResult.value.name.id.trim()) {
     errors.value.name = 'Название турнира обязательно.';
     isValid = false;
   }
 
-  // Validate Country
   if (!newResult.value.country) {
     errors.value.country = 'Пожалуйста, выберите страну.';
     isValid = false;
   }
-
-  // Validate Dates
   if (!newResult.value.year) {
     errors.value.year = 'Начальная дата обязательна.';
     isValid = false;
   }
-  // if (!newResult.value.end_year) {
-  //   errors.value.end_year = 'Конечная дата обязательна.';
-  //   isValid = false;
-  // } else if (new Date(newResult.value.end_year) < new Date(newResult.value.start_year)) {
-  //   errors.value.end_year = 'Конечная дата не может быть раньше начальной.';
-  //   isValid = false;
-  // }
-
-  // Validate Rating
   if (!newResult.value.rating) {
     errors.value.rating = 'Рейтинг обязателен.';
     isValid = false;
@@ -256,6 +232,16 @@ const newResult = ref({
   name:'',
 })
 
+const show = () =>{
+  showModal.value = false
+  newResult.value.country = '',
+  newResult.value.year = '',
+  newResult.value.rating = '',
+  newResult.value.name = '',
+  newResult.value.currently_participating = false,
+  newResult.value.tournament_id = ''
+}
+
 
 const close = () =>{
   showModal.value = false
@@ -268,21 +254,14 @@ const close = () =>{
 }
 
 const editResult = (result) => {
-  
-  const selectedTournament = data.value.find(item => item.name === result.name);
-  // newResult.value = {
-  //   ...result,
-  //   tournament_id: selectedTournament ? selectedTournament.id : '',
-  //   name:selectedTournament ? selectedTournament.id : '',
-  // };
-
+  const selectedTournament = data.value.find(item => item.id === result.tournament_id);
   newResult.value = {
       id: result.id || '',
       country: result.country || '',
       year: result.year || '',
-      tournament_id: selectedTournament ? selectedTournament.id : '',
+      tournament_id: selectedTournament,
       rating: result.rating || '',
-      name: selectedTournament ? selectedTournament.id : '',
+      name: selectedTournament,
       currently_participating: result.currently_participating || false,
   }
 
@@ -299,20 +278,20 @@ const addResult = () => {
     console.log('Validation failed');
     return;
   }
+  
 
-  const selectedTournament = data.value.find(item => item.id === newResult.value.name);
+  const selectedTournament = data.value.find(item => item.id === newResult.value.name.id);
+  
   
   const existingIndex = results.value.findIndex(r => r.id === newResult.value.id);
 
   if (existingIndex !== -1) {
-    // Update existing result
     results.value[existingIndex] = {
       ...newResult.value,
       tournament_id: selectedTournament ? selectedTournament.id : '',
       name:selectedTournament ? selectedTournament.name : ''
     };
   } else {
-    // Add new result
     results.value.push({
       id: String(results.value.length + 1).padStart(4, '0'),
       tournament_id: selectedTournament ? selectedTournament.id : '',
@@ -323,6 +302,8 @@ const addResult = () => {
       name:selectedTournament ? selectedTournament.name : ''
     });
   }
+
+  console.log(results.value, "post");
 
   close();
 };
@@ -349,6 +330,14 @@ onMounted(() => {
   
   
 })
+
+const handleSelection = (selectedOption) => {
+  const selectedItem = data.value.find((item) => item.id === selectedOption.id);
+      if (selectedItem) {
+        newResult.value.year = selectedItem.start_time
+      }
+  
+}
 watch(results, (newResults) => {
   localStorage.setItem('results', JSON.stringify(newResults))
   currentResults.value = newResults
@@ -358,3 +347,5 @@ watch(currentResults, (newValue) => {
   emit('update-result', newValue);
 }, { deep: true });
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

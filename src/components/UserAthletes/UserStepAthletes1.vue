@@ -40,6 +40,17 @@
           </div>
 
           <div>
+            <label class="block text-sm font-medium text-gray-700">ЖШШИР</label>
+            <input
+              v-model="form.pinfl"
+              type="text"
+              placeholder="Введите ЖШШИР"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.pinfl">{{ errors.pinfl }}</span>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-gray-700">Тип спортсмена</label>
             <select
               v-model="form.sportsman_profile.sport_type"
@@ -54,15 +65,16 @@
           
           <div>
             <label class="block text-sm font-medium text-gray-700">Спортивное направление</label>
-            <select
-              v-model="form.sportsman_profile.sport_id"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите спортивное направление</option>
-              <option v-for="direction in data" :key="direction.id" :value="direction.id">
-                {{ direction.name }}
-              </option>
-            </select>
+
+              <multiselect
+              v-model="selectedSport"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите спортивное направление"
+              class="mt-1 "
+            />
             <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{ errors.sport_direction }}</span>
           </div>
 
@@ -90,15 +102,9 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
-            <el-date-picker
-              v-model="form.birth_date"
-              type="date"
-              placeholder="Pick a day"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
+            
+
+            <input v-model="form.birth_date" type="date"   min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
 
             <span class="text-red-500 mt-1" v-if="errors.birth_date">{{ errors.birth_date }}</span>
           </div>
@@ -180,7 +186,22 @@
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
           </div>
 
-          
+           <div>
+            <label class="block text-sm font-medium text-gray-700">Tренер</label>
+            
+
+
+            <multiselect
+              v-model="selectedTrainer"
+              :options="filteredTrainerData"
+              label="full_name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите тренер"
+              class="mt-1 "
+            />
+            <span class="text-red-500 mt-1" v-if="errors.trainer_id">{{ errors.trainer_id }}</span>
+          </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Обо мне</label>
@@ -197,19 +218,7 @@
           </div>
 
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Tренер</label>
-            <select
-              v-model="form.sportsman_profile.trainer_id"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите тренер </option>
-              <option v-for="direction in dataTrainer" :key="direction.id" :value="direction.id">
-                {{ direction.first_name }} {{ direction.last_name }}
-              </option>
-            </select>
-            <span class="text-red-500 mt-1" v-if="errors.trainer_id">{{ errors.trainer_id }}</span>
-          </div>
+        
 
         </div>
       </section>
@@ -220,13 +229,7 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Область</label>
-            <!-- <select
-              v-model="form.sportsman_profile.region"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите название области</option>
-              <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
-            </select> -->
+            
 
             <input
               v-model="form.sportsman_profile.region"
@@ -239,13 +242,7 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Город</label>
-            <!-- <select
-              v-model="form.sportsman_profile.city"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите название города</option>
-              <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
-            </select> -->
+            
 
             <input
               v-model="form.sportsman_profile.city"
@@ -335,16 +332,6 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Место рождения</label>
-            <!-- <select
-              v-model="form.sportsman_profile.place_of_birth"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="" disabled selected>Введите место рождения</option>
-              <option v-for="place in countries" :key="place" :value="place">
-                {{ place }}
-              </option>
-            </select> -->
-
             <input
               v-model="form.sportsman_profile.place_of_birth"
               type="text"
@@ -357,15 +344,6 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Гражданство</label>
-            <!-- <select
-              v-model="form.sportsman_profile.citizenship"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите гражданство</option>
-              <option v-for="country in countries" :key="country" :value="country">{{ country }}</option>
-            </select> -->
-
-
             <input
               v-model="form.sportsman_profile.citizenship"
               type="text"
@@ -416,11 +394,11 @@
 </template>
 
 <script setup>
-import { VueTelInput } from 'vue-tel-input'
-import { ref, } from 'vue'
+import Multiselect from 'vue-multiselect'
+import { ref, computed, watch, onMounted } from 'vue'
 import api from "../../utils/axios"
 
-
+// Define Props
 const props = defineProps({
   form: Object,
   athleteTypes: Array,
@@ -433,36 +411,154 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  errors:Array,
+  errors: Array,
 });
 
+// State variables
+const data = ref([]);
+const dataTrainer = ref([]);
+const selectedSport = ref(null);
+const selectedSportName = ref(null);
+const selectedTrainer = ref(null);
 
-const data = ref([])
-const dataTrainer = ref([])
 
-const getData = async() => {
+
+// Fetch Sports Data
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
+    const res = await api.get('https://api.7srating.uz/api/dashboard/sport/');
+    data.value = res.data.data;
 
-    data.value = res.data.data
-      
-  } catch (e) {
-    console.log(e);
     
-  }
-}
-getData()
-
-const getTrainer = async () => {
-  try {
-    const res = await api.get(
-      `https://api.7srating.uz/api/user/profile/trainer/`);
-    dataTrainer.value = res.data.data
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
-getTrainer()
 
+// Fetch Trainers Data
+const getTrainer = async () => {
+  try {
+    const res = await api.get('https://api.7srating.uz/api/user/profile/trainer/');
+    dataTrainer.value = res.data.data;
+
+    
+    if (props.form.sportsman_profile.trainer_id) {
+      selectedTrainer.value = dataTrainer.value.find(trainer => trainer.id === props.form.sportsman_profile.trainer_id);
+      if (selectedTrainer.value) {
+        selectedTrainer.value.full_name = `${selectedTrainer.value.first_name} ${selectedTrainer.value.last_name}`;
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// Watchers
+watch(selectedSport, (newVal) => {
+  selectedSportName.value = newVal ? newVal.name : '';
+  props.form.sportsman_profile.sport_id = newVal ? newVal.id : null;
+  localStorage.setItem('selectedSport', JSON.stringify(newVal || null));
+});
+
+watch(selectedTrainer, (newVal) => {
+  props.form.sportsman_profile.trainer_id = newVal ? newVal.id : null;
+  localStorage.setItem('selectedTrainer', JSON.stringify(newVal || null));
+});
+
+watch(() => props.form.sportsman_profile.sport_id, (newSportId) => {
+  // Find the sport in the data array
+  if (newSportId && data.value.length > 0) {
+    selectedSport.value = data.value.find(sport => sport.id === newSportId);
+  } else {
+    selectedSport.value = null;
+  }
+}, { immediate: true });
+
+watch(() => props.form.sportsman_profile.trainer_id, (newTrainerId) => {
+  // Find the trainer in the dataTrainer array
+  if (newTrainerId && dataTrainer.value.length > 0) {
+    selectedTrainer.value = dataTrainer.value.find(trainer => trainer.id === newTrainerId);
+    if (selectedTrainer.value) {
+      selectedTrainer.value.full_name = `${selectedTrainer.value.first_name} ${selectedTrainer.value.last_name}`;
+    }
+  } else {
+    selectedTrainer.value = null;
+  }
+}, { immediate: true });
+
+// Computed Property for Filtered Trainers Data
+const filteredTrainerData = computed(() => {
+  if (!selectedSportName.value) {
+    return dataTrainer.value.map((trainer) => ({
+      ...trainer,
+      full_name: `${trainer.first_name} ${trainer.last_name}`,
+    }));
+  }
+
+  return dataTrainer.value
+    .filter((trainer) => trainer.sport === selectedSportName.value)
+    .map((trainer) => ({
+      ...trainer,
+      full_name: `${trainer.first_name} ${trainer.last_name}`,
+    }));
+});
+
+// Mounted Hook for LocalStorage Data
+onMounted(() => {
+  getData();
+   getTrainer();
+  
+  const savedSport = localStorage.getItem('selectedSport');
+  const savedTrainer = localStorage.getItem('selectedTrainer');
+
+  if (savedSport && savedSport !== 'undefined' && savedSport !== 'null') {
+    selectedSport.value = JSON.parse(savedSport);
+  }
+
+  if (savedTrainer && savedTrainer !== 'undefined' && savedTrainer !== 'null') {
+    selectedTrainer.value = JSON.parse(savedTrainer);
+  }
+
+  
+});
 </script>
+
+
+
+<style>
+input[type="date"] {
+  display:block;
+  position:relative;
+  padding:1rem 3.5rem 1rem 0.75rem;
+  font-size:1rem;
+  font-family:monospace;
+  border:1px solid #8292a2;
+  border-radius:0.25rem;
+  background:
+    white
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E")
+    right 1rem
+    center
+    no-repeat;
+  
+  cursor:pointer;
+}
+
+::-webkit-calendar-picker-indicator {
+  position:absolute;
+  width:2.5rem;
+  height:100%;
+  top:0;
+  right:0;
+  bottom:0;
+  
+  opacity:0;
+  cursor:pointer;
+}
+
+input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0.05; }
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0.15; }
+
+</style>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

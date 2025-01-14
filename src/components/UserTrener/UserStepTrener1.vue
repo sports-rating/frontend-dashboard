@@ -40,6 +40,17 @@
           </div>
 
           <div>
+            <label class="block text-sm font-medium text-gray-700">ЖШШИР</label>
+            <input
+              v-model="form.pinfl"
+              type="text"
+              placeholder="Введите ЖШШИР"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.pinfl">{{ errors.pinfl }}</span>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-gray-700">Тип тренера</label>
             <select
               v-model="form.trainer_profile.sport_type"
@@ -54,36 +65,21 @@
           
           <div>
             <label class="block text-sm font-medium text-gray-700">Спортивное направление</label>
-            <select
-              v-model="form.trainer_profile.sport_id"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите спортивное направление</option>
-              <option v-for="direction in data" :key="direction.id" :value="direction.id">
-                {{ direction.name }}
-              </option>
-            </select>
-
-            <!-- <input
-              v-model="form.trainer_profile.sport_direction"
-              type="text"
+            <multiselect
+              v-model="selectedSport"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
               placeholder="Выберите спортивное направление"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            /> -->
+              class="mt-1 "
+            />
             <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{ errors.sport_direction }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Девизион тренера</label>
-            <!-- <select
-              v-model="form.trainer_profile.motto"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите девизион</option>
-              <option v-for="direction in sportsDivisions" :key="direction" :value="direction">
-                {{ direction }}
-              </option>
-            </select> -->
+            
 
             <input
               v-model="form.trainer_profile.motto"
@@ -97,15 +93,9 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
-            <el-date-picker
-              v-model="form.birth_date"
-              type="date"
-              placeholder="Pick a day"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
+            
+
+            <input v-model="form.birth_date" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
 
             <span class="text-red-500 mt-1" v-if="errors.birth_date">{{ errors.birth_date }}</span>
           </div>
@@ -210,13 +200,7 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Область</label>
-            <!-- <select
-              v-model="form.trainer_profile.region"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите название области</option>
-              <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
-            </select> -->
+            
 
             <input
               v-model="form.trainer_profile.region"
@@ -406,8 +390,9 @@
 </template>
 
 <script setup>
+import Multiselect from 'vue-multiselect'
 import { VueTelInput } from 'vue-tel-input'
-import { ref, } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import api from "../../utils/axios"
 
 
@@ -428,6 +413,7 @@ const props = defineProps({
 
 
 const data = ref([])
+const selectedSport = ref(null)
 
 const getData = async() => {
   try {
@@ -443,4 +429,30 @@ const getData = async() => {
 }
 
 getData()
+
+watch(selectedSport, (newVal) => {
+  props.form.trainer_profile.sport_id = newVal ? newVal.id : null;
+  localStorage.setItem("selectedSport", JSON.stringify(newVal));
+});
+
+watch(() => props.form.trainer_profile.sport_id, (newSportId) => {
+  // Find the sport in the data array
+  if (newSportId && data.value.length > 0) {
+    selectedSport.value = data.value.find(sport => sport.id === newSportId);
+  } else {
+    selectedSport.value = null;
+  }
+}, { immediate: true });
+
+
+onMounted(() => {
+  getData();
+  const savedSport = localStorage.getItem('selectedSport');
+
+  if (savedSport && savedSport !== 'undefined' && savedSport !== 'null') {
+    selectedSport.value = JSON.parse(savedSport);
+  }
+
+});
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

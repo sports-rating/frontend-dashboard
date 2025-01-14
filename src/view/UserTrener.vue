@@ -29,11 +29,11 @@
     v-if="active === 3"
     :type-results="form.trainer_profile.results" 
     @update-result="(updatedResults) => form.trainer_profile.results = updatedResults"
-    v-model:games="form.trainer_profile.number_of_games"
-    v-model:students="form.trainer_profile.number_of_students"
-    v-model:awards="form.trainer_profile.number_of_awards"
     :errors="errors"
     />
+    <!-- v-model:games="form.trainer_profile.number_of_games" -->
+    <!-- v-model:students="form.trainer_profile.number_of_students" -->
+    <!-- v-model:awards="form.trainer_profile.number_of_awards" -->
     <UserStepTrener4 
     v-if="active === 4"
     :media_ids="form.trainer_profile.media_ids" 
@@ -104,6 +104,7 @@ const form = reactive({
   user_role:'trainer',
   email: '',
   photo_id: [],
+  pinfl:'',
   trainer_profile: {
     sport_type: '',
     sport_id: '',
@@ -121,9 +122,6 @@ const form = reactive({
     instagram: '',
     moving_date_month: '',
     moving_date_year:'',
-    number_of_games:null,
-    number_of_students:null,
-    number_of_awards:null,
     educations: [],
     media_ids: [],
     results: [],
@@ -148,6 +146,15 @@ const validateForm = () => {
         errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
       } else if (digitsOnly.length < 9) {
         errors.phone_number = 'Номер телефона слишком короткий.';
+      }
+    }
+
+    if (!form.pinfl) {
+      errors.pinfl = 'ЖШШИР обязательна.';
+    } else {
+      const trimmedPinfl = form.pinfl.replace(/\s/g, '');
+      if (trimmedPinfl.length !== 14) {
+        errors.pinfl = 'ЖШШИР должен содержать ровно 14 символов';
       }
     }
     
@@ -176,11 +183,7 @@ const validateForm = () => {
     // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
     // }
   }
-  else if(active.value === 3){
-    if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Количество наград обязательна.';
-    if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Количество студентов обязательна.';
-    if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Количество игр обязательна.';
-  }
+  
 
   return Object.keys(errors).length === 0;
 };
@@ -265,7 +268,9 @@ if (firstErrorKey) {
       );
       toast.success('Success to Sportsman', {
       autoClose: 3000,
-    })
+      })
+      localStorage.removeItem('selectedSport');
+      localStorage.removeItem('selectedTrainer');
         router.push('/')
     } catch (error) {
       console.error('Submission error:', error);
@@ -286,6 +291,8 @@ const goBack = () => {
   } else {
     window.history.go(-1);
     localStorage.removeItem('schools');
+    localStorage.removeItem('selectedSport');
+      localStorage.removeItem('selectedTrainer');
 
     Object.keys(form).forEach((key) => {
     form[key] = Array.isArray(form[key]) ? [] : '';
