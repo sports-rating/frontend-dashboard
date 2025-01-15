@@ -132,19 +132,18 @@
 </template>
 
 <script setup>
-import Multiselect from 'vue-multiselect'
+import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { reactive, ref, onMounted } from 'vue'
-import api from "../../utils/axios"
-import { useRoute, useRouter } from 'vue-router'
+import { reactive, ref, onMounted } from 'vue';
+import api from "../../utils/axios";
+import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute()
-const router = useRouter()
-const errors = reactive({})
-const isSubmitting = ref(false)
-const isUploading = ref(false); 
-const data = ref([])
-
+const route = useRoute();
+const router = useRouter();
+const errors = reactive({});
+const isSubmitting = ref(false);
+const isUploading = ref(false);
+const data = ref([]);
 
 const form = reactive({
   name: '',
@@ -152,11 +151,10 @@ const form = reactive({
   division: '',
   start_time: '',
   end_time: '',
-  sport_type:'',
+  sport_type: '',
   logo_id: [],
-  sport_id:'',
-
-})
+  sport_id: null, // Ensure it's initially null
+});
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
@@ -166,50 +164,41 @@ const handleFileUpload = async (event) => {
     return;
   }
 
-  isUploading.value = true; // Set loading state to true
+  isUploading.value = true;
 
   const formData = new FormData();
   formData.append("file", file);
   formData.append("owner", "tournament");
 
   try {
-    // Send the file using axios
     const response = await api.post(
       "https://api.7srating.uz/api/user/media-upload/",
       formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       }
     );
 
-    // Ensure form.photo_id is an array and append the new id
     if (!Array.isArray(form.logo_id)) {
       form.logo_id = [];
     }
     form.logo_id.push(response.data.data.id);
-
-    // Optionally, store the file name
     form.photoName = file.name;
   } catch (error) {
     console.error("File upload failed:", error.response?.data || error.message);
   } finally {
-    isUploading.value = false; // Set loading state to false when done
+    isUploading.value = false;
   }
 };
 
 const validateForm = () => {
-  // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);
 
-  // Validate required fields
   if (!form.name) errors.name = 'Имя обязательно.';
   if (!form.place) errors.place = 'Место обязательно.';
   if (!form.division) errors.division = 'Разделение обязательно.';
-  if (!form.sport_id) errors.sport_name = 'Тип спорта обязателен.';
+  if (!form.sport_id) errors.sport_id = 'Тип спорта обязателен.';
 
-  // Validate start_time and end_time
   if (!form.start_time) {
     errors.start_time = 'Время начала обязательно.';
   } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
@@ -227,78 +216,67 @@ const validateForm = () => {
   return Object.keys(errors).length === 0;
 };
 
-const getDataa = async() => {
+const getDataa = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
-
-    data.value = res.data.data
-      
+    const res = await api.get('https://api.7srating.uz/api/dashboard/sport/');
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
-}
-
-
-const getData = async() => {
-  try {
-    const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/tournament/${route.params.id}/`);
-
-    form.name = res.data.data.name
-    form.place = res.data.data.place
-    form.division = res.data.data.division
-    form.sport_type = res.data.data.sport_type
-    form.start_time = res.data.data.start_time
-    form.end_time = res.data.data.end_time
-    form.photoName = res.data.data.logo[0]?.file.match(/[^/]+$/)[0]; 
-
-
-    const selectedSport = data.value.filter((sport) => sport.id === res.data.data.sport.id);
-    form.sport_id = selectedSport || null; 
-
-    
-  } catch (e) {
-    console.log(e);
-    
-  }
-}
-
-
-
-
-const goBack = () => {
-    window.history.go(-1);
 };
 
+const getData = async () => {
+  try {
+    const res = await api.get(
+      `https://api.7srating.uz/api/dashboard/tournament/${route.params.id}/`
+    );
 
+    form.name = res.data.data.name;
+    form.place = res.data.data.place;
+    form.division = res.data.data.division;
+    form.sport_type = res.data.data.sport_type;
+    form.start_time = res.data.data.start_time;
+    form.end_time = res.data.data.end_time;
+    form.photoName = res.data.data.logo[0]?.file.match(/[^/]+$/)[0];
+    form.sport_id = res.data.data.sport; 
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const goBack = () => {
+  window.history.go(-1);
+};
 
 const handleSubmit = async () => {
   if (!validateForm()) {
     console.error('Validation failed:', errors);
     return;
   }
-  form.sport_id = form.sport_id.id;
-    try {
-      await api.patch(
-        `https://api.7srating.uz/api/dashboard/tournament/${route.params.id}/`,
-        form, 
-      );
-        router.push('/tournament-list')
-    } catch (error) {
-      console.error('Submission error:', error);
-    } finally {
-      isSubmitting.value = false;
-    }
+
+  isSubmitting.value = true;
+
+  const payload = {
+    ...form,
+    sport_id: form.sport_id?.id, 
+  };
+
+  try {
+    await api.patch(
+      `https://api.7srating.uz/api/dashboard/tournament/${route.params.id}/`,
+      payload
+    );
+    router.push('/tournament-list');
+  } catch (error) {
+    console.error('Submission error:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
-
 onMounted(() => {
-  getData()
-  getDataa()
-})
-
-
+  getData();
+  getDataa();
+});
 </script>
 
