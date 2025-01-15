@@ -32,7 +32,7 @@
             <tbody>
               <tr v-for="(school, index) in schools" :key="school.id" class="border-b">
                 <td class="py-3 px-4">{{ index + 1 }}</td>
-                <td class="py-3 px-4">{{ school.name }}</td>
+                <td class="py-3 px-4">{{ getName(school.school) }}</td>
                 <td class="py-3 px-4">
                 <!-- {{ school.sport_type }} -->
                 {{ getSportName(school.sport_type) }}
@@ -82,13 +82,16 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Наименование школы
               </label>
-              <input 
-                v-model="currentSchool.name"
-                type="text"
-                placeholder="Школа молодых спортсменов"
-                class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
-              />
-               <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
+              <multiselect
+              v-model="currentSchool.school"
+              :options="dataSchool"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Школа молодых спортсменов"
+              class="mt-1 "
+            />
+               <p v-if="errors.school" class="text-red-500 text-sm mt-1">{{ errors.school }}</p>
             </div>
 
             <div>
@@ -125,8 +128,8 @@
         <div class="grid grid-cols-2 gap-4 mt-1">
           
 
-          <input v-model="currentSchool.start_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
-          <input v-model="currentSchool.end_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+          <input v-model="currentSchool.start_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
+          <input v-model="currentSchool.end_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
           
 
           <p v-if="errors.start_year" class="text-red-500 text-sm mt-1">{{ errors.start_year }}</p>
@@ -175,13 +178,14 @@ const props = defineProps({
 
 const schools = ref([])
 const data = ref([])
+const dataSchool = ref([])
 const showModal = ref(false)
 const errors = ref({}); 
 const editingSchool = ref(null)
 
 const currentSchool = ref({
   id: '',
-  name: '',
+  school: '',
   sport_type: '',
   start_year: '',
   end_year: '',
@@ -203,6 +207,20 @@ const getData = async() => {
 }
 getData()
 
+const getDataa = async() => {
+  try {
+    const res = await api.get(
+      'https://api.7srating.uz/api/dashboard/school/');
+
+    dataSchool.value = res.data.data
+      
+  } catch (e) {
+    console.log(e);
+    
+  }
+}
+getDataa()
+
 const emit = defineEmits(['update-education']);
 const currentEducation = ref({ ...props.education });
 currentEducation.value = schools.value
@@ -212,7 +230,7 @@ onMounted(() => {
   if (props.education.length > 0) {
     schools.value = props.education.map((edu) => ({
       id: edu.id || '',
-      name: edu.name || '',
+      school: edu.school || '',
       sport_type: edu.sport_id || '',
       start_year: edu.start_year || '',
       end_year: edu.end_year || '',
@@ -236,7 +254,7 @@ const openModal = () => {
   editingSchool.value = null
   currentSchool.value = {
     id: '',
-    name: '',
+    school: '',
     sport_type: '',
     start_year: '',
     end_year: '',
@@ -257,13 +275,18 @@ const getSportName = (sportTypeId) => {
   return sport ? sport.name : 'Неизвестно'; 
 };
 
+const getName = (sportTypeId) => {
+  const sport = dataSchool.value.find((item) => item.id === sportTypeId);
+  return sport ? sport.name : 'Неизвестно'; 
+};
+
 
 // Validate fields
 const validateForm = () => {
-  const { name, sport_type, start_year, end_year } = currentSchool.value;
+  const { school, sport_type, start_year, end_year } = currentSchool.value;
   const validationErrors = {};
 
-  if (!name) validationErrors.name = "Наименование школы обязательно.";
+  if (!school) validationErrors.school = "Наименование школы обязательно.";
   if (!sport_type) validationErrors.sport_type = "Вид спорта обязателен.";
   if (!start_year) validationErrors.start_year = "Укажите начальный год.";
   if (!end_year) validationErrors.end_year = "Укажите конечный год.";
@@ -280,10 +303,10 @@ const submitForm = () => {
    if (!validateForm()) return;
 
 
-  const { id, name, sport_type, start_year, end_year, currently_studying } = currentSchool.value
+  const { id, school, sport_type, start_year, end_year, currently_studying } = currentSchool.value
   const newSchool = {
     id: id || String(Math.floor(10000 + Math.random() * 90000)),
-    name,
+    school: school.id,
     sport_type: sport_type.id,
     start_year,
     end_year,
@@ -304,11 +327,14 @@ const submitForm = () => {
 
 const editSchool = (school) => {
   const selectedSchool = data.value.find(item => item.id === school.sport_type);
+  const selectedName = dataSchool.value.find(item => item.id === school.school);
 
+  console.log(school);
+  
   editingSchool.value = school
   currentSchool.value = {
       id: school.id || '',
-      name: school.name || '',
+      school: selectedName || '',
       sport_type: selectedSchool,
       start_year: school.start_year || '',
       end_year: school.end_year || '',

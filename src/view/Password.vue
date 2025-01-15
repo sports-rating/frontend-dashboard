@@ -1,21 +1,22 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import OtpInput from '../components/OtpInput.vue';  
+import OtpInput from '../components/OtpInput.vue';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const isLoading = ref(false);
 const errorMessage = ref('');
 const router = useRouter();
 const authStore = useAuthStore();
 const data = ref('');
-const timer = ref(60); // Countdown starts at 60 seconds
+const timer = ref(60);
 const resendAvailable = ref(false);
 
 watch(data, (newVal) => {
-  data.value = String(newVal).padStart(6, '0'); 
-  if (data.value.length < 6) {
-    errorMessage.value = 'Please enter the complete OTP.';
+  if (newVal.length < 6) {
+    errorMessage.value = 'Введите все 6 кодов.';
   } else {
     errorMessage.value = '';
   }
@@ -23,50 +24,54 @@ watch(data, (newVal) => {
 
 const handleOtp = async () => {
   if (data.value.length < 6) {
-    errorMessage.value = 'OTP is invalid or incomplete!';
-  } else {
-    const formattedOtp = String(data.value).padStart(6, '0'); 
-    try {
-      isLoading.value = true;
-      await authStore.verify({ code: formattedOtp }); 
-      router.push('/');
-    } catch (error) {
-      errorMessage.value = 'Verification failed. Please try again.';
-    } finally {
-      isLoading.value = false;
-      resetOtp();
-    }
+    errorMessage.value = 'Код неправильный или неполный!';
+  }
+
+  const formattedOtp = String(data.value).padStart(6, '0'); // Ensure data.value is a string
+  try {
+    isLoading.value = true;
+    await authStore.verify({ code: formattedOtp });
+    toast.success("Проверено успешно!", { autoClose: 3000 });
+    router.push('/');
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || 'Проверка не удалась.';
+    toast.error(errorMessage.value, { autoClose: 3000 });
+  } finally {
+    isLoading.value = false;
+    resetOtp();
   }
 };
 
 const resetOtp = () => {
-  data.value = ''; 
-  errorMessage.value = ''; 
+  data.value = '';
+  errorMessage.value = '';
 };
 
-// Start the timer
 const startTimer = () => {
   timer.value = 60;
   resendAvailable.value = false;
   const countdown = setInterval(() => {
-    if (timer.value > 0) {
-      timer.value--;
-    } else {
-      resendAvailable.value = true;
+    timer.value--;
+    if (timer.value <= 0) {
       clearInterval(countdown);
+      resendAvailable.value = true;
     }
   }, 1000);
 };
 
-// Handle resend logic
-const handleResend = () => {
-  resetOtp();
-  startTimer();
-  authStore.resetVerify(); 
+const handleResend = async () => {
+  try {
+    resetOtp();
+    startTimer();
+    await authStore.resetVerify();
+    toast.info('Был отправлен новый код.', { autoClose: 3000 });
+  } catch (error) {
+    toast.error('Произошла ошибка при отправке кода.', { autoClose: 3000 });
+  }
 };
 
 onMounted(() => {
-  startTimer(); // Start the timer when the component is mounted
+  startTimer();
 });
 </script>
 
@@ -103,7 +108,7 @@ onMounted(() => {
       <button
         @click="handleOtp"
         type="submit"
-        :disabled="isLoading"
+        :disabled="isLoading || data.length < 6"
         class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors duration-200 disabled:opacity-50"
       >
         {{ isLoading ? 'Вход...' : 'Отправить' }}

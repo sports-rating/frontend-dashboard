@@ -166,7 +166,7 @@ const getData = async () => {
 
     form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map((edu) => ({
       id: edu.id || '',
-      name: edu.name || '',
+      school: edu.school || '',
       sport_type: edu.sport_id || '',
       sport_id: edu.sport_id || '',
       start_year: edu.start_year || '',

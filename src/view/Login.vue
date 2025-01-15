@@ -53,6 +53,8 @@ import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue';
 import { VueTelInput } from 'vue-tel-input'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const isLoading = ref(false);
 const router = useRouter();
@@ -90,7 +92,10 @@ const handleSubmit = async () => {
     await authStore.login(formData);
     router.push('/password');
   } catch (error) {
-    console.error('Login failed:', error);
+    toast.error(error.response.data.message, {
+      autoClose: 3000,
+    })
+    
   } finally {
     isLoading.value = false;
   }

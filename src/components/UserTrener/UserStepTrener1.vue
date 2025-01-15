@@ -95,7 +95,7 @@
             <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
             
 
-            <input v-model="form.birth_date" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+            <input v-model="form.birth_date" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
 
             <span class="text-red-500 mt-1" v-if="errors.birth_date">{{ errors.birth_date }}</span>
           </div>
@@ -186,7 +186,7 @@
               type="textarea"
 
               placeholder="Выберите Обо мне"
-              class="mt-1 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 px-2 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
             />
             <span class="text-red-500 mt-1" v-if="errors.about_me">{{ errors.about_me }}</span>
           </div>

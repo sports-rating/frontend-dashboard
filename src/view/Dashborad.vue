@@ -5,7 +5,7 @@
       <div class="bg-white rounded-lg p-6 w-96">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Подтверждение удаления</h3>
         <p class="text-sm text-gray-600 mb-6">
-          Вы уверены, что хотите удалить этот спорт? Это действие необратимо.
+          Вы уверены, что хотите удалить этот Пользователи? Это действие необратимо.
         </p>
         <div class="flex justify-end gap-4">
           <button
@@ -195,6 +195,7 @@
     :is-open="showExportModal"
     @close="showExportModal = false"
     @export="handleExport"
+    :data="dataSport"
   />
   </div>
 </template>
@@ -215,6 +216,7 @@ const dateRange = ref(null);
 const showExportModal = ref(false);
 const isCreate = ref(false);
 const data = ref([])
+const dataSport = ref([])
 const isModalOpen = ref(false);
 const sportToDelete = ref(null);
 const toRole = ref(null);
@@ -243,6 +245,21 @@ const deleteTournament = async () => {
     console.error("Failed to delete tournament:", e);
   }
 };
+
+const getSport = async() => {
+  try {
+    const res = await api.get(
+      'https://api.7srating.uz/api/dashboard/sport/');
+
+    dataSport.value = res.data.data
+      
+  } catch (e) {
+    console.log(e);
+    
+  }
+}
+
+getSport()
 
 
 const getData = async() => {

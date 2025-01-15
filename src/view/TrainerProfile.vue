@@ -63,11 +63,11 @@
         </div>
 
         <!-- Profile Image -->
-        <div class="w-72">
+        <div class="p-20">
           <img 
             :src="data.photo?.[0].file" 
             alt="Player Profile"
-            class="w-full p-2 object-cover rounded-full border-transparent"
+            class=" w-[32vh] h-[32vh] p-2 object-cover rounded-full border"
           />
         </div>
       </div>
@@ -95,6 +95,27 @@
     </div> -->
 
     <!-- Content -->
+
+     <div  class=" container flex flex-col gap-8 pb-8">
+        <div class="mt-5">
+          <h2 class="text-2xl font-medium text-[#11101B]">Достижения</h2>
+        </div>
+         <div class="  overflow-hidden w-full">
+        <div class="">
+          <dl class="grid grid-cols-3">
+            <div v-for="(stat, index) in data?.trainer_profile?.results" :key="index" class="px-4 py-5 border border  overflow-hidden sm:p-6">
+              <dt class="text-3xl font-medium text-[#11101B] truncate">
+              {{ stat.tournament.start_time.split('-')[0] }} - {{ stat.tournament.end_time.split('-')[0] }}
+              </dt>
+              <dd class="mt-1 text-sm font-semibold text-[#11101B]">
+                {{ stat.tournament.name }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        </div>
+      </div>
     
 
 

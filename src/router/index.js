@@ -131,6 +131,30 @@ const router = createRouter({
     },
 
     {
+      path: "/school-app",
+      name: "School-app",
+      redirect: { name: "school-list" },
+
+      children: [
+        {
+          path: "/school-list",
+          name: "school-list",
+          component: () => import("../view/School.vue"),
+        },
+        {
+          path: "/school/create",
+          name: "school-create",
+          component: () => import("../components/School/SchoolCreate.vue"),
+        },
+        {
+          path: "/school/edit/:id",
+          name: "school-edit",
+          component: () => import("../components/School/SchoolEdit.vue"),
+        },
+      ],
+    },
+
+    {
       path: "/sportsman-view/:id",
       name: "PlayerView",
       component: () => import("../view/PlayerProfile.vue"),

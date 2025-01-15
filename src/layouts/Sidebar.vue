@@ -23,8 +23,8 @@
 
     <el-container >
       <el-header class="!bg-white dark:!bg-[#1E1E2D] !shadow-sm  !z-10 dark:!border-l dark:!border-b dark:!border-[#8B8992]">
-        <div class="flex items-center justify-between  py-3">
-          <div class="flex-1 ">
+        <div class="flex items-center justify-end  py-3">
+          <!-- <div class="flex-1 ">
             <div class="relative">
               <input
                 type="search"
@@ -33,7 +33,7 @@
               />
               <MagnifyingGlassIcon class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
             </div>
-          </div>
+          </div> -->
 
           <div class="flex items-center">
             <button class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500">
@@ -126,7 +126,8 @@ import {
   SunIcon,
   CpuChipIcon,
   TrophyIcon,
-  GlobeAltIcon
+  GlobeAltIcon,
+  AcademicCapIcon 
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from "../stores/auth";
 
@@ -189,6 +190,11 @@ const menuItems = [
     name: 'Спорт',
     path: '/sport-list',
     icon: GlobeAltIcon      
+  },
+   {
+    name: 'Школы',
+    path: '/school-list',
+    icon: AcademicCapIcon      
   },
   // {
   //   name: 'Заявки на регистрацию',

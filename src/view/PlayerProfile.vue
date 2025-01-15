@@ -63,16 +63,16 @@
         </div>
 
         <!-- Profile Image -->
-        <div class="w-72">
+        <div class="py-20 pr-28">
           <img 
             :src="data.photo?.[0].file" 
             alt="Player Profile"
-            class="w-full p-2 object-cover rounded-full border-transparent"
+            class=" w-[32vh] h-[32vh] p-2 object-cover rounded-full border"
           />
         </div>
       </div>
 
-      <div v-if="activeTab === 'statistics'" class="my-5">
+      <!-- <div v-if="activeTab === 'statistics'" class="my-5">
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
       <div class="p-6">
         <h2 class="text-2xl font-semibold mb-6">Статистика по играм</h2>
@@ -114,10 +114,12 @@
         </div>
       </div>
     </div>
-      </div>
+      </div> -->
     </div>
+    
 
-    <!-- <div class="px-6 mb-6">
+
+    <div class="px-6 mb-6">
       <div class="flex gap-2 ">
         <button 
           v-for="tab in tabs" 
@@ -133,10 +135,10 @@
           {{ tab.name }}
         </button>
       </div>
-    </div> -->
+    </div>
 
-    <!-- <div class="px-6">
-      <div v-if="activeTab === 'overview'" class=" flex gap-8">
+    <div class="px-6">
+      <!-- <div v-if="activeTab === 'overview'" class=" flex gap-8">
       <div class="flex flex-col gap-4 w-[50%]">
         
 
@@ -150,28 +152,31 @@
             class="w-[530px]  rounded-lg object-cover"
           />
         </div>
-      </div>
+      </div> -->
 
       <div v-if="activeTab === 'statistics'" class=" flex flex-col gap-8">
+        <div  class=" container flex flex-col gap-8 pb-8">
         <div class="mt-5">
-          <h2 class="text-lg font-medium text-gray-900">Достижения</h2>
+          <h2 class="text-2xl font-medium text-[#11101B]">Достижения</h2>
         </div>
-         <div class="bg-white  overflow-hidden w-full">
+         <div class=" overflow-hidden w-full">
         <div class="">
-          <dl class="grid grid-cols-2">
-            <div v-for="(stat, index) in statistics" :key="index" class="px-4 py-5 border  overflow-hidden sm:p-6">
-              <dt class="text-sm font-medium text-gray-500 truncate">
-                {{ stat.label }}
+          <dl class="grid grid-cols-3">
+            <div v-for="(stat, index) in data?.sportsman_profile?.results" :key="index" class="px-4 py-5 border border  overflow-hidden sm:p-6">
+              <dt class="text-3xl font-medium text-[#11101B] truncate">
+              {{ stat.tournament.start_time.split('-')[0] }} - {{ stat.tournament.end_time.split('-')[0] }}
               </dt>
-              <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                {{ stat.value }}
+              <dd class="mt-1 text-sm font-semibold text-[#11101B]">
+                {{ stat.tournament.name }}
               </dd>
             </div>
           </dl>
         </div>
+
+        </div>
       </div>
-        
       </div>
+
 
       <div v-if="activeTab === 'career'" class=" flex flex-col gap-8">
         <div class="w-full mx-auto mt-5">
@@ -297,7 +302,7 @@
     </div>
   </div>
       </div>
-    </div> -->
+    </div>
 
 
     
@@ -320,7 +325,7 @@ import api from "../utils/axios"
 
 const route = useRoute()
 const router = useRouter()
-const activeTab = ref('overview')
+const activeTab = ref('statistics')
 const playerImage = '/public/boy.svg'
 
 
@@ -341,12 +346,12 @@ const getData = async () => {
 getData()
 
 const tabs = [
-  { id: 'overview', name: 'Заявка игрока' },
-  { id: 'statistics', name: 'Статистика' },
-  { id: 'career', name: 'Карьера' },
-  { id: 'videos', name: 'Видео материалы' },
-  { id: 'photos', name: 'Фотографии' },
-  { id: 'files', name: 'Загруженные файлы' }
+  // { id: 'overview', name: 'Заявка игрока' },
+  // { id: 'statistics', name: 'Статистика' },
+  // { id: 'career', name: 'Карьера' },
+  // { id: 'videos', name: 'Видео материалы' },
+  // { id: 'photos', name: 'Фотографии' },
+  // { id: 'files', name: 'Загруженные файлы' }
 ]
 
 const statistics = ref([

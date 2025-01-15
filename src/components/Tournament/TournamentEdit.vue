@@ -134,7 +134,7 @@
 <script setup>
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import api from "../../utils/axios"
 import { useRoute, useRouter } from 'vue-router'
 

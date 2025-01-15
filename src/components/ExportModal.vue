@@ -17,21 +17,37 @@
         <!-- Date Input -->
         <div >
           <div class="relative gap-2 flex flex-col w-full" >
-            <label >Дата</label>
-            <el-date-picker
-              v-model="date"
+            <label >Время начала</label>
+            <!-- <el-date-picker
+              v-model="start"
               type="date"
               format="YYYY/MM/DD"
-        value-format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
               placeholder="Введите дату"
               class="custom-date-picker"
-            />
-              <!-- class="w-full cursor-pointer px-4 p/y-2.5 text-gray-900 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-red-500" -->
-            <!-- <CalendarIcon class="absolute right-3 top-2/3 -translate-y-1/2 h-5 w-5 text-gray-400" /> -->
+            /> -->
+
+            <input v-model="start" type="date"  min="1900-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
           </div>
         </div>
 
-        <!-- User Type Dropdown -->
+
+        <div >
+          <div class="relative gap-2 flex flex-col w-full" >
+            <label >Конец Времени</label>
+            <!-- <el-date-picker
+              v-model="end"
+              type="date"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+              placeholder="Введите дату"
+              class="custom-date-picker"
+            /> -->
+
+            <input v-model="end" type="date"  min="1900-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md px-2">
+          </div>
+        </div>
+
         <div>
           <div class="relative gap-2 flex flex-col">
           <label >Тип пользователя</label>
@@ -40,9 +56,8 @@
               class="w-full px-4 py-2.5 text-gray-500 border border-gray-200 rounded-lg appearance-none focus:ring-1 focus:ring-red-500 focus:border-red-500"
             >
               <option value="" disabled selected>Выберите тип пользователя</option>
-              <option value="athlete">Спортсмен</option>
-              <option value="coach">Тренер</option>
-              <option value="admin">Администратор</option>
+              <option value="sportsman">Спортсмен</option>
+              <option value="trainer">Тренер</option>
             </select>
             <ChevronDownIcon class="absolute right-3 top-2/3 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
           </div>
@@ -52,24 +67,24 @@
         <div>
           <div class="relative gap-2 flex flex-col">
           <label >Тип спорта</label>
-            <select
+            
+
+            <multiselect
               v-model="sport"
-              class="w-full px-4 py-2.5 text-gray-500 border border-gray-200 rounded-lg appearance-none focus:ring-1 focus:ring-red-500 focus:border-red-500"
-            >
-              <option value="" disabled selected>Выберите тип спорта</option>
-              <option value="football">Футбол</option>
-              <option value="basketball">Баскетбол</option>
-              <option value="volleyball">Волейбол</option>
-            </select>
-            <ChevronDownIcon class="absolute right-3 top-2/3 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+              :options="props.data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите тип спорта"
+              class="mt-1 "
+            />
           </div>
         </div>
 
         <!-- Export Type -->
-        <div class="space-y-3 ">
+        <!-- <div class="space-y-3 ">
             <label >Тип экспорта</label>
           <div class="flex items-center space-x-4 w-full ">
-            <!-- Excel Option -->
             <label class="flex items-center cursor-pointer bg-[#EFF0F3] w-[50%] p-2 rounded-lg justify-between">
               <input
                 type="radio"
@@ -93,7 +108,6 @@
               </div>
             </label>
 
-            <!-- PDF Option -->
             <label class="flex items-center cursor-pointer bg-[#EFF0F3] w-[50%] p-2 rounded-lg justify-between">
               <input
                 type="radio"
@@ -117,7 +131,7 @@
               </div>
             </label>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="flex w-full">
@@ -134,25 +148,30 @@
 </template>
 
 <script setup>
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { ref } from 'vue'
+import api from "../utils/axios"
 import {
   XMarkIcon,
-  CalendarIcon,
   ChevronDownIcon,
-  DocumentIcon,
-  // TableIcon
-  TableCellsIcon,
 } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false
+  },
+  data: {
+    type: Array,
+    default:true,
   }
 })
 
+
 const emit = defineEmits(['close', 'export'])
-const date = ref('')
+const start = ref('')
+const end = ref('')
 const user = ref('')
 const sport = ref('')
 
@@ -161,20 +180,56 @@ const exportType = ref('excel')
 const closeModal = () => {
   emit('close')
   exportType.value = ''
-  date.value = ''
+  start.value = ''
+  end.value = ''
   user.value = ''
   sport.value = ''
 }
 
-const handleExport = () => {
-  emit('export', {
-    type: exportType.value,
-    date: date.value,
-    user: user.value,
-    sport: sport.value
-  })
-  closeModal()
-}
+const handleExport = async () => {
+  try {
+    const params = {};
+
+    // Dinamik ravishda qiymatlarni qo'shish
+    if (start.value) params.start_time = start.value;
+    if (end.value) params.end_time = end.value;
+    if (sport.value?.id) params.sport = sport.value.id;
+    if (user.value) params.user_role = user.value;
+
+    const query = new URLSearchParams(params).toString();
+
+    const res = await api.get(`https://api.7srating.uz/api/dashboard/export-excel/?${query}`, {
+      responseType: 'blob', 
+    });
+
+    const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    const downloadUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+
+    const contentDisposition = res.headers['content-disposition'];
+    const filename = contentDisposition ? contentDisposition.split('filename=')[1] : 'export.xlsx';
+    link.download = filename.replace(/["']/g, ''); 
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(downloadUrl);
+
+  } catch (e) {
+    console.error(e);
+  }
+
+  closeModal();
+};
+
+
+
+
+
 </script>
 
 <style>
