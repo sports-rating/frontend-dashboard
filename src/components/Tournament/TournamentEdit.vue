@@ -63,7 +63,7 @@
             <label class="block text-sm font-medium text-gray-700">Время начала</label>
             
 
-            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
 
             <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
           </div>
@@ -73,7 +73,7 @@
             <label class="block text-sm font-medium text-gray-700">Конец Времени</label>
            
 
-            <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+            <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
 
             <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
           </div>
@@ -134,7 +134,7 @@
 <script setup>
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import api from "../../utils/axios"
 import { useRoute, useRouter } from 'vue-router'
 
@@ -240,7 +240,7 @@ const getDataa = async() => {
   }
 }
 
-getDataa()
+
 const getData = async() => {
   try {
     const res = await api.get(
@@ -255,8 +255,10 @@ const getData = async() => {
     form.photoName = res.data.data.logo[0]?.file.match(/[^/]+$/)[0]; 
 
 
-    const selectedSport = data.value.find((sport) => sport.id === res.data.data.sport.id);
+    const selectedSport = data.value.filter((sport) => sport.id === res.data.data.sport.id);
     form.sport_id = selectedSport || null; 
+
+    
   } catch (e) {
     console.log(e);
     
@@ -264,7 +266,7 @@ const getData = async() => {
 }
 
 
-getData()
+
 
 const goBack = () => {
     window.history.go(-1);
@@ -291,6 +293,11 @@ const handleSubmit = async () => {
     }
 };
 
+
+onMounted(() => {
+  getData()
+  getDataa()
+})
 
 
 </script>

@@ -64,7 +64,7 @@
               class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
             /> -->
 
-            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
 
             <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
           </div>
@@ -81,7 +81,7 @@
               value-format="YYYY-MM-DD"
               class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
             /> -->
-              <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md ">
+              <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
 
 
             <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>

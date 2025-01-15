@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import api from "../../utils/axios"
 import { useRoute, useRouter } from 'vue-router'
 
@@ -151,7 +151,11 @@ const getData = async() => {
   }
 }
 
-getData()
+onMounted(() => {
+  
+  getData()
+})
+
 
 const goBack = () => {
     window.history.go(-1);

@@ -191,11 +191,11 @@ const menuItems = [
     path: '/sport-list',
     icon: GlobeAltIcon      
   },
-   {
-    name: 'Школы',
-    path: '/school-list',
-    icon: AcademicCapIcon      
-  },
+  //  {
+  //   name: 'Школы',
+  //   path: '/school-list',
+  //   icon: AcademicCapIcon      
+  // },
   // {
   //   name: 'Заявки на регистрацию',
   //   path: '/applications-for-registration',
