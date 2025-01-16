@@ -1,23 +1,50 @@
+
 <template>
   <div class=" mx-auto  p-4 rounded-xl border">
-    <h2 class="text-2xl font-bold mb-6">Обновлять School</h2>
+    <h2 class="text-2xl font-bold mb-6">Обновлять Школы</h2>
 
 
       <form @submit.prevent="handleSubmit" class="space-y-8" >
       <section>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Имя</label>
+            <label class="block text-sm font-medium text-gray-700">Область</label>
             <input
-              v-model="form.name"
+              v-model="form.region"
               type="text"
-              placeholder="Введите Имя"
+              placeholder="Выберите область"
               class="mt-1 bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.name">{{ errors.name }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.region">{{ errors.region }}</span>
           </div>
 
+         
+          
+          
+
           <div>
+            <label class="block text-sm font-medium text-gray-700">Район</label>
+            <input
+              v-model="form.district"
+              placeholder="Выберите район"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.district">{{ errors.district }}</span>
+          </div>
+
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Руководитель школы</label>
+            <input
+              v-model="form.director"
+              type="text"
+              placeholder="Введите ФИО"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.director">{{ errors.director }}</span>
+          </div>
+
+           <div>
             <label class="block text-sm font-medium text-gray-700">Номер телефона</label>
             
 
@@ -42,87 +69,51 @@
             ></vue-tel-input>
             <span class="text-red-500 mt-1" v-if="errors.phone_number">{{ errors.phone_number }}</span>
           </div>
-          
+
+
           <div>
-            <label class="block text-sm font-medium text-gray-700">Место</label>
+            <label class="block text-sm font-medium text-gray-700">Наименования школы</label>
+            <input
+              v-model="form.name"
+              type="text"
+              placeholder="Введите Наименования школы"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.name">{{ errors.name }}</span>
+          </div>
+
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Адрес</label>
             <input
               v-model="form.address"
               type="text"
-              placeholder="Введите Место"
+              placeholder="Введите улицу и дом"
               class="mt-1  bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
             <span class="text-red-500 mt-1" v-if="errors.address">{{ errors.address }}</span>
           </div>
+          
+
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Электронный адрес</label>
-            <input
-              v-model="form.email"
-              type="email"
-              placeholder="Введите электронную почту"
+            <label class="block text-sm font-medium text-gray-700">Тип</label>
+            <select
+              v-model="form.type"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.email">{{ errors.email }}</span>
+            >
+              <option value="">Выберите тип </option>
+              <option value="ordinary">Спорт школы</option>
+              <option value="club">Спорт клубы</option>
+            </select>
+
+            <span class="text-red-500 mt-1" v-if="errors.type">{{ errors.type }}</span>
           </div>
-
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Веб-сайт</label>
-            <input
-              v-model="form.website"
-              type="text"
-              placeholder="Введите линк в website"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.website">{{ errors.website }}</span>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
-            
-
-            <input v-model="form.established_date" type="date"   min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
-
-            <span class="text-red-500 mt-1" v-if="errors.established_date">{{ errors.established_date }}</span>
-          </div>
-
 
           
 
-          
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Введите спорт</label>
-
-        <multiselect
-              v-model="form.sport_ids"
-              :options="data"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите sport"
-              class="mt-1 "
-              :multiple="true"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.sport_ids">{{ errors.sport_ids }}</span>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Введите тренер</label>
-
-        <multiselect
-              v-model="form.trainer_ids"
-              :options="dataTrainer"
-              label="first_name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите trainer"
-              class="mt-1 "
-              :multiple="true"
-            />
-<span class="text-red-500 mt-1" v-if="errors.trainer_ids">{{ errors.trainer_ids }}</span>
-          </div>
+         
 
             
 
@@ -132,32 +123,7 @@
 
 
     </form>
-      <div class="col-span-1 mt-5">
-      <h2 class="text-2xl font-semibold mb-4">Фотографии</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div
-          v-for="(photo, index) in photos"
-          :key="'photo-' + index"
-          class="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
-        >
-          <img :src="photo.url" :alt="photo.name" class="w-full h-full object-cover" />
-          <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-100 text-white text-xs p-2 flex justify-between items-center">
-            <span>{{ photo.name }}</span>
-            <button @click="deletePhoto(photo, index)" class="text-red-500 hover:text-red-700 font-bold z-20">Удалить</button>
-          </div>
-        </div>
-
-        <label
-          class="cursor-pointer aspect-video flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
-        >
-          <input type="file" accept="image/*" class="hidden" @change="handleFileUpload" />
-          <div class="w-8 h-8 mb-2 text-pink-500">
-            <img src="../../assets/img/plus.svg" alt="plus" />
-          </div>
-          <span class="text-sm text-pink-600">Добавить новый фотографию</span>
-        </label>
-      </div>
-      </div>
+      
     
       <div class="flex justify-end space-x-4 mt-5">
         <button
@@ -183,126 +149,43 @@
 </template>
 
 <script setup>
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { reactive, ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import api from "../../utils/axios"
 import router from '../../router';
+import { useRoute, useRouter } from 'vue-router';
 
-
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
+const route = useRoute();
 
 const errors = reactive({})
 const isSubmitting = ref(false)
-const data = ref([])
-const dataTrainer = ref([])
 const isUploading = ref(false); 
-const photos = ref([]);
-
 
 
 const form = reactive({
   name: '',
   address: '',
   phone_number: '',
-  established_date: '',
-  photoNames:'',
-  website: '',
-  media_ids: [],
-  sport_ids: [],
-  trainer_ids:[],
+  district: '',
+  type:'',
+  region:'',
+  director: '',
 })
-
-const getDataa = async() => {
-  try {
-    const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/school/${route.params.id}/`);
-
-    form.name = res.data.data.name
-    form.address = res.data.data.address
-    form.email = res.data.data.email
-    form.phone_number = res.data.data.phone_number
-    form.established_date = res.data.data.established_date
-    form.website = res.data.data.website
-    form.sport_ids = res.data.data.sports
-    form.trainer_ids = res.data.data.trainers
-    form.media_ids = res.data.data.media.map((item) => item.id)
-
-    const fetchedPhotos = res.data.data.media
-      .filter((item) => item.media_type === 'image')
-      .map((item) => ({
-        id: item.id,
-        url: `${item.file}`,
-        name: `Image (${item.extension.toUpperCase()})`,
-      }));
-    
-    photos.value = fetchedPhotos;
-
-  } catch (e) {
-    console.log(e);
-    
-  }
-}
-
-getDataa()
-
-
-const deletePhoto = async (photo, index) => {
-  try {
-    await api.delete(`https://api.7srating.uz/api/user/media/${photo.id}/`);
-    photos.value.splice(index, 1);
-    form.media_ids = form.media_ids.filter((id) => id !== photo.id);
-  } catch (error) {
-    console.error('Failed to delete photo:', error.response?.data || error.message);
-  }
-};
-
-
-const handleFileUpload = async (event) => {
-  
-  const file = event.target.files[0];
-  if (!file) return;
-  isUploading.value = true;
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('owner', 'school');
-
-  try {
-    const response = await api.post(
-      'https://api.7srating.uz/api/user/media-upload/',
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    );
-    form.media_ids.push(response.data.data.id);
-    photos.value.push({
-      id: response.data.data.id,
-      url: URL.createObjectURL(file),
-      name: file.name,
-    });
-  } catch (error) {
-    console.error('File upload failed:', error.response?.data || error.message);
-  } finally {
-    isUploading.value = false;
-  }
-};
-
 
 
 const validateForm = () => {
   // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);
 
-  // Validate name
-  if (!form.name) errors.name = 'Имя обязательно.';
+  if (!form.name) errors.name = 'Наименования школы обязательно.';
+  if (!form.district) errors.district = 'Район обязательно.';
+  if (!form.region) errors.region = 'Область обязательно.';
+  if (!form.director) errors.director = 'ФИО обязательно.';
 
+  if (!form.type) errors.type = 'Тип обязательно.';
   // Validate address
-  if (!form.address) errors.address = 'Место обязательно.';
+  if (!form.address) errors.address = 'Улицу и дом обязательно.';
   else if (form.address.length < 3) errors.address = 'Адрес слишком короткий.';
 
   // Validate phone number
@@ -317,35 +200,7 @@ const validateForm = () => {
     }
   }
 
-  // Validate email
-  if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) {
-    errors.email = 'Введите корректный адрес электронной почты.';
-  }
-
-  // Validate established_date
-  if (!form.established_date) {
-    errors.established_date = 'Дата основания обязательна.';
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.established_date)) {
-    errors.established_date = 'Введите корректную дату (YYYY-MM-DD).';
-  }
-
-  // Validate website
-  if (!form.website) {
-    errors.website = 'Веб-сайт обязателен.';
-  }
-  // else if (!/^https?:\/\/[^\s$.?#].[^\s]*$/.test(form.website)) {
-  //   errors.website = 'Введите корректный URL веб-сайта.';
-  // }
-
-  // Validate sport_ids
-  if (!form.sport_ids.length) {
-    errors.sport_ids = 'Выберите хотя бы один вид спорта.';
-  }
-
-  // Validate trainer_ids
-  if (!form.trainer_ids.length) {
-    errors.trainer_ids = 'Выберите хотя бы одного тренера.';
-  }
+  
 
   return Object.keys(errors).length === 0;
 };
@@ -357,32 +212,26 @@ const goBack = () => {
 };
 
 
-const getData = async() => {
+
+
+const getDataa = async() => {
   try {
     const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
+      `https://api.7srating.uz/api/dashboard/school/${route.params.id}/`);
 
-    data.value = res.data.data
-      
+    form.name = res.data.data.name
+    form.address = res.data.data.address.address
+    form.district = res.data.data.address.district
+    form.phone_number = res.data.data.phone_number
+    form.region = res.data.data.address.region
+    form.director = res.data.data.director
+    form.type = res.data.data.type
+
   } catch (e) {
     console.log(e);
     
   }
 }
-
-getData()
-
-const getTrainer = async () => {
-  try {
-    const res = await api.get('https://api.7srating.uz/api/user/profile/trainer/');
-    dataTrainer.value = res.data.data;
-    
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-getTrainer()
 
 const handleSubmit = async () => {
   if (!validateForm()) {
@@ -395,8 +244,11 @@ const handleSubmit = async () => {
     const payload = {
         ...form,
       phone_number: form.phone_number.replaceAll(' ', ''),
-      sport_ids: form.sport_ids.map((item) => item.id),
-      trainer_ids: form.trainer_ids.map((item) => item.id)
+      address: {
+        region: form.region,
+        district: form.district,
+        address: form.address
+      }
       };
     await api.put(
       `https://api.7srating.uz/api/dashboard/school/${route.params.id}/`,
@@ -416,9 +268,10 @@ const handleSubmit = async () => {
   }
 };
 
+onMounted(() => {
+getDataa()
 
-
-
+})
 </script>
 
 

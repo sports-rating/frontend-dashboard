@@ -94,62 +94,25 @@
                 {{ user.name  ? user.name: '-' }} 
               </td>
               
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.address ? user.address : '-'}}
-              </td>
-
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                 {{ user.phone_number  ? user.phone_number: '-' }} 
               </td>
-              <td class=" whitespace-nowrap text-sm text-gray-900">
-                <span v-if="user.trainers">
-                  <template v-for="(item, index) in user.trainers" :key="index">
-                    
-
-                    <span class="flex justify-center bg-slate-100 border rounded-full  mx-auto m-1 px-2">
-                    
-                    {{ item.first_name }} {{ item.last_name }}
-                    </span>
-                  </template>
-                </span>
-                <span v-else>-</span>
-              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.email ? user.email : '-'}}
-              </td>
-              
-              <td class=" whitespace-nowrap  text-sm text-gray-900">
-                <span v-if="user.sports">
-                  <template v-for="(item, index) in user.sports" :key="index">
-                    <span class="flex justify-center bg-slate-100 border rounded-full  mx-auto m-1 px-2">
-                    
-                    {{ item.name }}
-                    </span>
-                  </template>
-                </span>
-                <span v-else>-</span>
-              </td>
-
-
-              
-                
-
-              <td class="h-[4rem] w-[4rem]">
-                <span v-if="user.media">
-                
-                 <template v-for="(item, index) in user.media" :key="index">
-                    <span class="flex justify-center  rounded-full  mx-auto m-1 px-2">
-                    
-                    <img  class="w-full h-full object-cover" :src="item?.file" alt="">
-                    </span>
-                  </template>
-                </span>
-                <p v-else> - </p>
+                {{ user.address.region ? user.address.region : '-'}}
               </td>
 
               
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.established_date  ? user.established_date :  ' - '}}
+                {{ user.address.district ? user.address.district : '-'}}
+              </td>
+
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.address.address ? user.address.address : '-'}}
+              </td>
+              
+              
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.director  ? user.director :  ' - '}}
               </td>
               <td class="px-6 py-4 gap-2 flex flex-col whitespace-nowrap text-sm text-gray-500">
                 <button   class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
@@ -229,7 +192,7 @@ onMounted(() => {
   localStorage.removeItem('videos')
 })
 
-const headers = ref(["#", "Имя", "Место", "Номер телефона", "Тип тренер",  "Email", "Тип спорта", "Image", "Дата", "Действия"]);
+const headers = ref(["#", "Название школы", "Номер телефона", "Область", "Район",  "Адрес", "Руководитель школы", "Действия"]);
 
 const filteredUsers = computed(() => {
   return data.value.filter(user => {

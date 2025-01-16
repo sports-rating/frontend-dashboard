@@ -82,7 +82,18 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Наименование школы
               </label>
-              <multiselect
+              <!-- <multiselect
+              v-model="currentSchool.school"
+              :options="dataSchool"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Школа молодых спортсменов"
+              class="mt-1 "
+            /> -->
+
+            <div class="flex gap-2 items-center justify-center">
+                <multiselect
               v-model="currentSchool.school"
               :options="dataSchool"
               label="name"
@@ -91,6 +102,15 @@
               placeholder="Школа молодых спортсменов"
               class="mt-1 "
             />
+                <!-- <button 
+                @click="createSchool"
+            type="submit"
+            class="w-10 mt-1 h-full p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            +
+          </button> -->
+
+              </div>
                <p v-if="errors.school" class="text-red-500 text-sm mt-1">{{ errors.school }}</p>
             </div>
 
@@ -160,13 +180,15 @@
         </form>
       </div>
     </div>
+
+    
   </div>
 </template>
 
 <script setup>
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import api from "../../utils/axios"
 
 const props = defineProps({
@@ -182,6 +204,15 @@ const dataSchool = ref([])
 const showModal = ref(false)
 const errors = ref({}); 
 const editingSchool = ref(null)
+
+// const showCreate = ref(false)
+// const name = ref(null)
+// const address = ref(null)
+// const phone_number = ref(null)
+// const district = ref(null)
+// const region = ref(null)
+// const type = ref(null)
+// const director = ref(null)
 
 const currentSchool = ref({
   id: '',
@@ -251,7 +282,9 @@ watch(schools, (newSchools) => {
 }, { deep: true })
 
 const openModal = () => {
-  editingSchool.value = null
+  showModal.value = true;
+  errors.value = {};
+  editingSchool.value = null;
   currentSchool.value = {
     id: '',
     school: '',
@@ -259,16 +292,19 @@ const openModal = () => {
     start_year: '',
     end_year: '',
     currently_studying: false,
-  }
-  errors.value = {}; 
-  showModal.value = true
-}
+  };
+};
+
+
 
 const closeModal = () => {
   showModal.value = false
   editingSchool.value = null
   errors.value = {};
+  
 }
+
+
 
 const getSportName = (sportTypeId) => {
   const sport = data.value.find((item) => item.id === sportTypeId);
@@ -297,6 +333,8 @@ const validateForm = () => {
   errors.value = validationErrors;
   return Object.keys(validationErrors).length === 0;
 };
+
+
 
 
 const submitForm = () => {
@@ -348,7 +386,6 @@ const editSchool = (school) => {
 const deleteSchool = (id) => {
     schools.value = schools.value.filter(school => school.id !== id)
   }
-
 
 
 watch(currentEducation, (newValue) => {

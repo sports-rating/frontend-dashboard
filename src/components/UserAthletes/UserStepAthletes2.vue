@@ -91,7 +91,8 @@
                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
               /> -->
 
-              <multiselect
+              <div class="flex gap-2 items-center justify-center">
+                <multiselect
               v-model="currentSchool.school"
               :options="dataSchool"
               label="name"
@@ -100,6 +101,15 @@
               placeholder="Школа молодых спортсменов"
               class="mt-1 "
             />
+                <!-- <button 
+                @click="createSchool"
+            type="submit"
+            class="w-10 mt-1 h-full p-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            +
+          </button> -->
+
+              </div>
                <p v-if="errors.school" class="text-red-500 text-sm mt-1">{{ errors.school }}</p>
             </div>
 
@@ -154,6 +164,9 @@
         </form>
       </div>
     </div>
+
+
+    
   </div>
 </template>
 
@@ -174,8 +187,16 @@ const schools = ref([])
 const data = ref([])
 const dataSchool = ref([])
 const showModal = ref(false)
+const showCreate = ref(false)
 const errors = ref({}); 
 const editingSchool = ref(null)
+
+// const name = ref(null)
+// const address = ref(null)
+// const phone_number = ref(null)
+// const district = ref(null)
+// const region = ref(null)
+// const director = ref(null)
 
 const currentSchool = ref({
   id: '',
@@ -264,6 +285,8 @@ const closeModal = () => {
   errors.value = {};
 }
 
+
+
 const getSportName = (sportTypeId) => {
   const sport = data.value.find((item) => item.id === sportTypeId);
   return sport ? sport.name : 'Неизвестно'; 
@@ -291,6 +314,7 @@ const validateForm = () => {
   errors.value = validationErrors;
   return Object.keys(validationErrors).length === 0;
 };
+
 
 
 const submitForm = () => {
@@ -339,7 +363,9 @@ const editSchool = (school) => {
 
 const deleteSchool = (id) => {
     schools.value = schools.value.filter(school => school.id !== id)
-  }
+}
+
+
 
 
 
