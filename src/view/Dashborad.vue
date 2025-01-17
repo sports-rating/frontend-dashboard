@@ -25,17 +25,11 @@
       </div>
     </div>
     
-    <!-- Header -->
     <div class="flex flex-col mb-6">
       <h1 class="text-xl font-medium dark:text-white text-[#1E1E2D]">Пользователи</h1>
-      <!-- <div class="flex items-center text-sm dark:text-white text-[#1E1E2D] mt-1">
-        <span>Главная</span>
-        <span class="mx-1"> {{ '->' }}</span>
-        <span class="dark:text-white text-[#1E1E2D]">Пользователи</span>
-      </div> -->
+      
     </div>
 
-    <!-- Filters -->
     <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">
       <div class="p-4">
         <div class="flex  gap-4 w-full">
@@ -50,14 +44,6 @@
             
           </div>
             <div class="flex gap-6">
-
-
-          <!-- <select v-model="userStatus"  class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500">
-            <option value="">Все типы оплаты</option>
-            <option value="Оплачено">Оплачено</option>
-            <option value="Не оплачено">Не оплачено	</option>
-          </select> -->
-          
           <div>
               
           <el-date-picker
@@ -73,7 +59,7 @@
             <option value="trainer" >Тренер</option>
             <option value="sportsman" >Спортсмен</option>
           </select>
-          <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <button @click="showExportModal = true" class="flex gap-2 items-center  px-4 py-2 text-sm text-white bg-green-500 rounded-lg hover:bg-green-600">
           <img src="../assets/img/up.svg" alt="up">
             Экспорт
           </button>
@@ -81,8 +67,8 @@
           <div class="relative">
           
           
-          <button @click="isCreateToggle" class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-green-500 rounded-lg hover:bg-green-600">
-          <img src="../assets/img/up.svg" alt="up">
+          <button @click="isCreateToggle" class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <img src="/plus.svg" alt="up">
             Добавить
           </button>
 
@@ -128,16 +114,9 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.user_role ? user.user_role : '-' }}
               </td>
-              <!-- <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 py-1 text-xs rounded-full" :class="getStatusClass(user.status)">
-                  {{ user.status }}
-                </span>
-              </td> -->
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.created_time ? user.created_time : '-' }}
               </td>
-              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              </td> -->
 
               <td class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500">
               

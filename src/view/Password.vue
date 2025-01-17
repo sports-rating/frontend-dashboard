@@ -9,11 +9,11 @@ const errorMessage = ref('');
 const router = useRouter();
 const authStore = useAuthStore();
 const data = ref('');
-const timer = ref(60); // Countdown starts at 60 seconds
+const timer = ref(60); 
 const resendAvailable = ref(false);
 
 watch(data, (newVal) => {
-  data.value = String(newVal).padStart(6, '0'); 
+  data.value = String(newVal).padStart(6, "0"); 
   if (data.value.length < 6) {
     errorMessage.value = 'Please enter the complete OTP.';
   } else {
@@ -25,7 +25,7 @@ const handleOtp = async () => {
   if (data.value.length < 6) {
     errorMessage.value = 'OTP is invalid or incomplete!';
   } else {
-    const formattedOtp = String(data.value).padStart(6, '0'); 
+    const formattedOtp = String(data.value).padStart(6, "0"); 
     try {
       isLoading.value = true;
       await authStore.verify({ code: formattedOtp }); 
@@ -44,7 +44,6 @@ const resetOtp = () => {
   errorMessage.value = ''; 
 };
 
-// Start the timer
 const startTimer = () => {
   timer.value = 60;
   resendAvailable.value = false;
@@ -58,7 +57,6 @@ const startTimer = () => {
   }, 1000);
 };
 
-// Handle resend logic
 const handleResend = () => {
   resetOtp();
   startTimer();
@@ -66,7 +64,7 @@ const handleResend = () => {
 };
 
 onMounted(() => {
-  startTimer(); // Start the timer when the component is mounted
+  startTimer(); 
 });
 </script>
 

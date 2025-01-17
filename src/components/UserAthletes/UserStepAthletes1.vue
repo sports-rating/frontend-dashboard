@@ -528,7 +528,7 @@ onMounted(() => {
 
 <style>
 input[type="date"] {
-  display:block;
+  display:block !important;
   position:relative;
   padding:1rem 3.5rem 1rem 0.75rem;
   font-size:1rem;
@@ -541,7 +541,6 @@ input[type="date"] {
     right 1rem
     center
     no-repeat;
-  
   cursor:pointer;
 }
 
@@ -552,12 +551,11 @@ input[type="date"] {
   top:0;
   right:0;
   bottom:0;
-  
-  opacity:0;
+  opacity:0 !important;
   cursor:pointer;
 }
 
-input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0.05; }
-input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0.15; }
+input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0 !important; }
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0 !important; }
 
 </style>
