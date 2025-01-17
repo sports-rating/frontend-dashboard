@@ -40,25 +40,6 @@
             <span class="text-red-500 mt-1" v-if="errors.division">{{ errors.division }}</span>
           </div>
 
-          
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Введите sport</label>
-            
-
-        <multiselect
-              v-model="form.sport_id"
-              :options="data"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите sport"
-              class="mt-1 "
-            />
-
-            <span class="text-red-500 mt-1" v-if="errors.sport_name">{{ errors.sport_name }}</span>
-          </div>
-
           <div>
             <label class="block text-sm font-medium text-gray-700">Время начала</label>
             
@@ -77,6 +58,25 @@
 
             <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
           </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Введите sport</label>
+            
+
+        <multiselect
+              v-model="form.sport_id"
+              :options="data"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите sport"
+              class="mt-1 "
+            />
+
+            <span class="text-red-500 mt-1" v-if="errors.sport_id">{{ errors.sport_id }}</span>
+          </div>
+
+          
 
           
 
@@ -120,9 +120,9 @@
           type="submit"
           @click="handleSubmit"
           :disabled="isSubmitting || isUploading"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
         >
-          {{ isSubmitting ?  'Сохранить...' :'Сохранить' }}
+          {{ isSubmitting ?  'Сохранить...' :'Обновить ' }}
         </button>
 
         

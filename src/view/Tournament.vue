@@ -1,7 +1,6 @@
 <template>
   <div class="">
 
-    <!-- Delete Modal -->
   <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div class="bg-white rounded-lg p-6 w-96">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Подтверждение удаления</h3>
@@ -24,17 +23,10 @@
         </div>
       </div>
     </div>
-    <!-- Header -->
     <div class="flex flex-col mb-6">
-      <h1 class="text-xl font-medium dark:text-white text-[#1E1E2D]">Турнир</h1>
-      <!-- <div class="flex items-center text-sm dark:text-white text-[#1E1E2D] mt-1">
-        <span>Главная</span>
-        <span class="mx-1"> {{ '->' }}</span>
-        <span class="dark:text-white text-[#1E1E2D]">Турнир</span>
-      </div> -->
+      <h1 class="text-4xl font-medium dark:text-white text-[#1E1E2D]">Турнир</h1>
     </div>
 
-    <!-- Filters -->
     <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">
       <div class="p-4">
         <div class="flex  gap-4 w-full">
@@ -45,8 +37,6 @@
               placeholder="Поиск..."
               class="2xl:w-[15rem] w-[10rem] px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
             />
-
-            
           </div>
             <div class="flex gap-6">
 
@@ -62,19 +52,16 @@
           </div>
 
           <div class="relative">
-          <button @click="navigate('/tournament/create')" class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-green-500 rounded-lg hover:bg-green-600">
-          <img src="../assets/img/up.svg" alt="up">
+          <button @click="navigate('/tournament/create')" class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+          <img src="/plus.svg" alt="up">
             Добавить
           </button>
-
-          
           </div>
             </div>
         </div>
       </div>
     </div>
 
-    <!-- Table -->
     <div class="bg-white rounded-lg shadow w-full">
       <div class=" overflow-x-scroll no-scrollbar  "> 
         <table class="min-w-full divide-y divide-gray-200"> 
@@ -109,48 +96,38 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.start_time || user.end_time ? user.start_time + ' - ' + user.end_time  : '-' }}
               </td>
-              <td class="px-6 py-4 gap-2 flex flex-col whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-4 gap-2 flex justify-center whitespace-nowrap text-sm text-gray-500">
                 <button   class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   :to="`/tournament/edit/${user.id}`" 
                   >
-                  Обновлять
+                  <img src="/edit.svg" alt="">
                 </router-link>
                 </button>
-
-
                 <button
                   @click="confirmDelete(user.id)"
-                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
+                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-[#EFF0F3]"
                 >
-                  Удалить
+                <img src="/delete.svg" alt="">
                 </button>
-
-
-                
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
-    
-    
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onUnmounted, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import api from "../utils/axios"
 
+const headers = ref(["#", "Имя", "Место", "Разделение", "Тип спорта","Image",  "Дата", "Действия"]);
 
-const route = useRoute()
 const router = useRouter()
 const search = ref("");
-const userStatus = ref("");
-const userType = ref("");
 const dateRange = ref(null);
 const isCreate = ref(false);
 const data = ref([])
@@ -169,38 +146,7 @@ const getData = async() => {
     
   }
 }
-onMounted(() => {
-  getData()
-  localStorage.removeItem('schools')
-  localStorage.removeItem('results')
-  localStorage.removeItem('media_ids')
-  localStorage.removeItem('photos')
-  localStorage.removeItem('videos')
-})
 
-
-
-
-
-const headers = ref(["#", "Имя", "Место", "Разделение", "Тип спорта","Image",  "Дата", "Действия"]);
-
-const filteredUsers = computed(() => {
-  return data.value.filter(user => {
-    const matchesSearch = user.name?.toLowerCase().includes(search.value.toLowerCase());
-
-    // const matchesStatus = userStatus.value ? user.status === userStatus.value : true;
-    const matchesDateRange = dateRange.value ? (new Date(user.start_time) >= new Date(dateRange.value[0]) && new Date(user.end_time) <= new Date(dateRange.value[1])) : true;
-
-    // matchesStatus
-    return matchesSearch  && matchesDateRange;
-  });
-});
-
-
-const confirmDelete = (id) => {
-  tournamentToDelete.value = id;
-  isModalOpen.value = true;
-};
 
 const deleteTournament = async () => {
   try {
@@ -210,6 +156,20 @@ const deleteTournament = async () => {
   } catch (e) {
     console.error("Failed to delete tournament:", e);
   }
+};
+
+const filteredUsers = computed(() => {
+  return data.value.filter(user => {
+    const matchesSearch = user.name?.toLowerCase().includes(search.value.toLowerCase());
+    const matchesDateRange = dateRange.value ? (new Date(user.start_time) >= new Date(dateRange.value[0]) && new Date(user.end_time) <= new Date(dateRange.value[1])) : true;
+    return matchesSearch  && matchesDateRange;
+  });
+});
+
+
+const confirmDelete = (id) => {
+  tournamentToDelete.value = id;
+  isModalOpen.value = true;
 };
 
 
@@ -223,14 +183,20 @@ const navigate = (path) => {
   router.push(path)
 }
 
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
-});
+  getData()
+  localStorage.removeItem('schools')
+  localStorage.removeItem('results')
+  localStorage.removeItem('media_ids')
+  localStorage.removeItem('photos')
+  localStorage.removeItem('videos')
+})
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
-
 
 </script>
 
