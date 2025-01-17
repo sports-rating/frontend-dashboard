@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="flex flex-col mb-6">
-      <h1 class="text-4xl font-medium dark:text-white text-[#1E1E2D]">Школы</h1>
+      <h1 class="text-3xl font-medium dark:text-white text-[#1E1E2D]">Школы</h1>
     </div>
 
     <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">

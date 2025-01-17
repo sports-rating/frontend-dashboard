@@ -26,13 +26,13 @@
     </div>
     
     <div class="flex flex-col mb-6">
-      <h1 class="text-xl font-medium dark:text-white text-[#1E1E2D]">Пользователи</h1>
+      <h1 class="text-3xl font-medium dark:text-white text-[#1E1E2D]">Пользователи</h1>
       
     </div>
 
     <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">
       <div class="p-4">
-        <div class="flex  gap-4 w-full">
+        <div class="flex flex-wrap gap-4 w-full">
           <div class="flex-1">
             <input
               v-model="search"
@@ -40,11 +40,10 @@
               placeholder="Поиск..."
               class="2xl:w-[15rem] w-[10rem] px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
             />
-
-            
           </div>
-            <div class="flex gap-6">
-          <div>
+
+
+              <div>
               
           <el-date-picker
           style="width: 20rem !important;"
@@ -81,7 +80,6 @@
                 
               </div>
           </div>
-            </div>
         </div>
       </div>
     </div>
@@ -378,7 +376,6 @@ input[type="date"] {
 
 ::-webkit-calendar-picker-indicator {
   position:absolute;
-  display: none !important;
   width:2.5rem;
   height:100%;
   top:0;

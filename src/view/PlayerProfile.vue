@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen ">
     <!-- Header -->
-    <div class="p-4 flex items-center ">
+    <!-- <div class="p-4 flex items-center ">
       <button class="text-gray-600 ">
         <ChevronLeftIcon class="h-6 w-6 border rounded-full" />
       </button>
-    </div>
+    </div> -->
 
     <!-- Player Info Section -->
     <div class="px-6">
