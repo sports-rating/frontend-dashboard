@@ -97,18 +97,20 @@
                 {{ user.start_time || user.end_time ? user.start_time + ' - ' + user.end_time  : '-' }}
               </td>
               <td class="px-6 py-4 gap-2 flex justify-center whitespace-nowrap text-sm text-gray-500">
-                <button   class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   :to="`/tournament/edit/${user.id}`" 
                   >
-                  <img src="/edit.svg" alt="">
+                  <!-- <img  src="/edit.svg" alt=""> -->
+                  Обновить
                 </router-link>
                 </button>
                 <button
                   @click="confirmDelete(user.id)"
-                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-[#EFF0F3]"
+                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
                 >
-                <img src="/delete.svg" alt="">
+                <!-- <img   src="/delete.svg" alt=""> -->
+                Удалить
                 </button>
               </td>
             </tr>

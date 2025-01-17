@@ -129,24 +129,32 @@
                 </router-link>
 
                 <router-link 
-                 v-if="user.user_role === 'trainer'"
+                v-if="user.user_role === 'trainer'"
                   :to="`/trainer-view/${user.id}`" 
                 >
                   Действие
                 </router-link>
                 </button>
-                <button   class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+
+
+                <button  class=" hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                 <router-link 
                   v-if="user.user_role !== 'trainer'"
                   :to="`/user-athletes/edit/${user.id}`" 
                   >
-                  Обновлять
+                  <!-- <span>
+                    <img src="/edit.svg" alt="">
+                  </span> -->
+                  Обновить
                 </router-link>
                 <router-link 
                   v-if="user.user_role === 'trainer'"
                   :to="`/user-trainer/edit/${user.id}`" 
                   >
-                  Обновлять
+                  <!-- <span>
+                    <img src="/edit.svg" alt="">
+                  </span> -->
+                  Обновить
                 </router-link>
                 </button>
 
@@ -156,7 +164,10 @@
                   @click="confirmDelete(user.id, user.user_role)"
                   class=" hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
                 >
-                  Удалить
+                Удалить
+                  <!-- <span>
+                    <img src="/delete.svg" alt="">
+                  </span> -->
                 </button>
 
 
@@ -348,5 +359,35 @@ const getStatusClass = (status) => {
   cursor: pointer;  
 }
 
+input[type="date"] {
+  display:block !important;
+  position:relative;
+  padding:1rem 3.5rem 1rem 0.75rem;
+  font-size:1rem;
+  font-family:monospace;
+  border:1px solid #8292a2;
+  border-radius:0.25rem;
+  background:
+    white
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E")
+    right 1rem
+    center
+    no-repeat;
+  cursor:pointer;
+}
 
+::-webkit-calendar-picker-indicator {
+  position:absolute;
+  display: none !important;
+  width:2.5rem;
+  height:100%;
+  top:0;
+  right:0;
+  bottom:0;
+  opacity:0 !important;
+  cursor:pointer;
+}
+
+input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0 !important; }
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0 !important; }
 </style>

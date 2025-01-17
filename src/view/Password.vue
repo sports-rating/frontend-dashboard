@@ -3,6 +3,9 @@ import { ref, watch, onMounted } from 'vue';
 import OtpInput from '../components/OtpInput.vue';  
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 
 const isLoading = ref(false);
 const errorMessage = ref('');
@@ -31,6 +34,9 @@ const handleOtp = async () => {
       await authStore.verify({ code: formattedOtp }); 
       router.push('/');
     } catch (error) {
+      toast.error(error.response.data.message, {
+      autoClose: 3000,
+    })
       errorMessage.value = 'Verification failed. Please try again.';
     } finally {
       isLoading.value = false;

@@ -96,14 +96,16 @@
                 <router-link 
                   :to="`/school/edit/${user.id}`" 
                   >
-                  <img src="/edit.svg" alt="">
+                  <!-- <img class="w-6 h-6" src="/edit.svg" alt=""> -->
+                  Обновить
                 </router-link>
                 </button>
                 <button
                   @click="confirmDelete(user.id)"
-                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-[#EFF0F3]"
+                  class="hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
                 >
-                  <img src="/delete.svg" alt="">
+                Удалить
+                  <!-- <img class="w-6 h-6"  src="/delete.svg" alt=""> -->
                 </button>
               </td>
             </tr>
