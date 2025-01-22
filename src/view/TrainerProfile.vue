@@ -57,7 +57,7 @@
             </div>
             <div>
               <p class="text-gray-500">Воспитанник</p>
-              <p>{{data?.trainer_profile?.educations[0]?.name}}</p>
+              <p>{{data?.trainer_profile?.educations[0]?.school_name}}</p>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@
           <img 
             :src="data.photo?.[0]?.file" 
             alt="Player Profile"
-            class=" w-[32vh] h-[32vh] p-2 object-cover rounded-full border"
+            class=" w-[32vh] h-[56vh] p-2 object-cover rounded-full border"
           />
         </div>
       </div>
@@ -105,10 +105,10 @@
           <dl class="grid grid-cols-3">
             <div v-for="(stat, index) in data?.trainer_profile?.results" :key="index" class="px-4 py-5 border border  overflow-hidden sm:p-6">
               <dt class="text-3xl font-medium text-[#11101B] truncate">
-              {{ stat.tournament.start_time.split('-')[0] }} - {{ stat.tournament.end_time.split('-')[0] }}
+                {{ stat.tournament.name }}
               </dt>
               <dd class="mt-1 text-sm font-semibold text-[#11101B]">
-                {{ stat.tournament.name }}
+              {{ stat.tournament.start_time.split('-')[0] }} - {{ stat.tournament.end_time.split('-')[0] }}
               </dd>
             </div>
           </dl>
