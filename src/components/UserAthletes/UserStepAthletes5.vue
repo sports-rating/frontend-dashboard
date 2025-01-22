@@ -2,13 +2,13 @@
   <div>
     <Loading :isLoading="isUploading" />
     <!-- Breadcrumbs -->
-    <nav class="flex mb-6 text-sm text-gray-500">
+    <!-- <nav class="flex mb-6 text-sm text-gray-500">
       <a href="#" class="hover:text-gray-700">Главная</a>
       <span class="mx-2">→</span>
       <a href="#" class="hover:text-gray-700">Пользователи</a>
       <span class="mx-2">→</span>
       <span class="text-gray-900">Добавить пользователя</span>
-    </nav>
+    </nav> -->
 
     <!-- Photos Section -->
     <section class="mb-8">
@@ -30,7 +30,7 @@
         <label
           class="cursor-pointer aspect-video flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
         >
-          <input type="file" accept="image/*" class="hidden" @change="handlePhotoUpload" />
+          <input type="file" accept="image/*" class="hidden" multiple @change="handlePhotoUpload" />
           <div class="w-8 h-8 mb-2 text-pink-500">
             <img src="../../assets/img/plus.svg" alt="plus" />
           </div>
@@ -67,6 +67,37 @@
         </label>
       </div>
     </section>
+
+    <!-- PDFs Section -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">PDF материалы</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          v-for="(pdf, index) in pdfs"
+          :key="'pdf-' + index"
+          class="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
+        >
+          <div class="w-full h-full flex items-center justify-center">
+            <img src="../../assets/img/pdf.svg" alt="pdf" class="w-16 h-16" />
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 flex justify-between items-center">
+            <span>{{ pdf.name }}</span>
+            <button @click="deletePdf(pdf, index)" class="text-red-500 hover:text-red-700 font-bold">Удалить</button>
+          </div>
+        </div>
+
+        <!-- Add PDF Button -->
+        <label
+          class="cursor-pointer aspect-video flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
+        >
+          <input type="file" accept="application/pdf" class="hidden" @change="handlePdfUpload" />
+          <div class="w-8 h-8 mb-2 text-pink-500">
+            <img src="../../assets/img/plus.svg" alt="plus" />
+          </div>
+          <span class="text-sm text-pink-600">Добавить новый PDF материал</span>
+        </label>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -91,11 +122,13 @@ const isUploading = ref(false);
 const localMediaIds = ref([...props.media_ids]);
 const photos = ref(JSON.parse(localStorage.getItem('photos')) || []);
 const videos = ref(JSON.parse(localStorage.getItem('videos')) || []);
+const pdfs = ref(JSON.parse(localStorage.getItem('pdfs')) || []);
 
 const saveToLocalStorage = () => {
   localStorage.setItem('media_ids', JSON.stringify(localMediaIds.value));
   localStorage.setItem('photos', JSON.stringify(photos.value));
   localStorage.setItem('videos', JSON.stringify(videos.value));
+  localStorage.setItem('pdfs', JSON.stringify(pdfs.value));
 };
 
 const deletePhoto = async (photo, index) => {
@@ -122,36 +155,53 @@ const deleteVideo = async (video, index) => {
   }
 };
 
-const handlePhotoUpload = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  isUploading.value = true;
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('owner', 'sportsman');
-
+const deletePdf = async (pdf, index) => {
   try {
-    const response = await api.post(
-      'https://api.7srating.uz/api/user/media-upload/',
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    );
-    localMediaIds.value.push(response.data.data.id);
+    await api.delete(`https://api.7srating.uz/api/user/media/${pdf.id}/`);
+    pdfs.value.splice(index, 1);
+    localMediaIds.value = localMediaIds.value.filter((id) => id !== pdf.id);
     emit('update-media', localMediaIds.value);
-    photos.value.push({
-      id: response.data.data.id,
-      url: URL.createObjectURL(file),
-      name: file.name,
-    });
     saveToLocalStorage();
   } catch (error) {
-    console.error('File upload failed:', error.response?.data || error.message);
+    console.error('Failed to delete PDF:', error.response?.data || error.message);
+  }
+};
+
+const handlePhotoUpload = async (event) => {
+  const files = Array.from(event.target.files);  // Collect all selected files
+  if (!files.length) return;
+
+  isUploading.value = true;
+  try {
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('owner', 'sportsman');
+
+      const response = await api.post(
+        'https://api.7srating.uz/api/user/media-upload/',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+
+      localMediaIds.value.push(response.data.data.id);
+      emit('update-media', localMediaIds.value);
+      photos.value.push({
+        id: response.data.data.id,
+        url: URL.createObjectURL(file),
+        name: file.name,
+      });
+    }
+    saveToLocalStorage();
+  } catch (error) {
+    console.error('Photo upload failed:', error.response?.data || error.message);
   } finally {
     isUploading.value = false;
   }
 };
+
 
 const handleVideoUpload = async (event) => {
   const file = event.target.files[0];
@@ -199,6 +249,36 @@ const handleVideoUpload = async (event) => {
   });
 };
 
+const handlePdfUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  isUploading.value = true;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('owner', 'sportsman');
+
+  try {
+    const response = await api.post(
+      'https://api.7srating.uz/api/user/media-upload/',
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+    localMediaIds.value.push(response.data.data.id);
+    emit('update-media', localMediaIds.value);
+    pdfs.value.push({
+      id: response.data.data.id,
+      name: file.name,
+    });
+    saveToLocalStorage();
+  } catch (error) {
+    console.error('PDF upload failed:', error.response?.data || error.message);
+  } finally {
+    isUploading.value = false;
+  }
+};
+
 const fetchMediaData = async () => {
   try {
     const fetchedPhotos = props.media_bay
@@ -217,8 +297,16 @@ const fetchMediaData = async () => {
         name: `Video (${item.extension.toUpperCase()})`,
       }));
 
+    const fetchedPdfs = props.media_bay
+      .filter((item) => item.media_type === 'pdf')
+      .map((item) => ({
+        id: item.id,
+        name: `PDF (${item.extension.toUpperCase()})`,
+      }));
+
     photos.value = fetchedPhotos;
     videos.value = fetchedVideos;
+    pdfs.value = fetchedPdfs;
   } catch (error) {
     console.error('Failed to fetch media data:', error.response?.data || error.message);
   }
@@ -226,15 +314,13 @@ const fetchMediaData = async () => {
 
 onMounted(() => {
   const storedMediaIds = JSON.parse(localStorage.getItem('media_ids'));
-  if (storedMediaIds) localMediaIds.value = storedMediaIds;
-
-  const storedPhotos = JSON.parse(localStorage.getItem('photos'));
-  if (storedPhotos) photos.value = storedPhotos;
-
-  const storedVideos = JSON.parse(localStorage.getItem('videos'));
-  if (storedVideos) videos.value = storedVideos;
-  
+  if (storedMediaIds) {
+    localMediaIds.value = storedMediaIds;
+  }
   fetchMediaData();
-
 });
 </script>
+
+<style scoped>
+/* Add additional styles if needed */
+</style>

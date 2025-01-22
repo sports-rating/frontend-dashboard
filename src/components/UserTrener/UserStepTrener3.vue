@@ -26,12 +26,13 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index +1 }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <span class="ml-2 text-sm text-gray-900">{{ result.name }}</span>
+                <span class="ml-2 text-sm text-gray-900">{{ result.name }} </span>
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.country }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ result.year }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.number_of_gold }} {{ result.number_of_silver }} {{ result.number_of_bronze }}</td>
+            <td v-if="!result.currently_participating" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.number_of_gold }} {{ result.number_of_silver }} {{ result.number_of_bronze }}</td>
+            <td v-if="result.currently_participating" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ result.rating }} </td>
             <td class="px-6 py-4 whitespace-nowrap  text-sm font-medium space-x-4 text-start">
                 
 
@@ -95,6 +96,7 @@
         <input
           v-model="newResult.country"
           type="text"
+          disabled
           placeholder="Выберите страна"
           class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
         />
@@ -122,7 +124,18 @@
         </p>
       </div>
 
-            <div>
+        <div class="flex items-center gap-4">
+              <input 
+                v-model="newResult.currently_participating"
+                type="checkbox"
+                class="px-3 py-2 "
+              />
+              <label class=" text-sm font-medium text-gray-700 ">
+                В настоящее время участвует
+              </label>
+            </div>
+
+            <div v-if="!newResult.currently_participating">
             
             <div class="relative">
             <label class="block text-sm font-medium text-gray-700">Ваш рейтинг</label>
@@ -160,6 +173,17 @@
               <div className="w-8 h-8 rounded-full bg-orange-300 border-2 border-orange-400 shadow-sm" />
             </div>
             </div>
+            </div>
+
+            <div v-if="newResult.currently_participating">
+              <label class="block text-sm font-medium text-gray-700">Рейтинг</label>
+              <input
+                v-model="newResult.rating"
+                type="number"
+                placeholder="Введите свой рейтинг"
+                class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              />
+              <p v-if="errors.rating" class="text-sm text-red-500">{{ errors.rating }}</p>
             </div>
         </div>
           <div class="mt-6 flex justify-center ">
@@ -199,51 +223,32 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  // games:Number,
-  // students:Number,
-  // awards:Number,
   errors:Array,
 });
 
 
-
-
-// const localGames = computed({
-//   get: () => props.games,
-//   set: (value) => emit("update:games", value),
-// });
-
-// const localStudents = computed({
-//   get: () => props.students,
-//   set: (value) => emit("update:students", value),
-// });
-
-// const localAwards = computed({
-//   get: () => props.awards,
-//   set: (value) => emit("update:awards", value),
-// });
-
 const currentResults = ref({ ...props.typeResults });
 
 currentResults.value = results.value
-
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/tournament/');
+    const selectedSport = JSON.parse(localStorage.getItem('selectedSport'));
 
-    data.value = res.data.data
-      
+    const res = await api.get(
+      `https://api.7srating.uz/api/dashboard/tournament/?sport=${selectedSport.name}`
+    );
+
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
 }
 
 
 const handleSelection = (selectedOption) => {
   const selectedItem = data.value.find((item) => item.id === selectedOption.id);
-      if (selectedItem) {
+  if (selectedItem) {
+        newResult.value.country = selectedItem.place
         newResult.value.year = selectedItem.start_time
       }
   
@@ -293,9 +298,10 @@ const newResult = ref({
   tournament_id: '',
   country: '',
   year:'',
-  number_of_gold: '',
-  number_of_silver: '',
-  number_of_bronze: '',
+  number_of_gold: 0,
+  number_of_silver: 0,
+  number_of_bronze: 0,
+  rating: 0,
   currently_participating: false,
   name:'',
 })
@@ -304,9 +310,10 @@ const show = () =>{
   showModal.value = false
   newResult.value.country = '',
   newResult.value.year = '',
-  newResult.value.number_of_gold = '',
-  newResult.value.number_of_silver = '',
-  newResult.value.number_of_bronze = '',
+  newResult.value.number_of_gold = 0,
+  newResult.value.number_of_silver = 0,
+  newResult.value.number_of_bronze = 0,
+  newResult.value.rating = 0,
   newResult.value.name = '',
   newResult.value.currently_participating = false,
   newResult.value.tournament_id = ''
@@ -317,10 +324,11 @@ const close = () =>{
   showModal.value = false
   newResult.value.country = '',
   newResult.value.year = '',
-  newResult.value.number_of_gold = '',
-  newResult.value.number_of_silver = '',
-  newResult.value.number_of_bronze = '',
+  newResult.value.number_of_gold = 0,
+  newResult.value.number_of_silver = 0,
+  newResult.value.number_of_bronze = 0,
   newResult.value.name = '',
+  newResult.value.rating = 0,
   newResult.value.currently_participating = false,
   newResult.value.tournament_id = ''
 }
@@ -329,24 +337,24 @@ const editResult = (result) => {
   
   const selectedTournament = data.value.find(item => item.id === result.tournament_id);
   
-
-  newResult.value = {
+    newResult.value = {
       id: result.id || '',
       country: result.country || '',
       year: result.year || '',
       tournament_id: selectedTournament,
-      number_of_gold: result.number_of_gold || '',
-      number_of_silver: result.number_of_silver || '',
-      number_of_bronze: result.number_of_bronze || '',
+      number_of_gold: result.number_of_gold || 0,
+      number_of_silver: result.number_of_silver || 0,
+      number_of_bronze: result.number_of_bronze || 0,
+      rating: result.rating || 0,
       name: selectedTournament,
       currently_participating: result.currently_participating || false,
   }
+  
 
   showModal.value = true;
 };
 
 const deleteResult = (id) => {
-  // Filter out the record with the specified ID
   results.value = results.value.filter((result) => result.id !== id);
 };
 
@@ -368,19 +376,21 @@ const addResult = () => {
       name:selectedTournament ? selectedTournament.name : ''
     };
   } else {
-    // Add new result
-    results.value.push({
-      id: String(results.value.length + 1).padStart(4, '0'),
-      tournament_id: selectedTournament ? selectedTournament.id : '',
-      country: newResult.value.country,
-      year: new Date(newResult.value.year).toLocaleDateString('en-CA'),
-      number_of_gold: Number(newResult.value.number_of_gold),
-      number_of_silver: Number(newResult.value.number_of_silver),
-      number_of_bronze: Number(newResult.value.number_of_bronze),
-      currently_participating: newResult.value.currently_participating,
-      name:selectedTournament ? selectedTournament.name : ''
-    });
+      results.value.push({
+        id: String(results.value.length + 1).padStart(4, '0'),
+        tournament_id: selectedTournament ? selectedTournament.id : '',
+        country: newResult.value.country,
+        year: new Date(newResult.value.year).toLocaleDateString('en-CA'),
+        number_of_gold: Number(newResult.value.number_of_gold),
+        number_of_silver: Number(newResult.value.number_of_silver),
+        number_of_bronze: Number(newResult.value.number_of_bronze),
+        rating: Number(newResult.value.rating),
+        currently_participating: newResult.value.currently_participating,
+        name:selectedTournament ? selectedTournament.name : ''
+      });
+    
   }
+
 
   close();
 };
@@ -389,18 +399,19 @@ onMounted(() => {
   getData()
 
   if (props.typeResults.length > 0) {
-    results.value = props.typeResults.map((res) => ({
-      id: res.id || '',
-      country: res.country || '',
-      year: res.year || '',
-      tournament_id: res.tournament_id || '',
-      number_of_gold: res.number_of_gold || '',
-      number_of_silver: res.number_of_silver || '',
-      number_of_bronze: res.number_of_bronze || '',
-      name: res.name || '',
-      currently_participating: res.currently_participating || false,
-    }));
-  }
+  results.value = props.typeResults.map((res) => ({
+    id: res.id || '',
+    country: res.country || '',
+    year: res.year || '',
+    tournament_id: res.tournament_id || '',
+    number_of_gold: res.currently_participating ? 0 : res.number_of_gold || 0,
+    number_of_silver: res.currently_participating ? 0 : res.number_of_silver || 0,
+    number_of_bronze: res.currently_participating ? 0 : res.number_of_bronze || 0,
+    rating: res.currently_participating ? res.rating || 0 : 0,
+    name: res.name || '',
+    currently_participating: res.currently_participating || false,
+  }));
+}
 
   const savedResults = localStorage.getItem('results')
   if (savedResults) {
@@ -410,9 +421,28 @@ onMounted(() => {
   
 })
 watch(results, (newResults) => {
-  localStorage.setItem('results', JSON.stringify(newResults))
-  currentResults.value = newResults
-}, { deep: true })
+  // Update only items where currently_paticipating === true
+  const updatedResults = newResults.map((item) => {
+    if (item.currently_participating === true) {
+      return {
+        ...item,
+        number_of_bronze: 0,
+        number_of_gold: 0,
+        number_of_silver: 0,
+      };
+    } else {
+      return {
+        ...item,
+        rating: 0,
+      };
+    }
+  });
+
+  localStorage.setItem('results', JSON.stringify(updatedResults));
+  currentResults.value = updatedResults
+}, { deep: true });
+
+
 
 watch(currentResults, (newValue) => {
   emit('update-result', newValue);

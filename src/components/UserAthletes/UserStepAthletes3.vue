@@ -90,6 +90,7 @@
         <input
           v-model="newResult.country"
           type="text"
+          disabled
           placeholder="Выберите страна"
           class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
         />
@@ -173,16 +174,17 @@ const currentResults = ref({ ...props.typeResults });
 
 currentResults.value = results.value
 
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/tournament/');
+    const selectedSport = JSON.parse(localStorage.getItem('selectedSport'));
 
-    data.value = res.data.data
-      
+    const res = await api.get(
+      `https://api.7srating.uz/api/dashboard/tournament/?sport=${selectedSport.name}`
+    );
+
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
 }
 
@@ -334,8 +336,9 @@ onMounted(() => {
 
 const handleSelection = (selectedOption) => {
   const selectedItem = data.value.find((item) => item.id === selectedOption.id);
-      if (selectedItem) {
+  if (selectedItem) {
         newResult.value.year = selectedItem.start_time
+        newResult.value.country = selectedItem.place
       }
   
 }

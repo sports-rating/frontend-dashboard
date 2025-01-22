@@ -186,10 +186,11 @@ const getData = async () => {
       country: res.country || '',
       year: res.year || '',
       tournament_id: res.tournament.id || '',
-      number_of_gold: res.number_of_gold || '',
-      number_of_silver: res.number_of_silver || '',
-      number_of_bronze: res.number_of_bronze || '',
+      number_of_gold: res.number_of_gold || 0,
+      number_of_silver: res.number_of_silver || 0,
+      number_of_bronze: res.number_of_bronze || 0,
       currently_participating: res.currently_participating || false,
+      rating: res.rating || 0
 
     }));
 
