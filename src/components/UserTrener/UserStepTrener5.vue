@@ -176,7 +176,7 @@ const handlePhotoUpload = async (event) => {
     for (const file of files) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('owner', 'sportsman');
+      formData.append('owner', 'trainer');
 
       const response = await api.post(
         'https://api.7srating.uz/api/user/media-upload/',
@@ -223,7 +223,7 @@ const handleVideoUpload = async (event) => {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('owner', 'sportsman');
+    formData.append('owner', 'trainer');
 
     try {
       const response = await api.post(
@@ -255,7 +255,7 @@ const handlePdfUpload = async (event) => {
   isUploading.value = true;
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('owner', 'sportsman');
+  formData.append('owner', 'trainer');
 
   try {
     const response = await api.post(
