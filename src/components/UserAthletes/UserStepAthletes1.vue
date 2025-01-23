@@ -80,15 +80,7 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Девизион спортсмена</label>
-            <!-- <select
-              v-model="form.sportsman_profile.motto"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите девизион</option>
-              <option v-for="direction in sportsDivisions" :key="direction" :value="direction">
-                {{ direction }}
-              </option>
-            </select> -->
+            
 
             <input
               v-model="form.sportsman_profile.motto"
@@ -228,28 +220,34 @@
         <h3 class="text-lg font-semibold mb-4 text-gray-900">Фактический адрес</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Область</label>
+            <label class="block text-sm font-medium text-gray-700">Область / Город</label>
             
-
-            <input
+            <multiselect
               v-model="form.sportsman_profile.region"
-              type="text"
+              :options="regions"
+              label="name_uz"
+              track-by="name_uz"
+              value-prop="name_uz"
               placeholder="Выберите название области"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              @change="onRegionChange"
+              class="mt-1"
             />
             <span class="text-red-500 mt-1" v-if="errors.region">{{ errors.region }}</span>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Город</label>
+            <label class="block text-sm font-medium text-gray-700">Район</label>
             
-
-            <input
+             <multiselect
               v-model="form.sportsman_profile.city"
-              type="text"
+              :options="filteredDistricts"
+              track-by="name_uz"
+              label="name_uz" 
+              value-prop="name_uz"
               placeholder="Выберите название города"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1"
             />
+            
             <span class="text-red-500 mt-1" v-if="errors.city">{{ errors.city }}</span>
           </div>
 
@@ -264,39 +262,7 @@
             <span class="text-red-500 mt-1" v-if="errors.street">{{ errors.street }}</span>
           </div>
 
-          <div class="flex flex-col">
-            <label class="block text-sm font-medium text-gray-700">Дата переезда</label>
-
-           <div class="flex gap-4">
-            <div class="flex flex-col ">
-              <el-date-picker
-              v-model="form.sportsman_profile.moving_date_year"
-              type="year"
-              placeholder="Год"
-              format="YYYY"
-              value-format="YYYY"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
-              <span class="text-red-500 mt-1" v-if="errors.moving_date_year">{{ errors.moving_date_year }}</span>
-            </div>
-
-             <div class="flex flex-col ">
-             
-            <el-date-picker
-              v-model="form.sportsman_profile.moving_date_month"
-              type="month"
-              format="MM"
-              value-format="MM"
-              placeholder="Месяц"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
-
-            <span class="text-red-500 mt-1" v-if="errors.moving_date_month">{{ errors.moving_date_month }}</span>
-             </div>
-           </div>
-
-            
-          </div>
+          
         </div>
       </section>
 
@@ -399,15 +365,9 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { ref, computed, watch, onMounted } from 'vue'
 import api from "../../utils/axios"
 
-// Define Props
 const props = defineProps({
   form: Object,
   athleteTypes: Array,
-  sportsDirections: Array,
-  sportsDivisions: Array,
-  regions: Array,
-  cities: Array,
-  countries: Array,
   handleFileUpload: {
     type: Function,
     required: true,
@@ -415,7 +375,6 @@ const props = defineProps({
   errors: Array,
 });
 
-// State variables
 const data = ref([]);
 const dataTrainer = ref([]);
 const selectedSport = ref(null);
@@ -423,8 +382,92 @@ const selectedSportName = ref(null);
 const selectedTrainer = ref(null);
 
 
+const regions = ref([]);
+const districts = ref([]);
+const filteredDistricts = ref([]);
 
-// Fetch Sports Data
+
+const onRegionChange = () => {
+    if (props.form.sportsman_profile.region && props.form.sportsman_profile.region.id) { // Проверка на наличие ID
+        filteredDistricts.value = districts.value.filter(
+            (district) => district.region_id === props.form.sportsman_profile.region.id
+        );
+        if(!filteredDistricts.value.find(city => city.id === props.form.sportsman_profile.city?.id)){
+            props.form.sportsman_profile.city = null;
+        }
+
+    } else {
+        filteredDistricts.value = [];
+        props.form.sportsman_profile.city = null; // Очищаем город, если регион не выбран
+    }
+};
+
+onMounted(async () => {
+    try {
+        const [regionsResponse, districtsResponse] = await Promise.all([
+            fetch("../../../path/to/regions.json"),
+            fetch("../../../path/to/districts.json"),
+        ]);
+
+        regions.value = await regionsResponse.json();
+        districts.value = await districtsResponse.json();
+
+        if (props.form.sportsman_profile && props.form.sportsman_profile.region && typeof props.form.sportsman_profile.region === 'string') {
+            const initialRegionName = props.form.sportsman_profile.region;
+            const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
+            if (foundRegion) {
+                props.form.sportsman_profile.region = foundRegion;
+                onRegionChange(); 
+            } else {
+                console.error(`Region with name "${initialRegionName}" not found!`);
+                props.form.sportsman_profile.region = null;
+          }
+
+        }
+         
+
+    } catch (error) {
+        console.error("Failed to load data:", error);
+    }
+});
+
+watch(
+    () => props.form,
+    (newForm) => {
+        if (newForm.sportsman_profile) {
+            // Обработка region (с использованием ID)
+            if (typeof newForm.sportsman_profile.region === 'string') {
+                const initialRegionName = newForm.sportsman_profile.region;
+                const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
+                const initialCityName = newForm.sportsman_profile.city;
+                const foundCity = districts.value.find(city => city.name_uz === initialCityName);
+                if (foundRegion) {
+                    props.form.sportsman_profile.region = foundRegion;
+                    onRegionChange();
+                } else {
+                    props.form.sportsman_profile.region = null;
+                }
+                if (foundCity) {
+                    props.form.sportsman_profile.city = foundCity;
+                } else {
+                    props.form.sportsman_profile.city = null;
+                }
+            } else if (!newForm.sportsman_profile.region) {
+                filteredDistricts.value = [];
+                props.form.sportsman_profile.city = null;
+            }
+
+            
+        }
+    },
+    { deep: true, immediate: true }
+);
+
+watch(
+    () => props.form.sportsman_profile.region, onRegionChange
+);
+
+
 const getData = async () => {
   try {
     const res = await api.get('https://api.7srating.uz/api/dashboard/sport/');

@@ -7,16 +7,36 @@
       </div>
 
       <nav class="mt-6">
+          <div
+      v-for="item in menuItems"
+      :key="item.path"
+    >
+      <div
+        @click="item.children ? toggleSubmenu(item) : navigate(item.path)"
+        class="flex items-center px-6 py-3 text-sm hover:bg-red-500 transition-colors cursor-pointer"
+        :class="{ 'bg-red-500': currentPath === item.path || (item.children && item.children.some(child => child.path === currentPath)) }"
+      >
+        <component :is="item.icon" class="h-5 w-5 mr-3" />
+        {{ item.name }}
+        <ChevronDownIcon 
+          v-if="item.children" 
+          class="h-4 w-4 ml-auto transition-transform duration-200"
+          :class="{ 'rotate-180': openSubmenu === item.name }"
+        />
+      </div>
+      <div v-if="item.children && openSubmenu === item.name" class="ml-6 mt-2">
         <div
-          v-for="item in menuItems"
-          :key="item.path"
-          @click="navigate(item.path)"
-          class="flex items-center px-6 py-3 text-sm hover:bg-red-500 transition-colors cursor-pointer"
-          :class="{ 'bg-red-500': currentPath === item.path }"
+          v-for="child in item.children"
+          :key="child.path"
+          @click="navigate(child.path)"
+          class="flex items-center px-6 py-2 gap-1 text-sm hover:bg-red-500 transition-colors cursor-pointer"
+          :class="{ 'bg-red-500': currentPath === child.path }"
         >
-          <component :is="item.icon" class="h-5 w-5 mr-3" />
-          {{ item.name }}
+          <component :is="child.icon" class="h-4 w-4 mr-3" />
+          {{ child.name }}
         </div>
+      </div>
+    </div>
       </nav>
       </el-scrollbar>
     </el-aside>
@@ -127,7 +147,10 @@ import {
   CpuChipIcon,
   TrophyIcon,
   GlobeAltIcon,
-  AcademicCapIcon 
+  AcademicCapIcon,
+  ShieldCheckIcon,
+  DocumentTextIcon,
+  ClockIcon
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from "../stores/auth";
 
@@ -137,8 +160,8 @@ const route = useRoute()
 const router = useRouter()
 const currentPath = computed(() => route.path)
 const isProfile = ref(false)
+const openSubmenu = ref(null)
 const { isDarkMode, toggleDarkMode } = useDarkMode();
-import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 
 const menuItemss = [
   { name: 'Мой профиль' },
@@ -159,6 +182,9 @@ const handleClickOutside = (event) => {
     isProfile.value = false;
   }
 };
+const toggleSubmenu = (item) => {
+  openSubmenu.value = openSubmenu.value === item.name ? null : item.name
+}
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
@@ -195,6 +221,23 @@ const menuItems = [
     name: 'Школы',
     path: '/school-list',
     icon: AcademicCapIcon      
+  },
+  {
+    name: 'Политика',
+    path: '/privacy-policy',
+    icon: ShieldCheckIcon,
+    children: [
+      {
+        name: 'Политика ',
+        path: '/privacy-policy-list',
+        icon: ShieldCheckIcon
+      },
+      {
+        name: 'Условия',
+        path: '/user-terms-list',
+        icon: ClockIcon
+      }
+    ]
   },
   // {
   //   name: 'Заявки на регистрацию',

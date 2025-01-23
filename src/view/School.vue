@@ -200,6 +200,7 @@ onMounted(() => {
   localStorage.removeItem('media_ids')
   localStorage.removeItem('photos')
   localStorage.removeItem('videos')
+   localStorage.removeItem('pdfs')
 })
 
 onUnmounted(() => {

@@ -41,62 +41,16 @@
             <span class="text-red-500 mt-1" v-if="errors.division">{{ errors.division }}</span>
           </div>
 
-          <!-- <div>
-            <label class="block text-sm font-medium text-gray-700">Тип спорта</label>
-            <input
-              v-model="form.sport_type"
-              type="text"
-              placeholder="Введите Тип спорта"
-              class="mt-1 bg-[#EFF0F3] block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{ errors.sport_type }}</span>
-          </div> -->
-
           <div>
-            <label class="block text-sm font-medium text-gray-700">Время начала</label>
-            <!-- <el-date-picker
-              v-model="form.start_time"
-              type="date"
-              placeholder=" Введите Время начала"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            /> -->
+            <label class="block text-sm font-medium text-gray-700">Время</label>
 
             <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
 
             <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
           </div>
 
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Конец Времени</label>
-            <!-- <el-date-picker
-              v-model="form.end_time"
-              type="date"
-              placeholder="Введите Конец Времени"
-              :size="size"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
-            /> -->
-              <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
-
-
-            <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
-          </div>
-
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
-            <!-- <select
-          v-model="form.sport_id"
-          class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-        >
-          <option value="">Выберите sport</option>
-          <option v-for="item in data" :key="item.id" :value="item.id">{{ item.name }}</option>
-          
-        </select> -->
 
         <multiselect
               v-model="form.sport_id"
@@ -183,7 +137,6 @@ const form = reactive({
   place: '',
   division: '',
   start_time: '',
-  end_time: '',
   sport_type:'',
   logo_id: [],
   sport_id:'',
@@ -242,18 +195,11 @@ const validateForm = () => {
 
   // Validate start_time and end_time
   if (!form.start_time) {
-    errors.start_time = 'Время начала обязательно.';
+    errors.start_time = 'Время обязательно.';
   } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
     errors.start_time = 'Введите корректную дату (YYYY-MM-DD).';
   }
 
-  if (!form.end_time) {
-    errors.end_time = 'Конец времени обязателен.';
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.end_time)) {
-    errors.end_time = 'Введите корректную дату (YYYY-MM-DD).';
-  } else if (form.start_time && form.end_time < form.start_time) {
-    errors.end_time = 'Конец времени не может быть раньше времени начала.';
-  }
 
   return Object.keys(errors).length === 0;
 };
@@ -299,7 +245,7 @@ const handleSubmit = async () => {
     router.push('/tournament-list');
   } catch (error) {
     console.error('Submission error:', error);
-    toast.error(error.response?.data?.message || 'An error occurred', {
+    toast.error(error.response?.data?.data || 'An error occurred', {
       autoClose: 3000,
     });
   } finally {

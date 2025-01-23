@@ -11,11 +11,6 @@
     :form="form"
     :handleFileUpload="handleFileUpload" 
     :athleteTypes="athleteTypes"
-    :sportsDirections="sportsDirections"
-    :sportsDivisions="sportsDivisions"
-    :regions="regions"
-    :cities="cities"
-    :countries="countries"
     :errors="errors"
     />
 
@@ -91,11 +86,6 @@ const data = ref([])
 const mediaBay = ref([])
 
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
-const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
-const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3']
-const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск']
-const cities = ['Город 1', 'Город 2', 'Город 3']
-const countries = ['Россия', 'Казахстан', 'Беларусь']
 
 
 
@@ -124,11 +114,6 @@ const form = reactive({
     citizenship: '',
     telegram: '',
     instagram: '',
-    moving_date_month: '',
-    moving_date_year:'',
-    // number_of_games:null,
-    // number_of_students:null,
-    // number_of_awards:null,
     educations: [],
     media_ids: [],
     results: [],
@@ -164,11 +149,6 @@ const getData = async () => {
     form.trainer_profile.citizenship = res.data.data.trainer_profile.citizenship
     form.trainer_profile.telegram = res.data.data.trainer_profile.telegram
     form.trainer_profile.instagram = res.data.data.trainer_profile.instagram
-    form.trainer_profile.moving_date_month = res.data.data.trainer_profile.moving_date_month
-    form.trainer_profile.moving_date_year = res.data.data.trainer_profile.moving_date_year
-    // form.trainer_profile.number_of_students = res.data.data.trainer_profile.number_of_students
-    // form.trainer_profile.number_of_awards = res.data.data.trainer_profile.number_of_awards
-    // form.trainer_profile.number_of_games = res.data.data.trainer_profile.number_of_games
 
     form.trainer_profile.educations = res.data.data.trainer_profile.educations.map((edu) => ({
       id: edu.id || '',
@@ -214,16 +194,16 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = 'Имя обязательно.';
     if (!form.last_name) errors.last_name = 'Фамилия обязательна.';
-    if (!form.phone_number) {
-      errors.phone_number = 'Номер телефона обязателен.';
-    } else {
-      const digitsOnly = form.phone_number.replace(/\D/g, '');
-      if (digitsOnly.length > 17) {
-        errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-      } else if (digitsOnly.length < 9) {
-        errors.phone_number = 'Номер телефона слишком короткий.';
-      }
-    }
+    // if (!form.phone_number) {
+    //   errors.phone_number = 'Номер телефона обязателен.';
+    // } else {
+    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
+    //   if (digitsOnly.length > 17) {
+    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
+    //   } else if (digitsOnly.length < 9) {
+    //     errors.phone_number = 'Номер телефона слишком короткий.';
+    //   }
+    // }
     if (!form.pinfl) {
       errors.pinfl = 'ЖШШИР обязательна.';
     } else {
@@ -245,24 +225,10 @@ const validateForm = () => {
     if (!form.trainer_profile.region) errors.region = 'Регион обязателен.';
     if (!form.trainer_profile.city) errors.city = 'Город обязателен.';
     if (!form.trainer_profile.street) errors.street = 'Улица обязателен.';
-    if (!form.trainer_profile.moving_date_year) errors.moving_date_year = 'Год обязателен.';
-    if (!form.trainer_profile.moving_date_month) errors.moving_date_month = 'Месяц обязателен.';
-    if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) errors.email = 'Введите корректный адрес электронной почты.';
     if (!form.trainer_profile.place_of_birth) errors.place_of_birth = 'Место рождения обязательна.';
     if (!form.trainer_profile.citizenship) errors.citizenship = 'Гражданство обязательна.';
-    // if (!form.sportsman_profile.telegram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.telegram)) {
-    // errors.telegram = 'Введите корректный линк в Телеграм (например, https://t.me/username).';
-    // }
-
-    //  if (!form.sportsman_profile.instagram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.instagram)) {
-    // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
-    // }
+    
   }
-  // else if(active.value === 3){
-  //   if (!form.trainer_profile.number_of_awards) errors.number_of_awards = 'Количество наград обязательна.';
-  //   if (!form.trainer_profile.number_of_students) errors.number_of_students = 'Количество студентов обязательна.';
-  //   if (!form.trainer_profile.number_of_games) errors.number_of_games = 'Количество игр обязательна.';
-  // }
 
   return Object.keys(errors).length === 0;
 };
@@ -336,6 +302,11 @@ if (firstErrorKey) {
       const payload = {
         ...form,
         phone_number: form.phone_number.replaceAll(' ', ''),
+        trainer_profile: {
+      ...form.trainer_profile, 
+      city: form.trainer_profile.city.name_uz, 
+      region: form.trainer_profile.region.name_uz 
+    }
       };
 
       await api.put(

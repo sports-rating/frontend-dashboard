@@ -94,7 +94,7 @@
                 <p v-else> - </p>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.start_time || user.end_time ? user.start_time + ' - ' + user.end_time  : '-' }}
+                {{ user.start_time ? user.start_time  : '-' }}
               </td>
               <td class="px-6 py-4 gap-2 flex justify-center whitespace-nowrap text-sm text-gray-500">
                 <button  class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
@@ -194,6 +194,7 @@ onMounted(() => {
   localStorage.removeItem('media_ids')
   localStorage.removeItem('photos')
   localStorage.removeItem('videos')
+   localStorage.removeItem('pdfs')
 })
 
 onUnmounted(() => {

@@ -268,6 +268,7 @@ onMounted(() => {
   localStorage.removeItem('results')
   localStorage.removeItem('media_ids')
   localStorage.removeItem('photos')
+  localStorage.removeItem('pdfs')
   localStorage.removeItem('videos')
   localStorage.removeItem('selectedSport');
   localStorage.removeItem('selectedTrainer');

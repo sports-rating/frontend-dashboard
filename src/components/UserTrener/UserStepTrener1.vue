@@ -199,34 +199,34 @@
         <h3 class="text-lg font-semibold mb-4 text-gray-900">Фактический адрес</h3>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Область</label>
+            <label class="block text-sm font-medium text-gray-700">Область / Город</label>
             
 
-            <input
-              v-model="form.trainer_profile.region"
-              type="text"
-              placeholder="Выберите название области"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
+            
+            <multiselect
+      v-model="form.trainer_profile.region"
+      :options="regions"
+      label="name_uz"
+      track-by="name_uz"
+      placeholder="Выберите название области"
+      @change="onRegionChange"
+      class="mt-1"
+    />
             <span class="text-red-500 mt-1" v-if="errors.region">{{ errors.region }}</span>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Город</label>
-            <!-- <select
-              v-model="form.trainer_profile.city"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">Выберите название города</option>
-              <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
-            </select> -->
+            <label class="block text-sm font-medium text-gray-700">Район</label>
+            <multiselect
+      v-model="form.trainer_profile.city"
+      :options="filteredDistricts"
+      track-by="name_uz"
+       label="name_uz" 
+      placeholder="Выберите название города"
+      class="mt-1"
+    />
 
-            <input
-              v-model="form.trainer_profile.city"
-              type="text"
-              placeholder="Выберите название города"
-              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
+            
             <span class="text-red-500 mt-1" v-if="errors.city">{{ errors.city }}</span>
           </div>
 
@@ -241,39 +241,7 @@
             <span class="text-red-500 mt-1" v-if="errors.street">{{ errors.street }}</span>
           </div>
 
-          <div class="flex flex-col">
-            <label class="block text-sm font-medium text-gray-700">Дата переезда</label>
-
-           <div class="flex gap-4">
-            <div class="flex flex-col ">
-              <el-date-picker
-              v-model="form.trainer_profile.moving_date_year"
-              type="year"
-              placeholder="Год"
-              format="YYYY"
-              value-format="YYYY"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
-              <span class="text-red-500 mt-1" v-if="errors.moving_date_year">{{ errors.moving_date_year }}</span>
-            </div>
-
-             <div class="flex flex-col ">
-             
-            <el-date-picker
-              v-model="form.trainer_profile.moving_date_month"
-              type="month"
-              format="MM"
-              value-format="MM"
-              placeholder="Месяц"
-              class="!h-10 !w-full !mt-1 !border !rounded-md "
-            />
-
-            <span class="text-red-500 mt-1" v-if="errors.moving_date_month">{{ errors.moving_date_month }}</span>
-             </div>
-           </div>
-
-            
-          </div>
+          
         </div>
       </section>
 
@@ -400,11 +368,6 @@ import api from "../../utils/axios"
 const props = defineProps({
   form: Object,
   athleteTypes: Array,
-  sportsDirections: Array,
-  sportsDivisions: Array,
-  regions: Array,
-  cities: Array,
-  countries: Array,
   handleFileUpload: {
     type: Function,
     required: true,
@@ -415,6 +378,91 @@ const props = defineProps({
 
 const data = ref([])
 const selectedSport = ref(null)
+
+const regions = ref([]);
+const districts = ref([]);
+const filteredDistricts = ref([]);
+
+
+const onRegionChange = () => {
+    if (props.form.trainer_profile.region && props.form.trainer_profile.region.id) { // Проверка на наличие ID
+        filteredDistricts.value = districts.value.filter(
+            (district) => district.region_id === props.form.trainer_profile.region.id
+        );
+        if(!filteredDistricts.value.find(city => city.id === props.form.trainer_profile.city?.id)){
+            props.form.trainer_profile.city = null;
+        }
+
+    } else {
+        filteredDistricts.value = [];
+        props.form.trainer_profile.city = null; // Очищаем город, если регион не выбран
+    }
+};
+
+onMounted(async () => {
+    try {
+        const [regionsResponse, districtsResponse] = await Promise.all([
+            fetch("../../../path/to/regions.json"),
+            fetch("../../../path/to/districts.json"),
+        ]);
+
+        regions.value = await regionsResponse.json();
+        districts.value = await districtsResponse.json();
+
+        if (props.form.trainer_profile && props.form.trainer_profile.region && typeof props.form.trainer_profile.region === 'string') {
+            const initialRegionName = props.form.trainer_profile.region;
+            const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
+            if (foundRegion) {
+                props.form.trainer_profile.region = foundRegion;
+                onRegionChange(); 
+            } else {
+                console.error(`Region with name "${initialRegionName}" not found!`);
+                props.form.trainer_profile.region = null;
+          }
+
+        }
+         
+
+    } catch (error) {
+        console.error("Failed to load data:", error);
+    }
+});
+
+watch(
+    () => props.form,
+    (newForm) => {
+        if (newForm.trainer_profile) {
+            // Обработка region (с использованием ID)
+            if (typeof newForm.trainer_profile.region === 'string') {
+                const initialRegionName = newForm.trainer_profile.region;
+                const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
+                const initialCityName = newForm.trainer_profile.city;
+                const foundCity = districts.value.find(city => city.name_uz === initialCityName);
+                if (foundRegion) {
+                    props.form.trainer_profile.region = foundRegion;
+                    onRegionChange();
+                } else {
+                    props.form.trainer_profile.region = null;
+                }
+                if (foundCity) {
+                    props.form.trainer_profile.city = foundCity;
+                } else {
+                    props.form.trainer_profile.city = null;
+                }
+            } else if (!newForm.trainer_profile.region) {
+                filteredDistricts.value = [];
+                props.form.trainer_profile.city = null;
+            }
+
+            
+        }
+    },
+    { deep: true, immediate: true }
+);
+
+watch(
+    () => props.form.trainer_profile.region, onRegionChange
+);
 
 const getData = async() => {
   try {

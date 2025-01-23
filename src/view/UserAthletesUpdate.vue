@@ -11,11 +11,6 @@
     :form="form"
     :handleFileUpload="handleFileUpload" 
     :athleteTypes="athleteTypes"
-    :sportsDirections="sportsDirections"
-    :sportsDivisions="sportsDivisions"
-    :regions="regions"
-    :cities="cities"
-    :countries="countries"
     :errors="errors"
     />
 
@@ -88,11 +83,7 @@ const data = ref([])
 const mediaBay = ref([])
 
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
-const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
-const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3']
-const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск']
-const cities = ['Город 1', 'Город 2', 'Город 3']
-const countries = ['Россия', 'Казахстан', 'Беларусь']
+
 
 
 
@@ -121,8 +112,6 @@ const form = reactive({
     citizenship: '',
     telegram: '',
     instagram: '',
-    moving_date_month: '',
-    moving_date_year:'',
     educations: [],
     media_ids: [],
     results: [],
@@ -160,9 +149,8 @@ const getData = async () => {
     form.sportsman_profile.citizenship = res.data.data.sportsman_profile.citizenship
     form.sportsman_profile.telegram = res.data.data.sportsman_profile.telegram
     form.sportsman_profile.instagram = res.data.data.sportsman_profile.instagram
-    form.sportsman_profile.moving_date_month = res.data.data.sportsman_profile.moving_date_month
-    form.sportsman_profile.moving_date_year = res.data.data.sportsman_profile.moving_date_year
     form.sportsman_profile.trainer_id = res.data.data.sportsman_profile.trainer_id
+
 
     form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map((edu) => ({
       id: edu.id || '',
@@ -204,16 +192,16 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = 'Имя обязательно.';
     if (!form.last_name) errors.last_name = 'Фамилия обязательна.';
-    if (!form.phone_number) {
-      errors.phone_number = 'Номер телефона обязателен.';
-    } else {
-      const digitsOnly = form.phone_number.replace(/\D/g, '');
-      if (digitsOnly.length > 17) {
-        errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-      } else if (digitsOnly.length < 9) {
-        errors.phone_number = 'Номер телефона слишком короткий.';
-      }
-    }
+    // if (!form.phone_number) {
+    //   errors.phone_number = 'Номер телефона обязателен.';
+    // } else {
+    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
+    //   if (digitsOnly.length > 17) {
+    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
+    //   } else if (digitsOnly.length < 9) {
+    //     errors.phone_number = 'Номер телефона слишком короткий.';
+    //   }
+    // }
     if (!form.pinfl) {
       errors.pinfl = 'ЖШШИР обязательна.';
     } else {
@@ -235,9 +223,6 @@ const validateForm = () => {
     if (!form.sportsman_profile.region) errors.region = 'Регион обязателен.';
     if (!form.sportsman_profile.city) errors.city = 'Город обязателен.';
     if (!form.sportsman_profile.street) errors.street = 'Улица обязателен.';
-    if (!form.sportsman_profile.moving_date_year) errors.moving_date_year = 'Год обязателен.';
-    if (!form.sportsman_profile.moving_date_month) errors.moving_date_month = 'Месяц обязателен.';
-    if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) errors.email = 'Введите корректный адрес электронной почты.';
     if (!form.sportsman_profile.place_of_birth) errors.place_of_birth = 'Место рождения обязательна.';
     if (!form.sportsman_profile.citizenship) errors.citizenship = 'Гражданство обязательна.';
   }
@@ -311,6 +296,11 @@ if (firstErrorKey) {
       const payload = {
         ...form,
         phone_number: form.phone_number.replaceAll(' ', ''),
+        sportsman_profile: {
+      ...form.sportsman_profile, 
+      city: form.sportsman_profile.city.name_uz, 
+      region: form.sportsman_profile.region.name_uz 
+    }
       };
 
       await api.put(

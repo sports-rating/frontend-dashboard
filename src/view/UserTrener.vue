@@ -2,20 +2,13 @@
   <div class=" mx-auto  p-4 rounded-xl border">
   <Loading :isLoading="isLoading || isUploading" />
     <h2 class="text-2xl font-bold mb-6">Добавить тренера</h2>
-    
-      <el-steps style="max-width: 600px" :active="active" finish-status="success"></el-steps>
-    
+    <el-steps style="max-width: 600px" :active="active" finish-status="success"></el-steps>
     
     <UserStepTrener1  
     v-if="active === 1"
     :form="form"
     :handleFileUpload="handleFileUpload" 
     :athleteTypes="athleteTypes"
-    :sportsDirections="sportsDirections"
-    :sportsDivisions="sportsDivisions"
-    :regions="regions"
-    :cities="cities"
-    :countries="countries"
     :errors="errors"
     />
 
@@ -31,9 +24,6 @@
     @update-result="(updatedResults) => form.trainer_profile.results = updatedResults"
     :errors="errors"
     />
-    <!-- v-model:games="form.trainer_profile.number_of_games" -->
-    <!-- v-model:students="form.trainer_profile.number_of_students" -->
-    <!-- v-model:awards="form.trainer_profile.number_of_awards" -->
     <UserStepTrener4 
     v-if="active === 4"
     :media_ids="form.trainer_profile.media_ids" 
@@ -87,14 +77,6 @@ const active = ref(1)
 const isLoading = ref(false);
 
 const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
-const sportsDirections = ['Футбол', 'Баскетбол', 'Теннис']
-const sportsDivisions = ['Дивизион 1', 'Дивизион 2', 'Дивизион 3']
-const regions = ['Москва', 'Санкт-Петербург', 'Новосибирск']
-const cities = ['Город 1', 'Город 2', 'Город 3']
-const countries = ['Россия', 'Казахстан', 'Беларусь']
-
-
-
 const form = reactive({
   first_name: '',
   last_name: '',
@@ -120,8 +102,6 @@ const form = reactive({
     citizenship: '',
     telegram: '',
     instagram: '',
-    moving_date_month: '',
-    moving_date_year:'',
     educations: [],
     media_ids: [],
     results: [],
@@ -138,16 +118,16 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = 'Имя обязательно.';
     if (!form.last_name) errors.last_name = 'Фамилия обязательна.';
-    if (!form.phone_number) {
-      errors.phone_number = 'Номер телефона обязателен.';
-    } else {
-      const digitsOnly = form.phone_number.replace(/\D/g, '');
-      if (digitsOnly.length > 17) {
-        errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-      } else if (digitsOnly.length < 9) {
-        errors.phone_number = 'Номер телефона слишком короткий.';
-      }
-    }
+    // if (!form.phone_number) {
+    //   errors.phone_number = 'Номер телефона обязателен.';
+    // } else {
+    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
+    //   if (digitsOnly.length > 17) {
+    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
+    //   } else if (digitsOnly.length < 9) {
+    //     errors.phone_number = 'Номер телефона слишком короткий.';
+    //   }
+    // }
 
     if (!form.pinfl) {
       errors.pinfl = 'ЖШШИР обязательна.';
@@ -170,18 +150,9 @@ const validateForm = () => {
     if (!form.trainer_profile.region) errors.region = 'Регион обязателен.';
     if (!form.trainer_profile.city) errors.city = 'Город обязателен.';
     if (!form.trainer_profile.street) errors.street = 'Улица обязателен.';
-    if (!form.trainer_profile.moving_date_year) errors.moving_date_year = 'Год обязателен.';
-    if (!form.trainer_profile.moving_date_month) errors.moving_date_month = 'Месяц обязателен.';
-    if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) errors.email = 'Введите корректный адрес электронной почты.';
     if (!form.trainer_profile.place_of_birth) errors.place_of_birth = 'Место рождения обязательна.';
     if (!form.trainer_profile.citizenship) errors.citizenship = 'Гражданство обязательна.';
-    // if (!form.sportsman_profile.telegram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.telegram)) {
-    // errors.telegram = 'Введите корректный линк в Телеграм (например, https://t.me/username).';
-    // }
-
-    //  if (!form.sportsman_profile.instagram || !/^https?:\/\/(www\.)?t\.me\/[a-zA-Z0-9_]+$/.test(form.sportsman_profile.instagram)) {
-    // errors.instagram = 'Введите корректный линк в Инстаграм (например, https://t.me/username).';
-    // }
+    
   }
   
 
@@ -255,6 +226,11 @@ if (firstErrorKey) {
       const payload = {
         ...form,
         phone_number: form.phone_number.replaceAll(' ', ''),
+        trainer_profile: {
+      ...form.trainer_profile, 
+      city: form.trainer_profile.city.name_uz, 
+      region: form.trainer_profile.region.name_uz 
+    }
       };
 
       await api.post(

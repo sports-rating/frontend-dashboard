@@ -107,6 +107,54 @@ const router = createRouter({
     },
 
     {
+      path: "/privacy-policy",
+      name: "Privacy-policy",
+      redirect: { name: "privacy-policy-list" },
+
+      children: [
+        {
+          path: "/privacy-policy-list",
+          name: "privacy-policy-list",
+          component: () => import("../view/privacy-policy/privacy/index.vue"),
+        },
+        {
+          path: "/privacy-policy/create",
+          name: "privacy-policy-create",
+          component: () => import("../view/privacy-policy/privacy/create.vue"),
+        },
+        {
+          path: "/privacy-policy/update/:id",
+          name: "privacy-policy-update",
+          component: () => import("../view/privacy-policy/privacy/edit.vue"),
+        },
+      ],
+    },
+
+    {
+      path: "/user-terms",
+      name: "User-terms",
+      redirect: { name: "user-terms-list" },
+
+      children: [
+        {
+          path: "/user-terms-list",
+          name: "user-terms-list",
+          component: () => import("../view/privacy-policy/user/index.vue"),
+        },
+        {
+          path: "/user-terms/create",
+          name: "user-terms-create",
+          component: () => import("../view/privacy-policy/user/create.vue"),
+        },
+        {
+          path: "/user-terms/update/:id",
+          name: "user-terms-update",
+          component: () => import("../view/privacy-policy/user/edit.vue"),
+        },
+      ],
+    },
+
+    {
       path: "/sport-app",
       name: "sport-app",
       redirect: { name: "sport-list" },

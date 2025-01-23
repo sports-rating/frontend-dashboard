@@ -10,7 +10,8 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import VueTelInput from "vue-tel-input";
 import "vue-tel-input/vue-tel-input.css";
 import { VueQueryPlugin } from "@tanstack/vue-query";
-
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const app = createApp(App);
 const pinia = createPinia();
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -20,6 +21,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 const globalOptions = {
   mode: "auto",
 };
+app.component("QuillEditor", QuillEditor);
 
 app.use(VueTelInput, globalOptions);
 pinia.use(piniaPluginPersistedstate);

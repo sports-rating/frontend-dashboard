@@ -41,7 +41,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Время начала</label>
+            <label class="block text-sm font-medium text-gray-700">Время </label>
             
 
             <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
@@ -50,14 +50,6 @@
           </div>
 
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Конец Времени</label>
-           
-
-            <input v-model="form.end_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
-
-            <span class="text-red-500 mt-1" v-if="errors.end_time">{{ errors.end_time }}</span>
-          </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
@@ -75,8 +67,6 @@
 
             <span class="text-red-500 mt-1" v-if="errors.sport_id">{{ errors.sport_id }}</span>
           </div>
-
-          
 
           
 
@@ -136,6 +126,8 @@ import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { reactive, ref, onMounted } from 'vue';
 import api from "../../utils/axios";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -150,7 +142,6 @@ const form = reactive({
   place: '',
   division: '',
   start_time: '',
-  end_time: '',
   sport_type: '',
   logo_id: [],
   sport_id: null, // Ensure it's initially null
@@ -200,18 +191,11 @@ const validateForm = () => {
   if (!form.sport_id) errors.sport_id = 'Тип спорта обязателен.';
 
   if (!form.start_time) {
-    errors.start_time = 'Время начала обязательно.';
+    errors.start_time = 'Время обязательно.';
   } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
     errors.start_time = 'Введите корректную дату (YYYY-MM-DD).';
   }
 
-  if (!form.end_time) {
-    errors.end_time = 'Конец времени обязателен.';
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.end_time)) {
-    errors.end_time = 'Введите корректную дату (YYYY-MM-DD).';
-  } else if (form.start_time && form.end_time < form.start_time) {
-    errors.end_time = 'Конец времени не может быть раньше времени начала.';
-  }
 
   return Object.keys(errors).length === 0;
 };
@@ -236,7 +220,6 @@ const getData = async () => {
     form.division = res.data.data.division;
     form.sport_type = res.data.data.sport_type;
     form.start_time = res.data.data.start_time;
-    form.end_time = res.data.data.end_time;
     form.photoName = res.data.data.logo[0]?.file.match(/[^/]+$/)[0];
     form.sport_id = res.data.data.sport; 
   } catch (e) {
@@ -269,6 +252,9 @@ const handleSubmit = async () => {
     router.push('/tournament-list');
   } catch (error) {
     console.error('Submission error:', error);
+    toast.error(error.response?.data?.data || 'An error occurred', {
+      autoClose: 3000,
+    });
   } finally {
     isSubmitting.value = false;
   }

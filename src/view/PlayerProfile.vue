@@ -167,7 +167,7 @@
                 {{ stat.tournament.name }}
               </dt>
               <dd class="mt-1 text-sm font-semibold text-[#11101B]">
-              {{ stat.tournament.start_time.split('-')[0] }} - {{ stat.tournament.end_time.split('-')[0] }}
+              {{ stat.tournament.start_time.split('-')[0] }} 
               </dd>
             </div>
           </dl>
