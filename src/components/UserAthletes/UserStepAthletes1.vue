@@ -405,12 +405,12 @@ const onRegionChange = () => {
 onMounted(async () => {
     try {
         const [regionsResponse, districtsResponse] = await Promise.all([
-            fetch("../../../path/to/regions.json"),
-            fetch("../../../path/to/districts.json"),
+            fetch("/path/to/regions.json"),
+            fetch("/path/to/districts.json"),
         ]);
 
-        regions.value = await regionsResponse.json();
-        districts.value = await districtsResponse.json();
+        regions.value = await regionsResponse?.json();
+        districts.value = await districtsResponse?.json();
 
         if (props.form.sportsman_profile && props.form.sportsman_profile.region && typeof props.form.sportsman_profile.region === 'string') {
             const initialRegionName = props.form.sportsman_profile.region;
