@@ -405,9 +405,11 @@ const onRegionChange = () => {
 onMounted(async () => {
     try {
         const [regionsResponse, districtsResponse] = await Promise.all([
-            fetch("/path/to/regions.json"),
-            fetch("/path/to/districts.json"),
+            fetch("/regions.json"),
+            fetch("/districts.json"),
         ]);
+
+        
 
         regions.value = await regionsResponse?.json();
         districts.value = await districtsResponse?.json();
