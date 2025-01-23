@@ -1,6 +1,6 @@
 <template>
-<div>     
-    <form @submit.prevent="handleSubmit" class="space-y-8" >
+  <div>
+    <form @submit.prevent="handleSubmit" class="space-y-8">
       <!-- Personal Information Section -->
       <section>
         <h3 class="text-lg font-semibold mb-4 text-gray-900">Личные данные</h3>
@@ -13,19 +13,23 @@
               placeholder="Введите имя"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.first_name">{{ errors.first_name }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.first_name">{{
+              errors.first_name
+            }}</span>
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-gray-700">Фамилия</label>
             <input
               v-model="form.last_name"
               type="text"
               placeholder="Введите фамилию"
-              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.last_name">{{ errors.last_name }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.last_name">{{
+              errors.last_name
+            }}</span>
           </div>
 
           <div>
@@ -36,7 +40,9 @@
               placeholder="Введите oтчество"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.middle_name">{{ errors.middle_name }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.middle_name">{{
+              errors.middle_name
+            }}</span>
           </div>
 
           <div>
@@ -57,14 +63,20 @@
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите тип тренера</option>
-              <option v-for="type in athleteTypes" :key="type" :value="type">{{ type }}</option>
+              <option v-for="type in athleteTypes" :key="type" :value="type">
+                {{ type }}
+              </option>
             </select>
 
-            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{ errors.sport_type }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{
+              errors.sport_type
+            }}</span>
           </div>
-          
+
           <div>
-            <label class="block text-sm font-medium text-gray-700">Спортивное направление</label>
+            <label class="block text-sm font-medium text-gray-700"
+              >Спортивное направление</label
+            >
             <multiselect
               v-model="selectedSport"
               :options="data"
@@ -72,14 +84,17 @@
               track-by="id"
               value-prop="id"
               placeholder="Выберите спортивное направление"
-              class="mt-1 "
+              class="mt-1"
             />
-            <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{ errors.sport_direction }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.sport_direction">{{
+              errors.sport_direction
+            }}</span>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Девизион тренера</label>
-            
+            <label class="block text-sm font-medium text-gray-700"
+              >Девизион тренера</label
+            >
 
             <input
               v-model="form.trainer_profile.motto"
@@ -93,46 +108,56 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Дата рождения</label>
-            
 
-            <input v-model="form.birth_date" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
+            <input
+              v-model="form.birth_date"
+              type="date"
+              min="2000-01-01"
+              max="2026-01-01"
+              class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
+            />
 
-            <span class="text-red-500 mt-1" v-if="errors.birth_date">{{ errors.birth_date }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.birth_date">{{
+              errors.birth_date
+            }}</span>
           </div>
 
           <div class="w-full flex gap-4">
-          
-          <div class="w-full">
-            <label class="block text-sm font-medium text-gray-700">Рост (см)</label>
-            <input
-              v-model="form.trainer_profile.height"
-              type="text"
-              placeholder="Введите рост"
-              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
+            <div class="w-full">
+              <label class="block text-sm font-medium text-gray-700">Рост (см)</label>
+              <input
+                v-model="form.trainer_profile.height"
+                type="text"
+                placeholder="Введите рост"
+                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              />
 
-            <span class="text-red-500 mt-1" v-if="errors.height">{{ errors.height }}</span>
+              <span class="text-red-500 mt-1" v-if="errors.height">{{
+                errors.height
+              }}</span>
+            </div>
+
+            <div class="w-full">
+              <label class="block text-sm font-medium text-gray-700">Вес (кг)</label>
+              <input
+                v-model="form.trainer_profile.weight"
+                type="text"
+                placeholder="Введите вес"
+                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              />
+
+              <span class="text-red-500 mt-1" v-if="errors.weight">{{
+                errors.weight
+              }}</span>
+            </div>
           </div>
-
-          <div class="w-full">
-            <label class="block text-sm font-medium text-gray-700">Вес (кг)</label>
-            <input
-              v-model="form.trainer_profile.weight"
-              type="text"
-              placeholder="Введите вес"
-              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-
-            <span class="text-red-500 mt-1" v-if="errors.weight">{{ errors.weight }}</span>
-          </div>
-          </div>
-
-          
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Пол</label>
             <div class="mt-1 w-full flex gap-4">
-              <label class="inline-flex items-center w-[49%]   px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
+              <label
+                class="inline-flex items-center w-[49%] px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+              >
                 <input
                   v-model="form.trainer_profile.gender"
                   type="radio"
@@ -141,7 +166,9 @@
                 />
                 <span class="ml-2">Мужчина</span>
               </label>
-              <label class="inline-flex items-center w-[49%]   px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50">
+              <label
+                class="inline-flex items-center w-[49%] px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+              >
                 <input
                   v-model="form.trainer_profile.gender"
                   type="radio"
@@ -150,47 +177,49 @@
                 />
                 <span class="ml-2">Женщина</span>
               </label>
-
             </div>
-              <span class="text-red-500 mt-1" v-if="errors.gender">{{ errors.gender }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.gender">{{
+              errors.gender
+            }}</span>
           </div>
 
-          <div >
+          <div>
             <label class="block text-sm font-medium text-gray-700">
               Фотография для вашей главной страницы
             </label>
             <div class="mt-1 flex items-center">
-            <input
-              id="upload"
-              type="file"
-              @change="handleFileUpload"
-              accept="image/*"
-              class="hidden"
-            >
-            <label
-              for="upload"
-              class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
-            >
-              <span class="text-sm text-gray-600">{{ form.photoName || 'Выберите файл' }}</span>
-            </label>
+              <input
+                id="upload"
+                type="file"
+                @change="handleFileUpload"
+                accept="image/*"
+                class="hidden"
+              />
+              <label
+                for="upload"
+                class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+              >
+                <span class="text-sm text-gray-600">{{
+                  form.photoName || "Выберите файл"
+                }}</span>
+              </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Обо мне</label>
-            
 
             <textarea
               v-model="form.trainer_profile.about_me"
               type="textarea"
-
               placeholder="Выберите Обо мне"
               class="mt-1 px-2 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.about_me">{{ errors.about_me }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.about_me">{{
+              errors.about_me
+            }}</span>
           </div>
-
         </div>
       </section>
 
@@ -200,33 +229,32 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Область / Город</label>
-            
 
-            
             <multiselect
-      v-model="form.trainer_profile.region"
-      :options="regions"
-      label="name_uz"
-      track-by="name_uz"
-      placeholder="Выберите название области"
-      @change="onRegionChange"
-      class="mt-1"
-    />
-            <span class="text-red-500 mt-1" v-if="errors.region">{{ errors.region }}</span>
+              v-model="form.trainer_profile.region"
+              :options="regions"
+              label="name_uz"
+              track-by="name_uz"
+              placeholder="Выберите название области"
+              @change="onRegionChange"
+              class="mt-1"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.region">{{
+              errors.region
+            }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Район</label>
             <multiselect
-      v-model="form.trainer_profile.city"
-      :options="filteredDistricts"
-      track-by="name_uz"
-       label="name_uz" 
-      placeholder="Выберите название города"
-      class="mt-1"
-    />
+              v-model="form.trainer_profile.city"
+              :options="filteredDistricts"
+              track-by="name_uz"
+              label="name_uz"
+              placeholder="Выберите название города"
+              class="mt-1"
+            />
 
-            
             <span class="text-red-500 mt-1" v-if="errors.city">{{ errors.city }}</span>
           </div>
 
@@ -236,12 +264,12 @@
               v-model="form.trainer_profile.street"
               type="text"
               placeholder="Введите название улицы"
-              class="mt-1  block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.street">{{ errors.street }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.street">{{
+              errors.street
+            }}</span>
           </div>
-
-          
         </div>
       </section>
 
@@ -251,7 +279,6 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div>
             <label class="block text-sm font-medium text-gray-700">Номер телефона</label>
-            
 
             <vue-tel-input
               v-model="form.phone_number"
@@ -272,7 +299,9 @@
               :defaultCountry="'UZ'"
               class="!bg-gray-200 mt-1 p-[2px] w-full rounded-md shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
             ></vue-tel-input>
-            <span class="text-red-500 mt-1" v-if="errors.phone_number">{{ errors.phone_number }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.phone_number">{{
+              errors.phone_number
+            }}</span>
           </div>
 
           <div>
@@ -294,7 +323,9 @@
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.place_of_birth">{{ errors.place_of_birth }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.place_of_birth">{{
+              errors.place_of_birth
+            }}</span>
           </div>
 
           <div>
@@ -307,14 +338,15 @@
               <option v-for="country in countries" :key="country" :value="country">{{ country }}</option>
             </select> -->
 
-
             <input
               v-model="form.trainer_profile.citizenship"
               type="text"
               placeholder="Выберите гражданство"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.citizenship">{{ errors.citizenship }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.citizenship">{{
+              errors.citizenship
+            }}</span>
           </div>
 
           <div>
@@ -325,7 +357,9 @@
               placeholder="Введите линк в телеграм"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.telegram">{{ errors.telegram }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.telegram">{{
+              errors.telegram
+            }}</span>
           </div>
 
           <div>
@@ -336,11 +370,15 @@
               placeholder="Введите  линк в инстаграм"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.instagram">{{ errors.instagram }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.instagram">{{
+              errors.instagram
+            }}</span>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Электронный адрес</label>
+            <label class="block text-sm font-medium text-gray-700"
+              >Электронный адрес</label
+            >
             <input
               v-model="form.email"
               type="email"
@@ -351,19 +389,18 @@
           </div>
         </div>
       </section>
-
     </form>
-
   </div>
 </template>
 
 <script setup>
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { VueTelInput } from 'vue-tel-input'
-import { ref, computed, watch, onMounted } from 'vue'
-import api from "../../utils/axios"
-
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.min.css";
+import { VueTelInput } from "vue-tel-input";
+import { ref, computed, watch, onMounted } from "vue";
+import api from "../../utils/axios";
+import regionsData from "../../assets/data/regions.json";
+import districtsData from "../../assets/data/districts.json";
 
 const props = defineProps({
   form: Object,
@@ -372,169 +409,168 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  errors:Array,
+  errors: Array,
 });
 
-
-const data = ref([])
-const selectedSport = ref(null)
+const data = ref([]);
+const selectedSport = ref(null);
 
 const regions = ref([]);
 const districts = ref([]);
 const filteredDistricts = ref([]);
 
-
 const onRegionChange = () => {
-    if (props.form.trainer_profile.region && props.form.trainer_profile.region.id) { // Проверка на наличие ID
-        filteredDistricts.value = districts.value.filter(
-            (district) => district.region_id === props.form.trainer_profile.region.id
-        );
-        if(!filteredDistricts.value.find(city => city.id === props.form.trainer_profile.city?.id)){
-            props.form.trainer_profile.city = null;
-        }
-
-    } else {
-        filteredDistricts.value = [];
-        props.form.trainer_profile.city = null; // Очищаем город, если регион не выбран
+  if (props.form.trainer_profile.region && props.form.trainer_profile.region.id) {
+    // Проверка на наличие ID
+    filteredDistricts.value = districts.value.filter(
+      (district) => district.region_id === props.form.trainer_profile.region.id
+    );
+    if (
+      !filteredDistricts.value.find(
+        (city) => city.id === props.form.trainer_profile.city?.id
+      )
+    ) {
+      props.form.trainer_profile.city = null;
     }
+  } else {
+    filteredDistricts.value = [];
+    props.form.trainer_profile.city = null; // Очищаем город, если регион не выбран
+  }
 };
 
 onMounted(async () => {
-    try {
-        const [regionsResponse, districtsResponse] = await Promise.all([
-            fetch("/path/to/regions.json"),
-            fetch("/path/to/districts.json"),
-        ]);
+  try {
+    regions.value = regionsData;
+    districts.value = districtsData;
 
-        regions.value = await regionsResponse.json();
-        districts.value = await districtsResponse.json();
-
-        if (props.form.trainer_profile && props.form.trainer_profile.region && typeof props.form.trainer_profile.region === 'string') {
-            const initialRegionName = props.form.trainer_profile.region;
-            const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
-            if (foundRegion) {
-                props.form.trainer_profile.region = foundRegion;
-                onRegionChange(); 
-            } else {
-                console.error(`Region with name "${initialRegionName}" not found!`);
-                props.form.trainer_profile.region = null;
-          }
-
-        }
-         
-
-    } catch (error) {
-        console.error("Failed to load data:", error);
+    if (
+      props.form.trainer_profile &&
+      props.form.trainer_profile.region &&
+      typeof props.form.trainer_profile.region === "string"
+    ) {
+      const initialRegionName = props.form.trainer_profile.region;
+      const foundRegion = regions.value.find(
+        (region) => region.name_uz === initialRegionName
+      );
+      if (foundRegion) {
+        props.form.trainer_profile.region = foundRegion;
+        onRegionChange();
+      } else {
+        console.error(`Region with name "${initialRegionName}" not found!`);
+        props.form.trainer_profile.region = null;
+      }
     }
+  } catch (error) {
+    console.error("Failed to load data:", error);
+  }
 });
 
 watch(
-    () => props.form,
-    (newForm) => {
-        if (newForm.trainer_profile) {
-            // Обработка region (с использованием ID)
-            if (typeof newForm.trainer_profile.region === 'string') {
-                const initialRegionName = newForm.trainer_profile.region;
-                const foundRegion = regions.value.find(region => region.name_uz === initialRegionName);
-                const initialCityName = newForm.trainer_profile.city;
-                const foundCity = districts.value.find(city => city.name_uz === initialCityName);
-                if (foundRegion) {
-                    props.form.trainer_profile.region = foundRegion;
-                    onRegionChange();
-                } else {
-                    props.form.trainer_profile.region = null;
-                }
-                if (foundCity) {
-                    props.form.trainer_profile.city = foundCity;
-                } else {
-                    props.form.trainer_profile.city = null;
-                }
-            } else if (!newForm.trainer_profile.region) {
-                filteredDistricts.value = [];
-                props.form.trainer_profile.city = null;
-            }
-
-            
+  () => props.form,
+  (newForm) => {
+    if (newForm.trainer_profile) {
+      // Обработка region (с использованием ID)
+      if (typeof newForm.trainer_profile.region === "string") {
+        const initialRegionName = newForm.trainer_profile.region;
+        const foundRegion = regions.value.find(
+          (region) => region.name_uz === initialRegionName
+        );
+        const initialCityName = newForm.trainer_profile.city;
+        const foundCity = districts.value.find(
+          (city) => city.name_uz === initialCityName
+        );
+        if (foundRegion) {
+          props.form.trainer_profile.region = foundRegion;
+          onRegionChange();
+        } else {
+          props.form.trainer_profile.region = null;
         }
-    },
-    { deep: true, immediate: true }
+        if (foundCity) {
+          props.form.trainer_profile.city = foundCity;
+        } else {
+          props.form.trainer_profile.city = null;
+        }
+      } else if (!newForm.trainer_profile.region) {
+        filteredDistricts.value = [];
+        props.form.trainer_profile.city = null;
+      }
+    }
+  },
+  { deep: true, immediate: true }
 );
 
-watch(
-    () => props.form.trainer_profile.region, onRegionChange
-);
+watch(() => props.form.trainer_profile.region, onRegionChange);
 
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
+    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
 
-    data.value = res.data.data
-      
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
-}
+};
 
-getData()
+getData();
 
 watch(selectedSport, (newVal) => {
   props.form.trainer_profile.sport_id = newVal ? newVal.id : null;
   localStorage.setItem("selectedSport", JSON.stringify(newVal));
 });
 
-watch(() => props.form.trainer_profile.sport_id, (newSportId) => {
-  // Find the sport in the data array
-  if (newSportId && data.value.length > 0) {
-    selectedSport.value = data.value.find(sport => sport.id === newSportId);
-  } else {
-    selectedSport.value = null;
-  }
-}, { immediate: true });
-
+watch(
+  () => props.form.trainer_profile.sport_id,
+  (newSportId) => {
+    // Find the sport in the data array
+    if (newSportId && data.value.length > 0) {
+      selectedSport.value = data.value.find((sport) => sport.id === newSportId);
+    } else {
+      selectedSport.value = null;
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   getData();
-  const savedSport = localStorage.getItem('selectedSport');
+  const savedSport = localStorage.getItem("selectedSport");
 
-  if (savedSport && savedSport !== 'undefined' && savedSport !== 'null') {
+  if (savedSport && savedSport !== "undefined" && savedSport !== "null") {
     selectedSport.value = JSON.parse(savedSport);
   }
-
 });
 </script>
 
 <style>
 input[type="date"] {
-  display:block !important;
-  position:relative;
-  padding:1rem 3.5rem 1rem 0.75rem;
-  font-size:1rem;
-  font-family:monospace;
-  border:1px solid #8292a2;
-  border-radius:0.25rem;
-  background:
-    white
+  display: block !important;
+  position: relative;
+  padding: 1rem 3.5rem 1rem 0.75rem;
+  font-size: 1rem;
+  font-family: monospace;
+  border: 1px solid #8292a2;
+  border-radius: 0.25rem;
+  background: white
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E")
-    right 1rem
-    center
-    no-repeat;
-  cursor:pointer;
+    right 1rem center no-repeat;
+  cursor: pointer;
 }
 
 ::-webkit-calendar-picker-indicator {
-  position:absolute;
-  width:2.5rem;
-  height:100%;
-  top:0;
-  right:0;
-  bottom:0;
-  opacity:0 !important;
-  cursor:pointer;
+  position: absolute;
+  width: 2.5rem;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0 !important;
+  cursor: pointer;
 }
 
-input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0 !important; }
-input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0 !important; }
-
+input[type="date"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 0 !important;
+}
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover {
+  opacity: 0 !important;
+}
 </style>

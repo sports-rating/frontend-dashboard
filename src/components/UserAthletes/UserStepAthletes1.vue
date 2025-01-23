@@ -401,6 +401,8 @@ import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 import { ref, computed, watch, onMounted } from "vue";
 import api from "../../utils/axios";
+import regionsData from "../../assets/data/regions.json";
+import districtsData from "../../assets/data/districts.json";
 
 const props = defineProps({
   form: Object,
@@ -443,12 +445,8 @@ const onRegionChange = () => {
 
 onMounted(async () => {
   try {
-    const response = await fetch("/regions.json");
-    const response1 = await fetch("/districts.json");
-    const text = await response.text();
-    const text1 = await response1.text();
-    regions.value = JSON.parse(text);
-    districts.value = JSON.parse(text1);
+    regions.value = regionsData;
+    districts.value = districtsData;
 
     if (
       props.form.sportsman_profile &&
