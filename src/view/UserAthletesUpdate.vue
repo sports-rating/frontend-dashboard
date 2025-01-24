@@ -1,197 +1,197 @@
 <template>
-  <div class=" mx-auto  p-4 rounded-xl border">
-  <Loading :isLoading="isLoading || isUploading" />
+  <div class="mx-auto p-4 rounded-xl border">
+    <Loading :isLoading="isLoading || isUploading" />
     <h2 class="text-2xl font-bold mb-6">Обновлять спортсменов</h2>
-    
-      <el-steps style="max-width: 600px" :active="active" finish-status="success"></el-steps>
-    
-    
-    <UserStep1 
-    v-if="active === 1"
-    :form="form"
-    :handleFileUpload="handleFileUpload" 
-    :athleteTypes="athleteTypes"
-    :errors="errors"
+
+    <el-steps
+      style="max-width: 600px"
+      :active="active"
+      finish-status="success"
+    ></el-steps>
+
+    <UserStep1
+      v-if="active === 1"
+      :form="form"
+      :handleFileUpload="handleFileUpload"
+      :athleteTypes="athleteTypes"
+      :errors="errors"
     />
 
     <UserStepAthletes2
-    v-if="active === 2"
-    :education="form.sportsman_profile.educations" 
-    @update-education="(updatedEducation) => form.sportsman_profile.educations = updatedEducation"
+      v-if="active === 2"
+      :education="form.sportsman_profile.educations"
+      @update-education="
+        (updatedEducation) => (form.sportsman_profile.educations = updatedEducation)
+      "
     />
 
-    <UserStepAthletes3 
-    v-if="active === 3"
-    :type-results="form.sportsman_profile.results" 
-    @update-result="(updatedResults) => form.sportsman_profile.results = updatedResults"
+    <UserStepAthletes3
+      v-if="active === 3"
+      :type-results="form.sportsman_profile.results"
+      @update-result="
+        (updatedResults) => (form.sportsman_profile.results = updatedResults)
+      "
     />
-    <UserStepAthletes5 
-    v-if="active === 4"
-    :media_ids="form.sportsman_profile.media_ids" 
-    :media_bay="mediaBay"
-    @update-media="(updatedMedia) => form.sportsman_profile.media_ids = updatedMedia"
+    <UserStepAthletes5
+      v-if="active === 4"
+      :media_ids="form.sportsman_profile.media_ids"
+      :media_bay="mediaBay"
+      @update-media="(updatedMedia) => (form.sportsman_profile.media_ids = updatedMedia)"
     />
-    
-      <div class="flex justify-end space-x-4 mt-5">
-        <button
-          type="button"
-          @click="goBack"
-          class="px-4 py-2 border border-gray-300 rounded-md  p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Назад
-        </button>
-        <button
-          type="submit"
-          @click="handleSubmit"
-          :disabled="isSubmitting ||
-          (active === 2 && (form.sportsman_profile.educations.length === 0)) ||
-          (active === 3 && (form.sportsman_profile.results.length === 0 ))
 
-          "
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-        >
-          {{ isSubmitting ? 'Сохранение...' : active === 4 ? 'Сохранить' :'Продолжить' }}
-        </button>
-
-        
-
-      </div>
+    <div class="flex justify-end space-x-4 mt-5">
+      <button
+        type="button"
+        @click="goBack"
+        class="px-4 py-2 border border-gray-300 rounded-md p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Назад
+      </button>
+      <button
+        type="submit"
+        @click="handleSubmit"
+        :disabled="
+          isSubmitting ||
+          (active === 2 && form.sportsman_profile.educations.length === 0) ||
+          (active === 3 && form.sportsman_profile.results.length === 0)
+        "
+        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+      >
+        {{ isSubmitting ? "Сохранение..." : active === 4 ? "Сохранить" : "Продолжить" }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import UserStep1 from '../components/UserAthletes/UserStepAthletes1.vue';
-import UserStepAthletes2 from '../components/UserAthletes/UserStepAthletes2.vue';
-import UserStepAthletes3 from '../components/UserAthletes/UserStepAthletes3.vue';
-import UserStepAthletes5 from '../components/UserAthletes/UserStepAthletes5.vue';
-import Loading from "../components/Loading.vue"
-import api from "../utils/axios"
-import router from '../router';
-import { useRoute } from 'vue-router'
+import { reactive, ref } from "vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import UserStep1 from "../components/UserAthletes/UserStepAthletes1.vue";
+import UserStepAthletes2 from "../components/UserAthletes/UserStepAthletes2.vue";
+import UserStepAthletes3 from "../components/UserAthletes/UserStepAthletes3.vue";
+import UserStepAthletes5 from "../components/UserAthletes/UserStepAthletes5.vue";
+import Loading from "../components/Loading.vue";
+import api from "../utils/axios";
+import router from "../router";
+import { useRoute } from "vue-router";
 
-
-const route = useRoute()
-const errors = reactive({})
-const isSubmitting = ref(false)
+const route = useRoute();
+const errors = reactive({});
+const isSubmitting = ref(false);
 const isUploading = ref(false);
-const active = ref(1)
+const active = ref(1);
 const isLoading = ref(false);
-const data = ref([])
-const mediaBay = ref([])
+const data = ref([]);
+const mediaBay = ref([]);
 
-const athleteTypes = ['Любитель', 'Профессионал', 'Начинающий']
-
-
-
+const athleteTypes = ["Любитель", "Профессионал", "Начинающий"];
 
 const form = reactive({
-  first_name: '',
-  last_name: '',
-  middle_name: '',
-  birth_date: '',
-  phone_number: '',
-  user_role:'sportsman',
-  email: '',
-  photo_id: '',
-  pinfl:'',
+  first_name: "",
+  last_name: "",
+  middle_name: "",
+  birth_date: "",
+  phone_number: "",
+  user_role: "sportsman",
+  email: "",
+  photo_id: "",
+  pinfl: "",
   sportsman_profile: {
-    sport_type: '',
-    sport_id: '',
-    motto: '',
-    height: '',
-    weight: '',
-    gender: '',
-    region: '',
-    about_me:'',
-    city: '',
-    street: '',
-    place_of_birth: '',
-    citizenship: '',
-    telegram: '',
-    instagram: '',
+    sport_type: "",
+    sport_id: "",
+    motto: "",
+    height: "",
+    weight: "",
+    gender: "",
+    region: "",
+    about_me: "",
+    city: "",
+    street: "",
+    place_of_birth: "",
+    citizenship: "",
+    telegram: "",
+    instagram: "",
     educations: [],
     media_ids: [],
     results: [],
-    trainer_id:'',
+    trainer_id: "",
   },
-
-})
-
+});
 
 const getData = async () => {
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/user/profile/sportsman/${route.params.id}`);
+      `https://api.7srating.uz/api/user/profile/sportsman/${route.params.id}`
+    );
 
-    data.value = res.data.data
-    form.first_name = res.data.data.first_name 
-    form.last_name = res.data.data.last_name  
-    form.middle_name = res.data.data.middle_name 
-    form.birth_date = res.data.data.birth_date 
-    form.phone_number = res.data.data.phone_number 
-    form.pinfl = res.data.data.pinfl 
-    form.email = res.data.data.email 
-    form.photo_id = res.data.data.photo[0]?.id 
-    form.sportsman_profile.sport_type = res.data.data.sportsman_profile.sport_type 
-    form.sportsman_profile.sport_id = res.data.data.sportsman_profile.sport.id
-    form.sportsman_profile.motto = res.data.data.sportsman_profile.motto 
-    form.sportsman_profile.height = res.data.data.sportsman_profile.height
-    form.sportsman_profile.weight = res.data.data.sportsman_profile.weight 
-    form.sportsman_profile.gender = res.data.data.sportsman_profile.gender
-    form.sportsman_profile.about_me = res.data.data.sportsman_profile.about_me
-    form.sportsman_profile.region = res.data.data.sportsman_profile.region
-    form.sportsman_profile.city = res.data.data.sportsman_profile.city
-    form.sportsman_profile.street = res.data.data.sportsman_profile.street
-    form.sportsman_profile.place_of_birth = res.data.data.sportsman_profile.place_of_birth
-    form.sportsman_profile.citizenship = res.data.data.sportsman_profile.citizenship
-    form.sportsman_profile.telegram = res.data.data.sportsman_profile.telegram
-    form.sportsman_profile.instagram = res.data.data.sportsman_profile.instagram
-    form.sportsman_profile.trainer_id = res.data.data.sportsman_profile.trainer_id
+    data.value = res.data.data;
+    form.first_name = res.data.data.first_name;
+    form.last_name = res.data.data.last_name;
+    form.middle_name = res.data.data.middle_name;
+    form.birth_date = res.data.data.birth_date;
+    form.phone_number = res.data.data.phone_number;
+    form.pinfl = res.data.data.pinfl;
+    form.email = res.data.data.email;
+    form.photo_id = res.data.data.photo[0]?.id;
+    form.sportsman_profile.sport_type = res.data.data.sportsman_profile.sport_type;
+    form.sportsman_profile.sport_id = res.data.data.sportsman_profile.sport.id;
+    form.sportsman_profile.motto = res.data.data.sportsman_profile.motto;
+    form.sportsman_profile.height = res.data.data.sportsman_profile.height;
+    form.sportsman_profile.weight = res.data.data.sportsman_profile.weight;
+    form.sportsman_profile.gender = res.data.data.sportsman_profile.gender;
+    form.sportsman_profile.about_me = res.data.data.sportsman_profile.about_me;
+    form.sportsman_profile.region = res.data.data.sportsman_profile.region;
+    form.sportsman_profile.city = res.data.data.sportsman_profile.city;
+    form.sportsman_profile.street = res.data.data.sportsman_profile.street;
+    form.sportsman_profile.place_of_birth =
+      res.data.data.sportsman_profile.place_of_birth;
+    form.sportsman_profile.citizenship = res.data.data.sportsman_profile.citizenship;
+    form.sportsman_profile.telegram = res.data.data.sportsman_profile.telegram;
+    form.sportsman_profile.instagram = res.data.data.sportsman_profile.instagram;
+    form.sportsman_profile.trainer_id = res.data.data.sportsman_profile.trainer_id;
 
+    form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map(
+      (edu) => ({
+        id: edu.id || "",
+        school: edu.school || "",
+        sport_type: edu.sport_id || "",
+        sport_id: edu.sport_id || "",
+        start_year: edu.start_year || "",
+        end_year: edu.end_year || "",
+        currently_studying: edu.currently_studying || false,
+      })
+    );
 
-    form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map((edu) => ({
-      id: edu.id || '',
-      school: edu.school || '',
-      sport_type: edu.sport_id || '',
-      sport_id: edu.sport_id || '',
-      start_year: edu.start_year || '',
-      end_year: edu.end_year || '',
-      currently_studying: edu.currently_studying || false,
-    }));
+    form.sportsman_profile.results = res.data.data.sportsman_profile.results.map(
+      (res) => ({
+        id: res.id || "",
+        name: res.tournament.name || "",
+        country: res.country || "",
+        year: res.year || "",
+        tournament_id: res.tournament.id || "",
+        rating: res.rating || "",
+        currently_participating: res.currently_participating || false,
+      })
+    );
 
-    form.sportsman_profile.results = res.data.data.sportsman_profile.results.map((res) => ({
-      id: res.id || '',
-      name: res.tournament.name || '',
-      country: res.country || '',
-      year: res.year || '',
-      tournament_id: res.tournament.id || '',
-      rating: res.rating || '',
-      currently_participating: res.currently_participating || false,
-
-    }));
-
-    form.sportsman_profile.media_ids = res.data.data.sportsman_profile.media.map((item) => item.id)
-    mediaBay.value = res.data.data.sportsman_profile.media
-
+    form.sportsman_profile.media_ids = res.data.data.sportsman_profile.media.map(
+      (item) => item.id
+    );
+    mediaBay.value = res.data.data.sportsman_profile.media;
   } catch (e) {
     console.log(e);
-    
   }
 };
 
-getData()
-
-
+getData();
 
 const validateForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 
   if (active.value === 1) {
-    if (!form.first_name) errors.first_name = 'Имя обязательно.';
-    if (!form.last_name) errors.last_name = 'Фамилия обязательна.';
+    if (!form.first_name) errors.first_name = "Имя обязательно.";
+    if (!form.last_name) errors.last_name = "Фамилия обязательна.";
     // if (!form.phone_number) {
     //   errors.phone_number = 'Номер телефона обязателен.';
     // } else {
@@ -203,33 +203,36 @@ const validateForm = () => {
     //   }
     // }
     if (!form.pinfl) {
-      errors.pinfl = 'ЖШШИР обязательна.';
+      errors.pinfl = "ЖШШИР обязательна.";
     } else {
-      const trimmedPinfl = form.pinfl.replace(/\s/g, '');
+      const trimmedPinfl = form.pinfl.replace(/\s/g, "");
       if (trimmedPinfl.length !== 14) {
-        errors.pinfl = 'ЖШШИР должен содержать ровно 14 символов';
+        errors.pinfl = "ЖШШИР должен содержать ровно 14 символов";
       }
     }
-    if (!form.sportsman_profile.trainer_id) errors.trainer_id = 'Tренер  обязательна.';
-    if (!form.middle_name) errors.middle_name = 'Отчество обязательна.';
-    if (!form.sportsman_profile.sport_type) errors.sport_type = 'Тип спортсмена обязателен.';
-    if (!form.sportsman_profile.sport_id) errors.sport_direction = 'Направление спорта обязательно.';
-    if (!form.sportsman_profile.motto) errors.motto = 'Девизион спортсмена обязательно.';
-    if (!form.birth_date) errors.birth_date = 'Дата рождения обязательна.';
-    if (!form.sportsman_profile.gender) errors.gender = 'Пол обязателен.';
-    if (!form.sportsman_profile.about_me) errors.about_me = 'Обо мне обязателен.';
-    if (!form.sportsman_profile.height) errors.height = 'Рост обязатлен.';
-    if (!form.sportsman_profile.weight) errors.weight = 'Вес обязателен.';
-    if (!form.sportsman_profile.region) errors.region = 'Регион обязателен.';
-    if (!form.sportsman_profile.city) errors.city = 'Город обязателен.';
-    if (!form.sportsman_profile.street) errors.street = 'Улица обязателен.';
-    if (!form.sportsman_profile.place_of_birth) errors.place_of_birth = 'Место рождения обязательна.';
-    if (!form.sportsman_profile.citizenship) errors.citizenship = 'Гражданство обязательна.';
+    if (!form.sportsman_profile.trainer_id) errors.trainer_id = "Tренер  обязательна.";
+    if (!form.middle_name) errors.middle_name = "Отчество обязательна.";
+    if (!form.sportsman_profile.sport_type)
+      errors.sport_type = "Тип спортсмена обязателен.";
+    if (!form.sportsman_profile.sport_id)
+      errors.sport_direction = "Направление спорта обязательно.";
+    if (!form.sportsman_profile.motto) errors.motto = "Девизион спортсмена обязательно.";
+    if (!form.birth_date) errors.birth_date = "Дата рождения обязательна.";
+    if (!form.sportsman_profile.gender) errors.gender = "Пол обязателен.";
+    if (!form.sportsman_profile.about_me) errors.about_me = "Обо мне обязателен.";
+    if (!form.sportsman_profile.height) errors.height = "Рост обязатлен.";
+    if (!form.sportsman_profile.weight) errors.weight = "Вес обязателен.";
+    if (!form.sportsman_profile.region) errors.region = "Регион обязателен.";
+    if (!form.sportsman_profile.city) errors.city = "Город обязателен.";
+    if (!form.sportsman_profile.street) errors.street = "Улица обязателен.";
+    if (!form.sportsman_profile.place_of_birth)
+      errors.place_of_birth = "Место рождения обязательна.";
+    if (!form.sportsman_profile.citizenship)
+      errors.citizenship = "Гражданство обязательна.";
   }
 
   return Object.keys(errors).length === 0;
 };
-
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
@@ -260,34 +263,29 @@ const handleFileUpload = async (event) => {
     // if (!Array.isArray(form.photo_id)) {
     //   form.photo_id = '';
     // }
-    form.photo_id = response.data.data.id; 
+    form.photo_id = response.data.data.id;
 
     form.photoName = file.name;
   } catch (error) {
     console.error("File upload failed:", error.response?.data || error.message);
-  }
-  finally {
+  } finally {
     isUploading.value = false;
   }
 };
 
-
-
 const handleSubmit = async () => {
   if (!validateForm()) {
-    const firstErrorKey = Object.keys(errors)[0]; 
-if (firstErrorKey) {
-  toast.error(errors[firstErrorKey], {
-    autoClose: 3000,
-  });
-}
+    const firstErrorKey = Object.keys(errors)[0];
+    if (firstErrorKey) {
+      toast.error(errors[firstErrorKey], {
+        autoClose: 3000,
+      });
+    }
     return;
   }
 
   if (active.value < 4) {
     active.value++;
-    
-    
   } else {
     isSubmitting.value = true;
     isLoading.value = true;
@@ -295,34 +293,35 @@ if (firstErrorKey) {
     try {
       const payload = {
         ...form,
-        phone_number: form.phone_number.replaceAll(' ', ''),
+        phone_number:
+          form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
         sportsman_profile: {
-      ...form.sportsman_profile, 
-      city: form.sportsman_profile.city.name_uz, 
-      region: form.sportsman_profile.region.name_uz 
-    }
+          ...form.sportsman_profile,
+          city: form.sportsman_profile.city.name_uz,
+          region: form.sportsman_profile.region.name_uz,
+        },
       };
 
       await api.put(
         `https://api.7srating.uz/api/user/profile/sportsman/${route.params.id}/`,
-        payload, 
+        payload,
         {
           headers: {
-            'Content-Type': 'application/json', // JSON formatda yuborish
+            "Content-Type": "application/json", // JSON formatda yuborish
           },
         }
       );
-      toast.success('Success to Sportsman', {
-      autoClose: 3000,
-      })
-      localStorage.removeItem('selectedSport');
-      localStorage.removeItem('selectedTrainer');
-        router.push('/')
+      toast.success("Success to Sportsman", {
+        autoClose: 3000,
+      });
+      localStorage.removeItem("selectedSport");
+      localStorage.removeItem("selectedTrainer");
+      router.push("/");
     } catch (error) {
-      console.error('Submission error:', error);
+      console.error("Submission error:", error);
       toast.error(error.response.data.message, {
-      autoClose: 3000,
-    })
+        autoClose: 3000,
+      });
     } finally {
       isSubmitting.value = false;
       isLoading.value = false;
@@ -330,22 +329,19 @@ if (firstErrorKey) {
   }
 };
 
-
 const goBack = () => {
   if (active.value > 1) {
-    active.value -= 1; 
+    active.value -= 1;
   } else {
     window.history.go(-1);
-    localStorage.removeItem('schools');
-    localStorage.removeItem('selectedSport');
-      localStorage.removeItem('selectedTrainer');
+    localStorage.removeItem("schools");
+    localStorage.removeItem("selectedSport");
+    localStorage.removeItem("selectedTrainer");
 
     Object.keys(form).forEach((key) => {
-    form[key] = Array.isArray(form[key]) ? [] : '';
+      form[key] = Array.isArray(form[key]) ? [] : "";
     });
     Object.keys(errors).forEach((key) => delete errors[key]);
   }
 };
-
-
 </script>

@@ -443,33 +443,6 @@ const onRegionChange = () => {
   }
 };
 
-onMounted(async () => {
-  try {
-    regions.value = regionsData;
-    districts.value = districtsData;
-
-    if (
-      props.form.sportsman_profile &&
-      props.form.sportsman_profile.region &&
-      typeof props.form.sportsman_profile.region === "string"
-    ) {
-      const initialRegionName = props.form.sportsman_profile.region;
-      const foundRegion = regions.value.find(
-        (region) => region.name_uz === initialRegionName
-      );
-      if (foundRegion) {
-        props.form.sportsman_profile.region = foundRegion;
-        onRegionChange();
-      } else {
-        console.error(`Region with name "${initialRegionName}" not found!`);
-        props.form.sportsman_profile.region = null;
-      }
-    }
-  } catch (error) {
-    console.error("Failed to load data:", error);
-  }
-});
-
 watch(
   () => props.form,
   (newForm) => {
@@ -608,6 +581,33 @@ onMounted(() => {
 
   if (savedTrainer && savedTrainer !== "undefined" && savedTrainer !== "null") {
     selectedTrainer.value = JSON.parse(savedTrainer);
+  }
+});
+
+onMounted(async () => {
+  try {
+    regions.value = regionsData;
+    districts.value = districtsData;
+
+    if (
+      props.form.sportsman_profile &&
+      props.form.sportsman_profile.region &&
+      typeof props.form.sportsman_profile.region === "string"
+    ) {
+      const initialRegionName = props.form.sportsman_profile.region;
+      const foundRegion = regions.value.find(
+        (region) => region.name_uz === initialRegionName
+      );
+      if (foundRegion) {
+        props.form.sportsman_profile.region = foundRegion;
+        onRegionChange();
+      } else {
+        console.error(`Region with name "${initialRegionName}" not found!`);
+        props.form.sportsman_profile.region = null;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load data:", error);
   }
 });
 </script>
