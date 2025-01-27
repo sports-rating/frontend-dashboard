@@ -216,6 +216,7 @@ const handleSubmit = async () => {
 
   if (active.value < 4) {
     active.value++;
+    console.log(form, "form");
   } else {
     isSubmitting.value = true;
     isLoading.value = true;

@@ -1,6 +1,3 @@
-
-
-
 <template>
   <div>
     <!-- Breadcrumb -->
@@ -18,7 +15,10 @@
         <h1 class="text-2xl font-semibold mb-6">Образование</h1>
 
         <!-- Table -->
-        <div v-if="schools.length > 0" class="overflow-x-auto bg-white rounded-lg shadow w-full">
+        <div
+          v-if="schools.length > 0"
+          class="overflow-x-auto bg-white rounded-lg shadow w-full"
+        >
           <table class="w-full">
             <thead>
               <tr class="border-b">
@@ -33,21 +33,25 @@
               <tr v-for="(school, index) in schools" :key="school.id" class="border-b">
                 <td class="py-3 px-4">{{ index + 1 }}</td>
                 <td class="py-3 px-4">
-                {{ getName(school.school) }}
+                  {{ getName(school.school) }}
                 </td>
                 <td class="py-3 px-4">
-                <!-- {{ school.sport_type }} -->
-                {{ getSportName(school.sport_type) }}
+                  <!-- {{ school.sport_type }} -->
+                  {{ getSportName() }}
                 </td>
-                 <td class="py-3 px-4">
-                {{ school.start_year }} - {{ school.end_year }}
-              </td>
+                <td class="py-3 px-4">{{ school.start_year }} - {{ school.end_year }}</td>
                 <td class="py-3 px-4 space-x-2">
-                  <button @click="editSchool(school)" class="text-blue-600 hover:text-blue-800">
-                    <img src="../../assets/img/edit.svg"  alt="edit" >
+                  <button
+                    @click="editSchool(school)"
+                    class="text-blue-600 hover:text-blue-800"
+                  >
+                    <img src="../../assets/img/edit.svg" alt="edit" />
                   </button>
-                  <button @click="deleteSchool(school.id)" class="text-red-600 hover:text-red-800">
-                    <img src="../../assets/img/delete.svg" alt="delete" >
+                  <button
+                    @click="deleteSchool(school.id)"
+                    class="text-red-600 hover:text-red-800"
+                  >
+                    <img src="../../assets/img/delete.svg" alt="delete" />
                   </button>
                 </td>
               </tr>
@@ -56,10 +60,10 @@
         </div>
 
         <!-- Add Button -->
-        <button 
+        <button
           @click="openModal()"
           :class="schools.length > 0 ? 'mt-6' : 'mt-0'"
-          class=" px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
         >
           Добавить запись
         </button>
@@ -67,10 +71,15 @@
     </div>
 
     <!-- Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center">
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center"
+    >
       <div class="bg-white rounded-lg w-full max-w-md p-6">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-semibold">{{ editingSchool ? 'Редактировать школу' : 'Добавить новую школу' }}</h2>
+          <h2 class="text-xl font-semibold">
+            {{ editingSchool ? "Редактировать школу" : "Добавить новую школу" }}
+          </h2>
           <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
             <!-- <XIcon class="h-5 w-5" /> -->
 
@@ -93,14 +102,14 @@
 
               <div class="flex gap-2 items-center justify-center">
                 <multiselect
-              v-model="currentSchool.school"
-              :options="dataSchool"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Школа молодых спортсменов"
-              class="mt-1 "
-            />
+                  v-model="currentSchool.school"
+                  :options="dataSchool"
+                  label="name"
+                  track-by="id"
+                  value-prop="id"
+                  placeholder="Школа молодых спортсменов"
+                  class="mt-1"
+                />
                 <!-- <button 
                 @click="createSchool"
             type="submit"
@@ -108,88 +117,107 @@
           >
             +
           </button> -->
-
               </div>
-               <p v-if="errors.school" class="text-red-500 text-sm mt-1">{{ errors.school }}</p>
+              <p v-if="errors.school" class="text-red-500 text-sm mt-1">
+                {{ errors.school }}
+              </p>
             </div>
 
-            <div>
+            <!-- <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Вид спорта
               </label>
-              
+
               <multiselect
-              v-model="currentSchool.sport_type"
-              :options="data"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите вид спорта"
-              class="mt-1 "
-            />
-            <p v-if="errors.sport_type" class="text-red-500 text-sm mt-1">{{ errors.sport_type }}</p>
-            </div>
+                v-model="currentSchool.sport_type"
+                :options="data"
+                label="name"
+                track-by="id"
+                value-prop="id"
+                placeholder="Выберите вид спорта"
+                class="mt-1"
+              />
+              <p v-if="errors.sport_type" class="text-red-500 text-sm mt-1">
+                {{ errors.sport_type }}
+              </p>
+            </div> -->
 
             <div>
-        <label class="block text-sm font-medium text-gray-700">Период времени</label>
-        <div class="grid grid-cols-2 gap-4 mt-1">
-        <input v-model="currentSchool.start_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
-          <input v-model="currentSchool.end_year" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2">
+              <label class="block text-sm font-medium text-gray-700"
+                >Период времени</label
+              >
+              <div class="grid grid-cols-2 gap-4 mt-1">
+                <input
+                  v-model="currentSchool.start_year"
+                  type="date"
+                  min="2000-01-01"
+                  max="2026-01-01"
+                  class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
+                />
+                <input
+                  v-model="currentSchool.end_year"
+                  type="date"
+                  min="2000-01-01"
+                  max="2026-01-01"
+                  class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
+                />
 
-          <p v-if="errors.start_year" class="text-red-500 text-sm mt-1">{{ errors.start_year }}</p>
-            <p v-if="errors.end_year" class="text-red-500 text-sm mt-1">{{ errors.end_year }}</p>
-            <p v-if="errors.date" class="text-red-500 text-sm mt-1">{{ errors.date }}</p>
-        </div>
-      </div>
+                <p v-if="errors.start_year" class="text-red-500 text-sm mt-1">
+                  {{ errors.start_year }}
+                </p>
+                <p v-if="errors.end_year" class="text-red-500 text-sm mt-1">
+                  {{ errors.end_year }}
+                </p>
+                <p v-if="errors.date" class="text-red-500 text-sm mt-1">
+                  {{ errors.date }}
+                </p>
+              </div>
+            </div>
 
             <div class="flex items-center gap-4">
-              <input 
+              <input
                 v-model="currentSchool.currently_studying"
                 type="checkbox"
-                class="px-3 py-2 "
+                class="px-3 py-2"
               />
-              <label class=" text-sm font-medium text-gray-700 ">
+              <label class="text-sm font-medium text-gray-700">
                 участвую в настоящий время
               </label>
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             class="w-full mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           >
-            {{ editingSchool ? 'Сохранить' : 'Готово' }}
+            {{ editingSchool ? "Сохранить" : "Готово" }}
           </button>
-
         </form>
       </div>
     </div>
-
-
-    
   </div>
 </template>
 
 <script setup>
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { ref, onMounted, watch } from 'vue'
-import api from "../../utils/axios"
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.min.css";
+import { ref, onMounted, watch } from "vue";
+import api from "../../utils/axios";
 
 const props = defineProps({
   education: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const schools = ref([])
-const data = ref([])
-const dataSchool = ref([])
-const showModal = ref(false)
-const showCreate = ref(false)
-const errors = ref({}); 
-const editingSchool = ref(null)
+const schools = ref([]);
+const data = ref([]);
+const dataSchool = ref([]);
+const showModal = ref(false);
+const showCreate = ref(false);
+const errors = ref({});
+const editingSchool = ref(null);
 
 // const name = ref(null)
 // const address = ref(null)
@@ -199,112 +227,109 @@ const editingSchool = ref(null)
 // const director = ref(null)
 
 const currentSchool = ref({
-  id: '',
-  school: '',
-  sport_type: '',
-  start_year: '',
-  end_year: '',
+  id: "",
+  school: "",
+  sport_type: "",
+  start_year: "",
+  end_year: "",
   currently_studying: false,
-})
+});
 
-
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
+    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
 
-    data.value = res.data.data
-      
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
-}
-getData()
+};
+getData();
 
-const getDataa = async() => {
+const getDataa = async () => {
+  const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));
   try {
     const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/school/');
+      `https://api.7srating.uz/api/dashboard/school/?sport=${selectedSport.name}`
+    );
 
-    dataSchool.value = res.data.data
-      
+    dataSchool.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
-}
-getDataa()
+};
+getDataa();
 
-const emit = defineEmits(['update-education']);
+const emit = defineEmits(["update-education"]);
 const currentEducation = ref({ ...props.education });
-currentEducation.value = schools.value
-
+currentEducation.value = schools.value;
 
 onMounted(() => {
   if (props.education.length > 0) {
     schools.value = props.education.map((edu) => ({
-      id: edu.id || '',
-      school: edu.school || '',
-      sport_type: edu.sport_id || '',
-      start_year: edu.start_year || '',
-      end_year: edu.end_year || '',
+      id: edu.id || "",
+      school: edu.school || "",
+      sport_type: edu.sport_id || "",
+      start_year: edu.start_year || "",
+      end_year: edu.end_year || "",
       currently_studying: edu.currently_studying || false,
     }));
   }
 
-  
-  const savedSchools = localStorage.getItem('schools')
-  if (savedSchools) {
-    schools.value = JSON.parse(savedSchools)
-  }
-})
+  const savedSchools = localStorage.getItem("schools");
 
-watch(schools, (newSchools) => {
-  localStorage.setItem('schools', JSON.stringify(newSchools))
-  currentEducation.value = newSchools
-}, { deep: true })
+  if (savedSchools) {
+    schools.value = JSON.parse(savedSchools);
+  }
+});
+
+watch(
+  schools,
+  (newSchools) => {
+    localStorage.setItem("schools", JSON.stringify(newSchools));
+    currentEducation.value = newSchools;
+  },
+  { deep: true }
+);
 
 const openModal = () => {
-  editingSchool.value = null
+  editingSchool.value = null;
   currentSchool.value = {
-    id: '',
-    school: '',
-    sport_type: '',
-    start_year: '',
-    end_year: '',
+    id: "",
+    school: "",
+    sport_type: "",
+    start_year: "",
+    end_year: "",
     currently_studying: false,
-  }
-  errors.value = {}; 
-  showModal.value = true
-}
+  };
+  errors.value = {};
+  showModal.value = true;
+};
 
 const closeModal = () => {
-  showModal.value = false
-  editingSchool.value = null
+  showModal.value = false;
+  editingSchool.value = null;
   errors.value = {};
-}
+};
 
-
-
-const getSportName = (sportTypeId) => {
-  const sport = data.value.find((item) => item.id === sportTypeId);
-  return sport ? sport.name : 'Неизвестно'; 
+const getSportName = () => {
+  const savedSport = localStorage.getItem("selectedSport");
+  const sport = JSON.parse(savedSport);
+  return sport ? sport.name : "Неизвестно";
 };
 
 const getName = (sportTypeId) => {
   const sport = dataSchool.value.find((item) => item.id === sportTypeId);
-  return sport ? sport.name : 'Неизвестно'; 
+  return sport ? sport.name : "Неизвестно";
 };
-
 
 // Validate fields
 const validateForm = () => {
-  const { school, sport_type, start_year, end_year } = currentSchool.value;
+  const { school, start_year, end_year } = currentSchool.value;
   const validationErrors = {};
 
   if (!school) validationErrors.school = "Наименование школы обязательно.";
-  if (!sport_type) validationErrors.sport_type = "Вид спорта обязателен.";
+  // if (!sport_type) validationErrors.sport_type = "Вид спорта обязателен.";
   if (!start_year) validationErrors.start_year = "Укажите начальный год.";
   if (!end_year) validationErrors.end_year = "Укажите конечный год.";
   if (start_year && end_year && new Date(start_year) >= new Date(end_year)) {
@@ -315,101 +340,98 @@ const validateForm = () => {
   return Object.keys(validationErrors).length === 0;
 };
 
-
-
 const submitForm = () => {
-   if (!validateForm()) return;
-
-   
-   const { id, school, sport_type, start_year, end_year, currently_studying } = currentSchool.value
-    const newSchool = {
+  if (!validateForm()) return;
+  const savedSport = localStorage.getItem("selectedSport");
+  const typeId = JSON.parse(savedSport);
+  const { id, school, start_year, end_year, currently_studying } = currentSchool.value;
+  const newSchool = {
     id: id || String(Math.floor(10000 + Math.random() * 90000)),
     school: school.id,
-    sport_type: sport_type.id,
+    sport_type: typeId.id,
     start_year,
     end_year,
     currently_studying,
-  }
+  };
 
   if (editingSchool.value) {
-    const index = schools.value.findIndex(school => school.id === editingSchool.value.id)
+    const index = schools.value.findIndex(
+      (school) => school.id === editingSchool.value.id
+    );
     if (index !== -1) {
-      schools.value[index] = newSchool
+      schools.value[index] = newSchool;
     }
   } else {
-    schools.value.push(newSchool)
+    schools.value.push(newSchool);
   }
 
-  closeModal()
-}
+  closeModal();
+};
 
 const editSchool = (school) => {
-  const selectedSchool = data.value.find(item => item.id === school.sport_type);
-  const selectedName = dataSchool.value.find(item => item.id === school.school);
-  
-  editingSchool.value = school
+  // const selectedSchool = data.value.find((item) => item.id === school.sport_type);
+  const selectedName = dataSchool.value.find((item) => item.id === school.school);
+
+  const savedSport = localStorage.getItem("selectedSport");
+  const typeId = JSON.parse(savedSport);
+
+  editingSchool.value = school;
   currentSchool.value = {
-      id: school.id || '',
-      school: selectedName || '',
-      sport_type: selectedSchool,
-      start_year: school.start_year || '',
-      end_year: school.end_year || '',
-      currently_studying: school.currently_studying || false,
-    };
+    id: school.id || "",
+    school: selectedName || "",
+    sport_type: typeId.id,
+    start_year: school.start_year || "",
+    end_year: school.end_year || "",
+    currently_studying: school.currently_studying || false,
+  };
 
   errors.value = {};
-  showModal.value = true
-}
+  showModal.value = true;
+};
 
 const deleteSchool = (id) => {
-    schools.value = schools.value.filter(school => school.id !== id)
-}
+  schools.value = schools.value.filter((school) => school.id !== id);
+};
 
-
-
-
-
-watch(currentEducation, (newValue) => {
-  emit('update-education', newValue);
-  
-}, { deep: true });
-
-
-
-
+watch(
+  currentEducation,
+  (newValue) => {
+    emit("update-education", newValue);
+  },
+  { deep: true }
+);
 </script>
-
 
 <style>
 input[type="date"] {
-  display:block !important;
-  position:relative;
-  padding:1rem 3.5rem 1rem 0.75rem;
-  font-size:1rem;
-  font-family:monospace;
-  border:1px solid #8292a2;
-  border-radius:0.25rem;
-  background:
-    white
+  display: block !important;
+  position: relative;
+  padding: 1rem 3.5rem 1rem 0.75rem;
+  font-size: 1rem;
+  font-family: monospace;
+  border: 1px solid #8292a2;
+  border-radius: 0.25rem;
+  background: white
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E")
-    right 1rem
-    center
-    no-repeat;
-  cursor:pointer;
+    right 1rem center no-repeat;
+  cursor: pointer;
 }
 
 ::-webkit-calendar-picker-indicator {
-  position:absolute;
-  width:2.5rem;
-  height:100%;
-  top:0;
-  right:0;
-  bottom:0;
-  opacity:0 !important;
-  cursor:pointer;
+  position: absolute;
+  width: 2.5rem;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0 !important;
+  cursor: pointer;
 }
 
-input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0 !important; }
-input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0 !important; }
-
+input[type="date"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 0 !important;
+}
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover {
+  opacity: 0 !important;
+}
 </style>
