@@ -1,9 +1,8 @@
 <template>
-  <div class=" mx-auto  p-4 rounded-xl border">
+  <div class="mx-auto p-4 rounded-xl border">
     <h2 class="text-2xl font-bold mb-6">Добавить турнир</h2>
 
-
-      <form @submit.prevent="handleSubmit" class="space-y-8" >
+    <form @submit.prevent="handleSubmit" class="space-y-8">
       <!-- Personal Information Section -->
       <section>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -17,14 +16,14 @@
             />
             <span class="text-red-500 mt-1" v-if="errors.name">{{ errors.name }}</span>
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-gray-700">Место</label>
             <input
               v-model="form.place"
               type="text"
               placeholder="Введите Место"
-              class="mt-1  bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+              class="mt-1 bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
             <span class="text-red-500 mt-1" v-if="errors.place">{{ errors.place }}</span>
@@ -38,36 +37,46 @@
               placeholder="Введите Разделение"
               class="mt-1 bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.division">{{ errors.division }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.division">{{
+              errors.division
+            }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Время</label>
 
-            <input v-model="form.start_time" type="date"  min="2000-01-01" max="2026-01-01" class="!h-10 !w-full !mt-1 !border !rounded-md p-2 ">
+            <input
+              v-model="form.start_time"
+              type="date"
+              min="2000-01-01"
+              max="2026-01-01"
+              class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
+            />
 
-            <span class="text-red-500 mt-1" v-if="errors.start_time">{{ errors.start_time }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.start_time">{{
+              errors.start_time
+            }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
 
-        <multiselect
+            <multiselect
               v-model="form.sport_id"
               :options="data"
               label="name"
               track-by="id"
               value-prop="id"
               placeholder="Выберите sport"
-              class="mt-1 "
+              class="mt-1"
             />
-            <span class="text-red-500 mt-1" v-if="errors.sport_id">{{ errors.sport_id }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.sport_id">{{
+              errors.sport_id
+            }}</span>
           </div>
 
           <div class="col-span-1">
-            <label class="block text-sm font-medium text-gray-700">
-              Фотография
-            </label>
+            <label class="block text-sm font-medium text-gray-700"> Фотография </label>
             <div class="mt-1 flex items-center">
               <input
                 id="upload"
@@ -80,67 +89,60 @@
                 for="upload"
                 class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
               >
-                <span class="text-sm text-gray-600">{{ form.photoName || 'Выберите файл' }}</span>
+                <span class="text-sm text-gray-600">{{
+                  form.photoName || "Выберите файл"
+                }}</span>
               </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
           </div>
-
-          
         </div>
       </section>
-
-      
-
     </form>
-    
-      <div class="flex justify-end space-x-4 mt-5">
-        <button
-          type="button"
-          @click="goBack"
-          class="px-4 py-2 border border-gray-300 rounded-md  p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Отмена
-        </button>
-        <button
-          type="submit"
-          @click="handleSubmit"
-          :disabled="isSubmitting || isUploading"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-        >
-          {{ isSubmitting ?  'Сохранить...' :'Добавить ' }}
-        </button>
 
-        
-
-      </div>
+    <div class="flex justify-end space-x-4 mt-5">
+      <button
+        type="button"
+        @click="goBack"
+        class="px-4 py-2 border border-gray-300 rounded-md p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Отмена
+      </button>
+      <button
+        type="submit"
+        @click="handleSubmit"
+        :disabled="isSubmitting || isUploading"
+        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+      >
+        {{ isSubmitting ? "Сохранить..." : "Добавить " }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { reactive, ref } from 'vue'
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import api from "../../utils/axios"
-import router from '../../router';
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.min.css";
+import { reactive, ref } from "vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import api from "../../utils/axios";
+import router from "../../router";
 
-const errors = reactive({})
-const isSubmitting = ref(false)
-const data = ref([])
-const isUploading = ref(false); 
-
+const errors = reactive({});
+const isSubmitting = ref(false);
+const data = ref([]);
+const isUploading = ref(false);
 
 const form = reactive({
-  name: '',
-  place: '',
-  division: '',
-  start_time: '',
-  sport_type:'',
+  name: "",
+  place: "",
+  division: "",
+  start_time: "",
+  sport_type: "",
   logo_id: [],
-  sport_id:'',
-})
+  sport_id: "",
+});
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
@@ -150,7 +152,7 @@ const handleFileUpload = async (event) => {
     return;
   }
 
-  isUploading.value = true; 
+  isUploading.value = true;
 
   const formData = new FormData();
   formData.append("file", file);
@@ -188,50 +190,43 @@ const validateForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 
   // Validate required fields
-  if (!form.name) errors.name = 'Имя обязательно.';
-  if (!form.place) errors.place = 'Место обязательно.';
-  if (!form.division) errors.division = 'Разделение обязательно.';
-  if (!form.sport_id) errors.sport_id = 'Тип спорта обязателен.';
+  if (!form.name) errors.name = "Имя обязательно.";
+  if (!form.place) errors.place = "Место обязательно.";
+  if (!form.division) errors.division = "Разделение обязательно.";
+  if (!form.sport_id) errors.sport_id = "Тип спорта обязателен.";
 
   // Validate start_time and end_time
   if (!form.start_time) {
-    errors.start_time = 'Время обязательно.';
+    errors.start_time = "Время обязательно.";
   } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
-    errors.start_time = 'Введите корректную дату (YYYY-MM-DD).';
+    errors.start_time = "Введите корректную дату (YYYY-MM-DD).";
   }
-
 
   return Object.keys(errors).length === 0;
 };
 
-
 const goBack = () => {
-    window.history.go(-1);
+  window.history.go(-1);
 };
 
-
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/sport/');
+    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
 
-    data.value = res.data.data
-      
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
-    
   }
-}
+};
 
-getData()
+getData();
 
 const handleSubmit = async () => {
   if (!validateForm()) {
-    console.error('Validation failed:', errors);
+    console.error("Validation failed:", errors);
     return;
   }
 
-  // Add sport_id directly to the form object
   form.sport_id = form.sport_id.id;
 
   try {
@@ -242,18 +237,14 @@ const handleSubmit = async () => {
     toast.success("Success to Tournament", {
       autoClose: 3000,
     });
-    router.push('/tournament-list');
+    router.push("/tournament-list");
   } catch (error) {
-    console.error('Submission error:', error);
-    toast.error(error.response?.data?.data || 'An error occurred', {
+    console.error("Submission error:", error);
+    toast.error(error.response?.data?.data || "An error occurred", {
       autoClose: 3000,
     });
   } finally {
     isSubmitting.value = false;
   }
 };
-
-
 </script>
-
-
