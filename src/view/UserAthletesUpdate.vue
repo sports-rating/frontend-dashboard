@@ -27,9 +27,9 @@
 
     <UserStepAthletes3
       v-if="active === 3"
-      :type-results="form.sportsman_profile.results"
+      :type-results="form.sportsman_profile.sportsman_results"
       @update-result="
-        (updatedResults) => (form.sportsman_profile.results = updatedResults)
+        (updatedResults) => (form.sportsman_profile.sportsman_results = updatedResults)
       "
     />
     <UserStepAthletes5
@@ -53,7 +53,7 @@
         :disabled="
           isSubmitting ||
           (active === 2 && form.sportsman_profile.educations.length === 0) ||
-          (active === 3 && form.sportsman_profile.results.length === 0)
+          (active === 3 && form.sportsman_profile.sportsman_results.length === 0)
         "
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
       >
@@ -114,7 +114,7 @@ const form = reactive({
     instagram: "",
     educations: [],
     media_ids: [],
-    results: [],
+    sportsman_results: [],
     trainer_id: "",
   },
 });
@@ -163,7 +163,7 @@ const getData = async () => {
       })
     );
 
-    form.sportsman_profile.results = res.data.data.sportsman_profile.results.map(
+    form.sportsman_profile.sportsman_results = res.data.data.sportsman_profile.sportsman_results.map(
       (res) => ({
         id: res.id || "",
         name: res.tournament.name || "",

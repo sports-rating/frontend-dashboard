@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <div
       v-if="isModalOpen"
       class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
@@ -169,18 +169,12 @@
                     v-if="user.user_role !== 'trainer'"
                     :to="`/user-athletes/edit/${user.id}`"
                   >
-                    <!-- <span>
-                    <img src="/edit.svg" alt="">
-                  </span> -->
                     Обновить
                   </router-link>
                   <router-link
                     v-if="user.user_role === 'trainer'"
                     :to="`/user-trainer/edit/${user.id}`"
                   >
-                    <!-- <span>
-                    <img src="/edit.svg" alt="">
-                  </span> -->
                     Обновить
                   </router-link>
                 </button>
@@ -190,9 +184,6 @@
                   class="hover:text-gray-300 text-white border p-2 rounded-lg bg-red-500"
                 >
                   Удалить
-                  <!-- <span>
-                    <img src="/delete.svg" alt="">
-                  </span> -->
                 </button>
               </td>
             </tr>
@@ -201,6 +192,13 @@
       </div>
     </div>
 
+    <!-- <VuePagination
+      v-model="currentPage"
+      :pages="10"
+      :range-size="100"
+      active-color="#f52105"
+      @update:modelValue="updateHandler"
+    /> -->
     <ExportModal
       :is-open="showExportModal"
       @close="showExportModal = false"
@@ -215,11 +213,11 @@ import { ref, computed, onUnmounted, onMounted } from "vue";
 import ExportModal from "../components/ExportModal.vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../utils/axios";
+// import VuePagination from "@hennge/vue3-pagination";
+// import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 
-const route = useRoute();
 const router = useRouter();
 const search = ref("");
-const userStatus = ref("");
 const userType = ref("");
 const dateRange = ref(null);
 const showExportModal = ref(false);
@@ -229,6 +227,18 @@ const dataSport = ref([]);
 const isModalOpen = ref(false);
 const sportToDelete = ref(null);
 const toRole = ref(null);
+
+const currentPage = ref(1);
+
+const headers = ref([
+  "#",
+  "Имя",
+  "Номер телефона",
+  "Электронная почта",
+  "Тип пользователя",
+  "Дата",
+  "Действия",
+]);
 
 const confirmDelete = (id, role) => {
   sportToDelete.value = id;
@@ -266,8 +276,6 @@ const getSport = async () => {
   }
 };
 
-getSport();
-
 const getData = async () => {
   try {
     const res = await api.get("https://api.7srating.uz/api/dashboard/users/");
@@ -277,27 +285,6 @@ const getData = async () => {
     console.log(e);
   }
 };
-onMounted(() => {
-  getData();
-  localStorage.removeItem("schools");
-  localStorage.removeItem("results");
-  localStorage.removeItem("media_ids");
-  localStorage.removeItem("photos");
-  localStorage.removeItem("pdfs");
-  localStorage.removeItem("videos");
-  localStorage.removeItem("selectedSport");
-  localStorage.removeItem("selectedTrainer");
-});
-
-const headers = ref([
-  "#",
-  "Имя",
-  "Номер телефона",
-  "Электронная почта",
-  "Тип пользователя",
-  "Дата",
-  "Действия",
-]);
 
 const filteredUsers = computed(() => {
   return data.value.filter((user) => {
@@ -306,22 +293,15 @@ const filteredUsers = computed(() => {
       user.phone_number?.toLowerCase().includes(search.value?.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.value?.toLowerCase());
 
-    // const matchesStatus = userStatus.value ? user.status === userStatus.value : true;
     const matchesUserType = userType.value ? user.user_role === userType.value : true;
     const matchesDateRange = dateRange.value
       ? new Date(user.created_time) >= new Date(dateRange.value[0]) &&
         new Date(user.created_time) <= new Date(dateRange.value[1])
       : true;
 
-    // matchesStatus
     return matchesSearch && matchesUserType && matchesDateRange;
   });
 });
-
-const handleAction = (project) => {
-  // console.log('Action clicked for project:', project.id)
-  router.push(project);
-};
 
 const handleExport = (data) => {
   console.log("Export data:", data);
@@ -342,18 +322,22 @@ const navigate = (path) => {
 };
 
 onMounted(() => {
+  getSport();
+  getData();
   document.addEventListener("click", handleClickOutside);
+  localStorage.removeItem("schools");
+  localStorage.removeItem("results");
+  localStorage.removeItem("media_ids");
+  localStorage.removeItem("photos");
+  localStorage.removeItem("pdfs");
+  localStorage.removeItem("videos");
+  localStorage.removeItem("selectedSport");
+  localStorage.removeItem("selectedTrainer");
 });
 
 onUnmounted(() => {
   document.removeEventListener("click", handleClickOutside);
 });
-
-const getStatusClass = (status) => {
-  return status === "Оплачено"
-    ? "bg-[#E2FFEF] text-[#27A950]"
-    : "bg-[#FEECEC] text-[#E7273D]";
-};
 </script>
 
 <style>

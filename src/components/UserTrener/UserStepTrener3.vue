@@ -60,17 +60,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ result.year }}
             </td>
-            <td
-              v-if="!result.currently_participating"
-              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-            >
-              {{ result.number_of_gold }} {{ result.number_of_silver }}
-              {{ result.number_of_bronze }}
-            </td>
-            <td
-              v-if="result.currently_participating"
-              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-            >
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ result.rating }}
             </td>
             <td
@@ -171,63 +161,7 @@
               </p>
             </div>
 
-            <div class="flex items-center gap-4">
-              <input
-                v-model="newResult.currently_participating"
-                type="checkbox"
-                class="px-3 py-2"
-              />
-              <label class="text-sm font-medium text-gray-700">
-                В настоящее время участвует как спортсмен
-              </label>
-            </div>
-
-            <div v-if="!newResult.currently_participating">
-              <div class="relative">
-                <label class="block text-sm font-medium text-gray-700">Ваш рейтинг</label>
-                <input
-                  v-model="newResult.number_of_gold"
-                  type="number"
-                  placeholder="Введите количество"
-                  class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <div className="absolute right-3 top-2/3 -translate-y-1/2">
-                  <div
-                    className="w-8 h-8 rounded-full bg-yellow-400 border-2 border-yellow-500 shadow-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="relative mt-2">
-                <input
-                  v-model="newResult.number_of_silver"
-                  type="number"
-                  placeholder="Введите количество"
-                  class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <div className="absolute right-3 top-1/3 -translate-y-1/3">
-                  <div
-                    className="w-8 h-8 rounded-full bg-gray-200 border-2 border-gray-300 shadow-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="relative mt-2">
-                <input
-                  v-model="newResult.number_of_bronze"
-                  type="number"
-                  placeholder="Введите количество"
-                  class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <div className="absolute right-3 top-1/3 -translate-y-1/3">
-                  <div
-                    className="w-8 h-8 rounded-full bg-orange-300 border-2 border-orange-400 shadow-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div v-if="newResult.currently_participating">
+            <div>
               <label class="block text-sm font-medium text-gray-700">Рейтинг</label>
               <input
                 v-model="newResult.rating"
@@ -311,9 +245,6 @@ const errors = ref({
   tournament_id: "",
   country: "",
   year: "",
-  number_of_gold: "",
-  number_of_silver: "",
-  number_of_bronze: "",
   logo: "",
   name: "",
 });
@@ -349,11 +280,8 @@ const newResult = ref({
   tournament_id: "",
   country: "",
   year: "",
-  number_of_gold: 0,
-  number_of_silver: 0,
-  number_of_bronze: 0,
-  rating: 0,
-  currently_participating: false,
+  rating: null,
+  currently_participating: true,
   name: "",
 });
 
@@ -361,12 +289,9 @@ const show = () => {
   showModal.value = false;
   (newResult.value.country = ""),
     (newResult.value.year = ""),
-    (newResult.value.number_of_gold = 0),
-    (newResult.value.number_of_silver = 0),
-    (newResult.value.number_of_bronze = 0),
     (newResult.value.rating = 0),
     (newResult.value.name = ""),
-    (newResult.value.currently_participating = false),
+    (newResult.value.currently_participating = true),
     (newResult.value.tournament_id = "");
 };
 
@@ -374,12 +299,9 @@ const close = () => {
   showModal.value = false;
   (newResult.value.country = ""),
     (newResult.value.year = ""),
-    (newResult.value.number_of_gold = 0),
-    (newResult.value.number_of_silver = 0),
-    (newResult.value.number_of_bronze = 0),
     (newResult.value.name = ""),
     (newResult.value.rating = 0),
-    (newResult.value.currently_participating = false),
+    (newResult.value.currently_participating = true),
     (newResult.value.tournament_id = "");
 };
 
@@ -391,12 +313,9 @@ const editResult = (result) => {
     country: result.country || "",
     year: result.year || "",
     tournament_id: selectedTournament,
-    number_of_gold: result.number_of_gold || 0,
-    number_of_silver: result.number_of_silver || 0,
-    number_of_bronze: result.number_of_bronze || 0,
-    rating: result.rating || 0,
+    rating: result.rating,
     name: selectedTournament,
-    currently_participating: result.currently_participating || false,
+    currently_participating: result.currently_participating || true,
   };
 
   showModal.value = true;
@@ -431,10 +350,7 @@ const addResult = () => {
       tournament_id: selectedTournament ? selectedTournament.id : "",
       country: newResult.value.country,
       year: new Date(newResult.value.year).toLocaleDateString("en-CA"),
-      number_of_gold: Number(newResult.value.number_of_gold),
-      number_of_silver: Number(newResult.value.number_of_silver),
-      number_of_bronze: Number(newResult.value.number_of_bronze),
-      rating: Number(newResult.value.rating),
+      rating: newResult.value.rating,
       currently_participating: newResult.value.currently_participating,
       name: selectedTournament ? selectedTournament.name : "",
     });
@@ -452,12 +368,9 @@ onMounted(() => {
       country: res.country || "",
       year: res.year || "",
       tournament_id: res.tournament_id || "",
-      number_of_gold: res.currently_participating ? 0 : res.number_of_gold || 0,
-      number_of_silver: res.currently_participating ? 0 : res.number_of_silver || 0,
-      number_of_bronze: res.currently_participating ? 0 : res.number_of_bronze || 0,
-      rating: res.currently_participating ? res.rating || 0 : 0,
+      rating: res.rating,
       name: res.name || "",
-      currently_participating: res.currently_participating || false,
+      currently_participating: res.currently_participating || true,
     }));
   }
 
@@ -469,21 +382,10 @@ onMounted(() => {
 watch(
   results,
   (newResults) => {
-    // Update only items where currently_paticipating === true
     const updatedResults = newResults.map((item) => {
-      if (item.currently_participating === true) {
-        return {
-          ...item,
-          number_of_bronze: 0,
-          number_of_gold: 0,
-          number_of_silver: 0,
-        };
-      } else {
-        return {
-          ...item,
-          rating: 0,
-        };
-      }
+      return {
+        ...item,
+      };
     });
 
     localStorage.setItem("results", JSON.stringify(updatedResults));

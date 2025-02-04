@@ -1,49 +1,53 @@
 <template>
-  <el-container class="layout-container-demo !h-screen" >
-    <el-aside width="256px" class=" !bg-[#1E1E2D] !text-white  !h-full">
+  <el-container class="layout-container-demo !h-screen">
+    <el-aside width="256px" class="!bg-[#1E1E2D] !text-white !h-full">
       <el-scrollbar>
-       <div class="p-4">
-        <img src="../assets/img/logo-white.svg" alt="Sport Rating" class="h-8" />
-      </div>
-
-      <nav class="mt-6">
-          <div
-      v-for="item in menuItems"
-      :key="item.path"
-    >
-      <div
-        @click="item.children ? toggleSubmenu(item) : navigate(item.path)"
-        class="flex items-center px-6 py-3 text-sm hover:bg-red-500 transition-colors cursor-pointer"
-        :class="{ 'bg-red-500': currentPath === item.path || (item.children && item.children.some(child => child.path === currentPath)) }"
-      >
-        <component :is="item.icon" class="h-5 w-5 mr-3" />
-        {{ item.name }}
-        <ChevronDownIcon 
-          v-if="item.children" 
-          class="h-4 w-4 ml-auto transition-transform duration-200"
-          :class="{ 'rotate-180': openSubmenu === item.name }"
-        />
-      </div>
-      <div v-if="item.children && openSubmenu === item.name" class="ml-6 mt-2">
-        <div
-          v-for="child in item.children"
-          :key="child.path"
-          @click="navigate(child.path)"
-          class="flex items-center px-6 py-2 gap-1 text-sm hover:bg-red-500 transition-colors cursor-pointer"
-          :class="{ 'bg-red-500': currentPath === child.path }"
-        >
-          <component :is="child.icon" class="h-4 w-4 mr-3" />
-          {{ child.name }}
+        <div class="p-4">
+          <img src="/saber-logos.svg" alt="Sport Rating" class="h-8" />
         </div>
-      </div>
-    </div>
-      </nav>
+
+        <nav class="mt-6">
+          <div v-for="item in menuItems" :key="item.path">
+            <div
+              @click="item.children ? toggleSubmenu(item) : navigate(item.path)"
+              class="flex items-center px-6 py-3 text-sm hover:bg-red-500 transition-colors cursor-pointer"
+              :class="{
+                'bg-red-500':
+                  currentPath === item.path ||
+                  (item.children &&
+                    item.children.some((child) => child.path === currentPath)),
+              }"
+            >
+              <component :is="item.icon" class="h-5 w-5 mr-3" />
+              {{ item.name }}
+              <ChevronDownIcon
+                v-if="item.children"
+                class="h-4 w-4 ml-auto transition-transform duration-200"
+                :class="{ 'rotate-180': openSubmenu === item.name }"
+              />
+            </div>
+            <div v-if="item.children && openSubmenu === item.name" class="ml-6 mt-2">
+              <div
+                v-for="child in item.children"
+                :key="child.path"
+                @click="navigate(child.path)"
+                class="flex items-center px-6 py-2 gap-1 text-sm hover:bg-red-500 transition-colors cursor-pointer"
+                :class="{ 'bg-red-500': currentPath === child.path }"
+              >
+                <component :is="child.icon" class="h-4 w-4 mr-3" />
+                {{ child.name }}
+              </div>
+            </div>
+          </div>
+        </nav>
       </el-scrollbar>
     </el-aside>
 
-    <el-container >
-      <el-header class="!bg-white dark:!bg-[#1E1E2D] !shadow-sm  !z-10 dark:!border-l dark:!border-b dark:!border-[#8B8992]">
-        <div class="flex items-center justify-end  py-3">
+    <el-container>
+      <el-header
+        class="!bg-white dark:!bg-[#1E1E2D] !shadow-sm !z-10 dark:!border-l dark:!border-b dark:!border-[#8B8992]"
+      >
+        <div class="flex items-center justify-end py-3">
           <!-- <div class="flex-1 ">
             <div class="relative">
               <input
@@ -56,14 +60,20 @@
           </div> -->
 
           <div class="flex items-center">
-            <button class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500">
+            <button
+              class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500"
+            >
               <BellIcon class="h-5 w-5" />
             </button>
-            <button class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500">
+            <button
+              class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500"
+            >
               <EnvelopeIcon class="h-5 w-5" />
             </button>
             <!-- @click="toggleDarkMode" -->
-            <button  class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500">
+            <button
+              class="p-2 text-gray-500 hover:text-gray-700 dark:text-white dark:hover:text-red-500"
+            >
               <component :is="isDarkMode ? MoonIcon : SunIcon" class="h-5 w-5" />
             </button>
             <div class="relative flex items-center cursor-pointer">
@@ -74,12 +84,20 @@
                   class="h-8 w-8 rounded-full"
                 />
                 <div class="flex flex-col">
-                  <span class="ml-2 text-sm font-medium dark:text-white text-[#1E1E2D]">Пулатов Мавлонбек</span>
-                  <span class="ml-2 text-xs font-medium dark:text-[#EFF0F3] text-[#1E1E2D]">Админ</span>
+                  <span class="ml-2 text-sm font-medium dark:text-white text-[#1E1E2D]"
+                    >Пулатов Мавлонбек</span
+                  >
+                  <span
+                    class="ml-2 text-xs font-medium dark:text-[#EFF0F3] text-[#1E1E2D]"
+                    >Админ</span
+                  >
                 </div>
               </div>
 
-              <div v-if="isProfile" class="absolute w-[280px] top-14 right-0 bg-white dark:bg-[#1E1E2D] rounded-xl shadow-lg p-4">
+              <div
+                v-if="isProfile"
+                class="absolute w-[280px] top-14 right-0 bg-white dark:bg-[#1E1E2D] rounded-xl shadow-lg p-4"
+              >
                 <div class="flex items-center space-x-3 mb-6">
                   <img
                     src="../assets/img/profile.svg"
@@ -87,9 +105,13 @@
                     class="w-14 h-14 rounded-full"
                   />
                   <div>
-                    <h3 class="font-medium dark:text-[#EFF0F3] text-[#1E1E2D]">Пулатов Мавлонбек</h3>
+                    <h3 class="font-medium dark:text-[#EFF0F3] text-[#1E1E2D]">
+                      Пулатов Мавлонбек
+                    </h3>
                     <span class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">Админ</span>
-                    <p class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">polatovmavlono@gmail.com</p>
+                    <p class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">
+                      polatovmavlono@gmail.com
+                    </p>
                   </div>
                 </div>
 
@@ -117,22 +139,19 @@
         </div>
       </el-header>
 
-      <el-main class="!p-6 dark:!border-l dark:!border-[#8B8992] !bg-white dark:!bg-[#1E1E2D]">
-      <router-view></router-view>
+      <el-main
+        class="!p-6 dark:!border-l dark:!border-[#8B8992] !bg-white dark:!bg-[#1E1E2D]"
+      >
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
-  
 </template>
 
-
-
-
 <script setup>
-import { computed, ref , onMounted, onUnmounted} from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useDarkMode } from '../composables/useDarkMode';
-
+import { computed, ref, onMounted, onUnmounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useDarkMode } from "../composables/useDarkMode";
 
 import {
   UsersIcon,
@@ -150,94 +169,91 @@ import {
   AcademicCapIcon,
   ShieldCheckIcon,
   DocumentTextIcon,
-  ClockIcon
-} from '@heroicons/vue/24/outline'
+  ClockIcon,
+} from "@heroicons/vue/24/outline";
 import { useAuthStore } from "../stores/auth";
 
 const authStore = useAuthStore();
 
-const route = useRoute()
-const router = useRouter()
-const currentPath = computed(() => route.path)
-const isProfile = ref(false)
-const openSubmenu = ref(null)
+const route = useRoute();
+const router = useRouter();
+const currentPath = computed(() => route.path);
+const isProfile = ref(false);
+const openSubmenu = ref(null);
 const { isDarkMode, toggleDarkMode } = useDarkMode();
 
 const menuItemss = [
-  { name: 'Мой профиль' },
-  { name: 'Настройки' },
-  { name: 'Уведомления' }
-]
+  { name: "Мой профиль" },
+  { name: "Настройки" },
+  { name: "Уведомления" },
+];
 
 const handleLogout = () => {
   authStore.logout();
 };
 
 const profileToggle = () => {
-  isProfile.value = !isProfile.value
-}
+  isProfile.value = !isProfile.value;
+};
 
 const handleClickOutside = (event) => {
-  if (!event.target.closest('.relative')) {
+  if (!event.target.closest(".relative")) {
     isProfile.value = false;
   }
 };
 const toggleSubmenu = (item) => {
-  openSubmenu.value = openSubmenu.value === item.name ? null : item.name
-}
+  openSubmenu.value = openSubmenu.value === item.name ? null : item.name;
+};
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener("click", handleClickOutside);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener("click", handleClickOutside);
 });
 
 const navigate = (path) => {
-  router.push(path)
-}
-
-
-
+  router.push(path);
+};
 
 const menuItems = [
   {
-    name: 'Пользователи',
-    path: '/',
-    icon: UsersIcon
+    name: "Пользователи",
+    path: "/",
+    icon: UsersIcon,
   },
   {
-    name: 'Турнир',
-    path: '/tournament-list',
-    icon: TrophyIcon      
+    name: "Турнир",
+    path: "/tournament-list",
+    icon: TrophyIcon,
   },
   {
-    name: 'Спорт',
-    path: '/sport-list',
-    icon: GlobeAltIcon      
-  },
-   {
-    name: 'Школы',
-    path: '/school-list',
-    icon: AcademicCapIcon      
+    name: "Спорт",
+    path: "/sport-list",
+    icon: GlobeAltIcon,
   },
   {
-    name: 'Политика',
-    path: '/privacy-policy',
+    name: "Школы",
+    path: "/school-list",
+    icon: AcademicCapIcon,
+  },
+  {
+    name: "Политика",
+    path: "/privacy-policy",
     icon: ShieldCheckIcon,
     children: [
       {
-        name: 'Политика ',
-        path: '/privacy-policy-list',
-        icon: ShieldCheckIcon
+        name: "Политика ",
+        path: "/privacy-policy-list",
+        icon: ShieldCheckIcon,
       },
       {
-        name: 'Условия',
-        path: '/user-terms-list',
-        icon: ClockIcon
-      }
-    ]
+        name: "Условия",
+        path: "/user-terms-list",
+        icon: ClockIcon,
+      },
+    ],
   },
   // {
   //   name: 'Заявки на регистрацию',
@@ -252,11 +268,9 @@ const menuItems = [
   // {
   //   name: 'Спортивные комплексы',
   //   path: '/complexes',
-  //   icon: CpuChipIcon      
+  //   icon: CpuChipIcon
   // },
-  
 ];
-
 </script>
 
 <style scoped>

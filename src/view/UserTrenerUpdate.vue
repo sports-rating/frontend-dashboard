@@ -27,8 +27,10 @@
 
     <UserStepTrener3
       v-if="active === 3"
-      :type-results="form.trainer_profile.results"
-      @update-result="(updatedResults) => (form.trainer_profile.results = updatedResults)"
+      :type-results="form.trainer_profile.trainer_results"
+      @update-result="
+        (updatedResults) => (form.trainer_profile.trainer_results = updatedResults)
+      "
       :errors="errors"
     />
     <!-- v-model:games="form.trainer_profile.number_of_games"
@@ -55,7 +57,7 @@
         :disabled="
           isSubmitting ||
           (active === 2 && form.trainer_profile.educations.length === 0) ||
-          (active === 3 && form.trainer_profile.results.length === 0)
+          (active === 3 && form.trainer_profile.trainer_results.length === 0)
         "
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
       >
@@ -116,7 +118,7 @@ const form = reactive({
     instagram: "",
     educations: [],
     media_ids: [],
-    results: [],
+    trainer_results: [],
   },
 });
 
@@ -162,18 +164,20 @@ const getData = async () => {
       })
     );
 
-    form.trainer_profile.results = res.data.data.trainer_profile.results.map((res) => ({
-      id: res.id || "",
-      name: res.tournament.name || "",
-      country: res.country || "",
-      year: res.year || "",
-      tournament_id: res.tournament.id || "",
-      number_of_gold: res.number_of_gold || 0,
-      number_of_silver: res.number_of_silver || 0,
-      number_of_bronze: res.number_of_bronze || 0,
-      currently_participating: res.currently_participating || false,
-      rating: res.rating || 0,
-    }));
+    form.trainer_profile.trainer_results = res.data.data.trainer_profile.trainer_results.map(
+      (res) => ({
+        id: res.id || "",
+        name: res.tournament.name || "",
+        country: res.country || "",
+        year: res.year || "",
+        tournament_id: res.tournament.id || "",
+        number_of_gold: res.number_of_gold || 0,
+        number_of_silver: res.number_of_silver || 0,
+        number_of_bronze: res.number_of_bronze || 0,
+        currently_participating: res.currently_participating || false,
+        rating: res.rating || 0,
+      })
+    );
 
     form.trainer_profile.media_ids = res.data.data.trainer_profile.media.map(
       (item) => item.id
