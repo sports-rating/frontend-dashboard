@@ -45,7 +45,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(result, index) in results" :key="result.id">
+          <tr v-for="(result, index) in results.filter((r) => r.rating)" :key="result.id">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ index + 1 }}
             </td>
