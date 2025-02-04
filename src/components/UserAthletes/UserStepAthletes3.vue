@@ -258,6 +258,8 @@ const currentResults = ref({ ...props.typeResults });
 
 currentResults.value = results.value;
 
+console.log(results, "cas");
+
 const getData = async () => {
   try {
     const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));

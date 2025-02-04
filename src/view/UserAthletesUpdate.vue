@@ -170,6 +170,8 @@ const getData = async () => {
         country: res.country || "",
         year: res.year || "",
         tournament_id: res.tournament.id || "",
+        trainer_id: res.trainer_id || "",
+        trainer: res.trainer_name || "",
         rating: res.rating || "",
         currently_participating: res.currently_participating || false,
       })
