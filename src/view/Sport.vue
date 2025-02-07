@@ -72,12 +72,12 @@
           </thead>
           <tbody class="bg-white divide-y text-center divide-gray-200 !w-full">
             <tr
-              v-for="(user, index) in filteredUsers"
+              v-for="(user, index) in paginatedUsers"
               :key="user.id"
               class="hover:bg-gray-50"
             >
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ index + 1 }}
+                {{ (currentPage - 1) * perPage + index + 1 }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.name ? user.name : "-" }}
@@ -112,6 +112,32 @@
         </table>
       </div>
     </div>
+
+    <div v-if="totalPages !== 1" class="flex items-center space-x-2 my-5 justify-end">
+      <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
+        &lt;
+      </button>
+
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        @click="setPage(page)"
+        :class="{
+          'pagination-btn active': currentPage === page,
+          'pagination-btn': currentPage !== page,
+        }"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="pagination-btn"
+      >
+        &gt;
+      </button>
+    </div>
   </div>
 </template>
 
@@ -127,6 +153,9 @@ const isCreate = ref(false);
 const data = ref([]);
 const isModalOpen = ref(false);
 const sportToDelete = ref(null);
+
+const currentPage = ref(1);
+const perPage = ref(5);
 
 const getData = async () => {
   try {
@@ -144,7 +173,14 @@ const deleteTournament = async () => {
       `https://api.7srating.uz/api/dashboard/sport/${sportToDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== sportToDelete.value);
+
+    await getData();
+
     isModalOpen.value = false;
+
+    if (paginatedUsers.value.length === 0 && currentPage.value > 1) {
+      currentPage.value -= 1;
+    }
   } catch (e) {
     console.error("Failed to delete tournament:", e);
   }
@@ -156,6 +192,27 @@ const filteredUsers = computed(() => {
     return matchesSearch;
   });
 });
+
+const totalPages = computed(() => Math.ceil(filteredUsers.value.length / perPage.value));
+
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  return filteredUsers.value.slice(start, start + perPage.value);
+});
+
+const setPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
+const previousPage = () => {
+  setPage(currentPage.value - 1);
+};
+
+const nextPage = () => {
+  setPage(currentPage.value + 1);
+};
 
 const confirmDelete = (id) => {
   sportToDelete.value = id;
@@ -207,5 +264,17 @@ onUnmounted(() => {
   transition: border-color 0.3s ease;
   height: 2.5rem;
   cursor: pointer;
+}
+
+.pagination-btn {
+  @apply w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 bg-white hover:bg-gray-200;
+}
+
+.active {
+  @apply bg-red-500 text-white border-red-500;
+}
+
+.pagination-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
 </style>
