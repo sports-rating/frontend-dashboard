@@ -1,12 +1,11 @@
 <template>
   <div class="mx-auto p-4 rounded-xl border">
-  
     <h2 class="text-2xl font-bold mb-6">Добавить Спорт</h2>
 
     <form @submit.prevent="handleSubmit" class="space-y-8">
-      <!-- Personal Information Section -->
       <section>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
+          <!-- Name Field -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Имя</label>
             <input
@@ -18,31 +17,42 @@
             <span class="text-red-500 mt-1" v-if="errors.name">{{ errors.name }}</span>
           </div>
 
+          <!-- Photo Upload -->
           <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700">
-              Фотография
-            </label>
-            <div class="mt-1 flex items-center">
-              <input
-                id="upload"
-                type="file"
-                @change="handleFileUpload"
-                accept="image/*"
-                class="hidden"
-              />
+            <label class="block text-sm font-medium text-gray-700"> Фотография </label>
+            <div class="mt-1 flex items-center space-x-4">
               <label
                 for="upload"
-                class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+                class="w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
               >
-                <span class="text-sm text-gray-600">{{ form.photoName || 'Выберите файл' }}</span>
+                <span class="text-sm text-gray-600">{{
+                  form.photoName || "Выберите файл"
+                }}</span>
+                <input
+                  id="upload"
+                  type="file"
+                  @change="handleFileUpload"
+                  accept="image/*"
+                  class="hidden"
+                />
               </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
+
+            <!-- Image Preview -->
+            <div v-if="preview" class="mt-2">
+              <img
+                :src="preview"
+                alt="Выбранное изображение"
+                class="w-32 h-32 object-cover rounded-md border"
+              />
+            </div>
           </div>
         </div>
       </section>
     </form>
 
+    <!-- Buttons -->
     <div class="flex justify-end space-x-4 mt-5">
       <button
         type="button"
@@ -57,77 +67,51 @@
         :disabled="isSubmitting || isUploading"
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
       >
-        {{ isSubmitting ? 'Сохранить...' : 'Добавить' }}
+        {{ isSubmitting ? "Сохранить..." : "Добавить" }}
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
+import { reactive, ref } from "vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 import api from "../../utils/axios";
-import router from '../../router';
-
+import router from "../../router";
 
 const errors = reactive({});
 const isSubmitting = ref(false);
-const isUploading = ref(false); // Track file upload state
+const isUploading = ref(false);
+const preview = ref(null); // For image preview
 
 const form = reactive({
-  name: '',
-  logo_id: []
+  name: "",
+  logo: null,
+  photoName: "",
 });
 
-const handleFileUpload = async (event) => {
-  const file = event.target.files[0];
-
-  if (!file) {
-    console.error("No file selected.");
-    return;
-  }
-
-  isUploading.value = true; // Set loading state to true
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("owner", "sport");
-
-  try {
-    // Send the file using axios
-    const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    isUploading.value = true;
-
-    // Ensure form.photo_id is an array and append the new id
-    if (!Array.isArray(form.logo_id)) {
-      form.logo_id = [];
-    }
-    form.logo_id.push(response.data.data.id);
-
-    // Optionally, store the file name
-    form.photoName = file.name;
-  } catch (error) {
-    console.error("File upload failed:", error.response?.data || error.message);
-  } finally {
-    isUploading.value = false; // Set loading state to false when done
-  }
-};
-
 const validateForm = () => {
-  // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);
 
-  if (!form.name) errors.name = 'Имя обязательно.';
+  if (!form.name) errors.name = "Имя обязательно.";
+  if (!form.logo) errors.photo = "Фотография обязательна.";
+
   return Object.keys(errors).length === 0;
+};
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    form.logo = file;
+    form.photoName = file.name;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 const goBack = () => {
@@ -136,24 +120,26 @@ const goBack = () => {
 
 const handleSubmit = async () => {
   if (!validateForm()) {
-    console.error('Validation failed:', errors);
+    console.error("Validation failed:", errors);
     return;
   }
+
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("logo", form.logo);
 
   isSubmitting.value = true;
 
   try {
-    await api.post(
-      "https://api.7srating.uz/api/dashboard/sport/",
-      form,
-    );
-    toast.success("Success to Tournament", {
-      autoClose: 3000,
+    await api.post("https://api.7srating.uz/api/sport/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
-    router.push('/sport-list');
+
+    toast.success("Success to Tournament", { autoClose: 3000 });
+    router.push("/sport-list");
   } catch (error) {
-    console.error('Submission error:', error);
-    toast.error(error.response.data.message, {
+    console.error("Submission error:", error);
+    toast.error(error.response?.data?.message || "Ошибка при отправке", {
       autoClose: 3000,
     });
   } finally {

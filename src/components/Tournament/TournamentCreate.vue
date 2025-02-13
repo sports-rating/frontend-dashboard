@@ -75,26 +75,36 @@
             }}</span>
           </div>
 
+          <!-- Photo Upload -->
           <div class="col-span-1">
             <label class="block text-sm font-medium text-gray-700"> Фотография </label>
-            <div class="mt-1 flex items-center">
-              <input
-                id="upload"
-                type="file"
-                @change="handleFileUpload"
-                accept="image/*"
-                class="hidden"
-              />
+            <div class="mt-1 flex items-center space-x-4">
               <label
                 for="upload"
-                class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+                class="w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
               >
                 <span class="text-sm text-gray-600">{{
                   form.photoName || "Выберите файл"
                 }}</span>
+                <input
+                  id="upload"
+                  type="file"
+                  @change="handleFileUpload"
+                  accept="image/*"
+                  class="hidden"
+                />
               </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
+
+            <!-- Image Preview -->
+            <div v-if="preview" class="mt-2">
+              <img
+                :src="preview"
+                alt="Выбранное изображение"
+                class="w-32 h-32 object-cover rounded-md border"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -133,69 +143,40 @@ const errors = reactive({});
 const isSubmitting = ref(false);
 const data = ref([]);
 const isUploading = ref(false);
+const preview = ref(null); // For image preview
 
 const form = reactive({
   name: "",
+  start_time: "",
   place: "",
   division: "",
-  start_time: "",
   sport_type: "",
-  logo_id: [],
+  logo: "",
   sport_id: "",
 });
 
-const handleFileUpload = async (event) => {
+const handleFileUpload = (event) => {
   const file = event.target.files[0];
-
-  if (!file) {
-    console.error("No file selected.");
-    return;
-  }
-
-  isUploading.value = true;
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("owner", "tournament");
-
-  try {
-    // Send the file using axios
-    const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    // Ensure form.photo_id is an array and append the new id
-    if (!Array.isArray(form.logo_id)) {
-      form.logo_id = [];
-    }
-    form.logo_id.push(response.data.data.id);
-
-    // Optionally, store the file name
+  if (file) {
+    form.logo = file;
     form.photoName = file.name;
-  } catch (error) {
-    console.error("File upload failed:", error.response?.data || error.message);
-  } finally {
-    isUploading.value = false; // Set loading state to false when done
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 };
 
 const validateForm = () => {
-  // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);
 
-  // Validate required fields
   if (!form.name) errors.name = "Имя обязательно.";
   if (!form.place) errors.place = "Место обязательно.";
   if (!form.division) errors.division = "Разделение обязательно.";
   if (!form.sport_id) errors.sport_id = "Тип спорта обязателен.";
-
-  // Validate start_time and end_time
+  if (!form.logo) errors.photo = "Фотография обязательна.";
   if (!form.start_time) {
     errors.start_time = "Время обязательно.";
   } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
@@ -211,7 +192,7 @@ const goBack = () => {
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -227,16 +208,28 @@ const handleSubmit = async () => {
     return;
   }
 
-  form.sport_id = form.sport_id.id;
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("start_time", form.start_time);
+  formData.append("place", form.place);
+  formData.append("division", form.division);
+  formData.append("sport_id", form.sport_id.id);
+
+  if (form.logo) {
+    formData.append("logo", form.logo);
+  }
 
   try {
-    await api.post(
-      "https://api.7srating.uz/api/dashboard/tournament/",
-      form // form now contains sport_id
-    );
+    await api.post("https://api.7srating.uz/api/sport/tournament/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     toast.success("Success to Tournament", {
       autoClose: 3000,
     });
+
     router.push("/tournament-list");
   } catch (error) {
     console.error("Submission error:", error);

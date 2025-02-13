@@ -103,9 +103,9 @@
               </td>
               <td class="h-[4rem] w-[4rem]">
                 <img
-                  v-if="user?.logo[0]"
+                  v-if="user?.logo"
                   class="w-full h-full object-cover"
-                  :src="user?.logo[0]?.file"
+                  :src="user?.logo"
                   alt=""
                 />
                 <p v-else>-</p>
@@ -136,7 +136,10 @@
       </div>
     </div>
 
-    <div v-if="totalPages !== 1" class="flex items-center space-x-2 my-5 justify-end">
+    <div
+      v-if="totalPages !== 1 && data.length"
+      class="flex items-center space-x-2 my-5 justify-end"
+    >
       <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
         &lt;
       </button>
@@ -194,7 +197,7 @@ const tournamentToDelete = ref(null);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/tournament/");
+    const res = await api.get("https://api.7srating.uz/api/sport/tournament/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -205,7 +208,7 @@ const getData = async () => {
 const deleteTournament = async () => {
   try {
     await api.delete(
-      `https://api.7srating.uz/api/dashboard/tournament/${tournamentToDelete.value}/`
+      `https://api.7srating.uz/api/sport/tournament/${tournamentToDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== tournamentToDelete.value);
     await getData();

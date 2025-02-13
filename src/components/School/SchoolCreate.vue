@@ -170,18 +170,18 @@ const data = ref([]);
 
 const form = reactive({
   name: "",
-  address: "",
   phone_number: "",
-  type: "",
-  district: "",
-  region: "",
   director: "",
+  region: "",
+  district: "",
+  address: "",
+  type: "",
   sport_ids: [],
 });
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -241,7 +241,7 @@ const handleSubmit = async () => {
       },
       sport_ids: form.sport_ids.map((item) => item.id),
     };
-    await api.post("https://api.7srating.uz/api/dashboard/school/", payload);
+    await api.post("https://api.7srating.uz/api/education/school/", payload);
     toast.success("Success to School", {
       autoClose: 3000,
     });

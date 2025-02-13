@@ -1,11 +1,11 @@
 <template>
-  <div class=" mx-auto  p-4 rounded-xl border">
-    <h2 class="text-2xl font-bold mb-6">Обновить Sport</h2>
+  <div class="mx-auto p-4 rounded-xl border">
+    <h2 class="text-2xl font-bold mb-6">Добавить Спорт</h2>
 
-
-      <form @submit.prevent="handleSubmit" class="space-y-8" >
+    <form @submit.prevent="handleSubmit" class="space-y-8">
       <section>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
+          <!-- Name Field -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Имя</label>
             <input
@@ -16,172 +16,164 @@
             />
             <span class="text-red-500 mt-1" v-if="errors.name">{{ errors.name }}</span>
           </div>
-          
+
+          <!-- Photo Upload -->
           <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700">
-              Фотография 
-            </label>
-            <div class="mt-1 flex items-center">
-            <input
-              id="upload"
-              type="file"
-              @change="handleFileUpload"
-              accept="image/*"
-              class="hidden"
-            >
-            <label
-              for="upload"
-              class="mt-1 w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
-            >
-              <span class="text-sm text-gray-600">{{ form.photoName || 'Выберите файл' }}</span>
-            </label>
+            <label class="block text-sm font-medium text-gray-700"> Фотография </label>
+            <div class="mt-1 flex items-center space-x-4">
+              <label
+                for="upload"
+                class="w-full flex items-center px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
+              >
+                <span class="text-sm text-gray-600">{{
+                  form.photoName || "Выберите файл"
+                }}</span>
+                <input
+                  id="upload"
+                  type="file"
+                  @change="handleFileUpload"
+                  accept="image/*"
+                  class="hidden"
+                />
+              </label>
             </div>
             <span class="text-red-500 mt-1" v-if="errors.photo">{{ errors.photo }}</span>
+
+            <!-- Image Preview -->
+            <div v-if="preview" class="mt-2">
+              <img
+                :src="preview"
+                alt="Выбранное изображение"
+                class="w-32 h-32 object-cover rounded-md border"
+              />
+            </div>
           </div>
         </div>
       </section>
-
-      
-
     </form>
-    
-      <div class="flex justify-end space-x-4 mt-5">
-        <button
-          type="button"
-          @click="goBack"
-          class="px-4 py-2 border border-gray-300 rounded-md  p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Отмена
-        </button>
-        <button
-          type="submit"
-          @click="handleSubmit"
-          :disabled="isSubmitting || isUploading"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-        >
-          {{ isSubmitting ?  'Сохранить...' :'Обновить ' }}
-        </button>
 
-        
-
-      </div>
+    <!-- Buttons -->
+    <div class="flex justify-end space-x-4 mt-5">
+      <button
+        type="button"
+        @click="goBack"
+        class="px-4 py-2 border border-gray-300 rounded-md p-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Отмена
+      </button>
+      <button
+        type="submit"
+        @click="handleSubmit"
+        :disabled="isSubmitting || isUploading"
+        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+      >
+        {{ isSubmitting ? "Сохранить..." : "Добавить" }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
-import api from "../../utils/axios"
-import { useRoute, useRouter } from 'vue-router'
+import { reactive, ref, onMounted } from "vue";
+import api from "../../utils/axios";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import { useRoute, useRouter } from "vue-router";
 
-const route = useRoute()
-const router = useRouter()
-const errors = reactive({})
-const isSubmitting = ref(false)
-const isUploading = ref(false); 
-
-
+const route = useRoute();
+const router = useRouter();
+const errors = reactive({});
+const isSubmitting = ref(false);
+const isUploading = ref(false);
+const preview = ref(null);
 
 const form = reactive({
-  name: '',
-  logo_id:[]
-})
+  name: "",
+  logo: null,
+  photoName: "",
+});
 
+const initialData = reactive({
+  name: "",
+  logo: "",
+});
 
-const handleFileUpload = async (event) => {
+const handleFileUpload = (event) => {
   const file = event.target.files[0];
-
-  if (!file) {
-    console.error("No file selected.");
-    return;
-  }
-
-  isUploading.value = true;
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("owner", "sport");
-
-  try {
-    const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    if (!Array.isArray(form.logo_id)) {
-      form.logo_id = [];
-    }
-    form.logo_id.push(response.data.data.id);
-
+  if (file) {
+    form.logo = file;
     form.photoName = file.name;
-  } catch (error) {
-    console.error("File upload failed:", error.response?.data || error.message);
-  }
-  finally {
-    isUploading.value = false; // Set loading state to false when done
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 };
 
-const validateForm = () => {
-  Object.keys(errors).forEach((key) => delete errors[key]);
-
-  if (!form.name) errors.name = 'Имя обязательно.';
-
-  return Object.keys(errors).length === 0;
-};
-
-
-
-const getData = async() => {
+const getData = async () => {
   try {
-    const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/sport/${route.params.id}/`);
+    const res = await api.get(`https://api.7srating.uz/api/sport/${route.params.id}/`);
 
-    form.name = res.data.data.name
-    // form.logo_id = [res.data.data.logo[0].id];
-    form.photoName = res.data.data.logo[0].file.match(/[^/]+$/)[0]; 
-      
+    form.name = res.data.data.name;
+    form.photoName = res.data.data.logo.match(/[^/]+$/)[0];
+    form.logo = res.data.data.logo;
+    preview.value = res.data.data.logo;
+
+    // Dastlabki qiymatlarni saqlab qo'yamiz
+    initialData.name = res.data.data.name;
+    initialData.logo = res.data.data.logo;
   } catch (e) {
     console.log(e);
-    
   }
-}
-
-onMounted(() => {
-  
-  getData()
-})
-
-
-const goBack = () => {
-    window.history.go(-1);
 };
 
+onMounted(() => {
+  getData();
+});
 
+const goBack = () => {
+  window.history.go(-1);
+};
 
 const handleSubmit = async () => {
-  if (!validateForm()) {
-    console.error('Validation failed:', errors);
+  if (!form.logo && !form.name) {
+    console.error("No changes detected.");
     return;
   }
 
-    try {
-      await api.patch(
-        `https://api.7srating.uz/api/dashboard/sport/${route.params.id}/`,
-        form, 
-      );
-        router.push('/sport-list')
-    } catch (error) {
-      console.error('Submission error:', error);
-    } finally {
-      isSubmitting.value = false;
-    }
+  const formData = new FormData();
+
+  // Faqat o'zgartirilgan maydonlarni qo'shish
+  if (form.name !== initialData.name) {
+    formData.append("name", form.name);
+  }
+
+  if (form.logo instanceof File) {
+    formData.append("logo", form.logo);
+  }
+
+  // Agar hech qanday o'zgarish bo'lmasa, so‘rov yuborilmaydi
+  if (!formData.has("name") && !formData.has("logo")) {
+    toast.info("Hech qanday o'zgarish yo'q", { autoClose: 3000 });
+    return;
+  }
+
+  isSubmitting.value = true;
+  try {
+    await api.patch(`https://api.7srating.uz/api/sport/${route.params.id}/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    toast.success("Muvaffaqiyatli saqlandi", { autoClose: 3000 });
+    router.push("/sport-list");
+  } catch (error) {
+    console.error("Submission error:", error);
+    toast.error(error.response?.data?.message || "Ошибка при отправке", {
+      autoClose: 3000,
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
-
-
-
 </script>

@@ -192,7 +192,10 @@
       </div>
     </div>
 
-    <div v-if="totalPages !== 1" class="flex items-center space-x-2 my-5 justify-end">
+    <div
+      v-if="totalPages !== 1 && data.length"
+      class="flex items-center space-x-2 my-5 justify-end"
+    >
       <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
         &lt;
       </button>

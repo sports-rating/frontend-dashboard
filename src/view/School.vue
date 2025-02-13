@@ -124,7 +124,10 @@
       </div>
     </div>
 
-    <div v-if="totalPages !== 1" class="flex items-center space-x-2 my-5 justify-end">
+    <div
+      v-if="totalPages !== 1 && data.length"
+      class="flex items-center space-x-2 my-5 justify-end"
+    >
       <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
         &lt;
       </button>
@@ -180,7 +183,7 @@ const perPage = ref(5);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/school/");
+    const res = await api.get("https://api.7srating.uz/api/education/school/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -199,7 +202,7 @@ const getTrainer = async () => {
 const deleteTournament = async () => {
   try {
     await api.delete(
-      `https://api.7srating.uz/api/dashboard/school/${schoolDelete.value}/`
+      `https://api.7srating.uz/api/education/school/${schoolDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== schoolDelete.value);
     await getData();

@@ -83,11 +83,7 @@
                 {{ user.name ? user.name : "-" }}
               </td>
               <td class="h-[4rem] w-[4rem]">
-                <img
-                  class="w-full h-full object-cover"
-                  :src="user?.logo[0]?.file"
-                  alt=""
-                />
+                <img class="w-full h-full object-cover" :src="user?.logo" alt="" />
               </td>
 
               <td
@@ -113,7 +109,10 @@
       </div>
     </div>
 
-    <div v-if="totalPages !== 1" class="flex items-center space-x-2 my-5 justify-end">
+    <div
+      v-if="totalPages !== 1 && data.length"
+      class="flex items-center space-x-2 my-5 justify-end"
+    >
       <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
         &lt;
       </button>
@@ -159,7 +158,7 @@ const perPage = ref(5);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -169,9 +168,7 @@ const getData = async () => {
 
 const deleteTournament = async () => {
   try {
-    await api.delete(
-      `https://api.7srating.uz/api/dashboard/sport/${sportToDelete.value}/`
-    );
+    await api.delete(`https://api.7srating.uz/api/sport/${sportToDelete.value}/`);
     data.value = data.value.filter((user) => user.id !== sportToDelete.value);
 
     await getData();

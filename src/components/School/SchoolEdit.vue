@@ -184,7 +184,7 @@ const form = reactive({
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -230,7 +230,7 @@ const goBack = () => {
 const getDataa = async () => {
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/school/${route.params.id}/`
+      `https://api.7srating.uz/api/education/school/${route.params.id}/`
     );
 
     form.name = res.data.data.name;
@@ -264,7 +264,7 @@ const handleSubmit = async () => {
       sport_ids: form.sport_ids.map((item) => item.id),
     };
     await api.put(
-      `https://api.7srating.uz/api/dashboard/school/${route.params.id}/`,
+      `https://api.7srating.uz/api/education/school/${route.params.id}/`,
       payload
     );
     toast.success("Success to School", {
