@@ -59,7 +59,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Тип спортсмена</label>
             <select
-              v-model="form.sportsman_profile.sport_type"
+              v-model="form.sportsman_profile.skill_level"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите тип спортсмена</option>
@@ -68,8 +68,8 @@
               </option>
             </select>
 
-            <span class="text-red-500 mt-1" v-if="errors.sport_type">{{
-              errors.sport_type
+            <span class="text-red-500 mt-1" v-if="errors.skill_level">{{
+              errors.skill_level
             }}</span>
           </div>
 
@@ -98,13 +98,15 @@
             >
 
             <input
-              v-model="form.sportsman_profile.motto"
+              v-model="form.sportsman_profile.division"
               type="text"
               placeholder="Выберите девизион"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             />
 
-            <span class="text-red-500 mt-1" v-if="errors.motto">{{ errors.motto }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.division">{{
+              errors.division
+            }}</span>
           </div>
 
           <div>
@@ -127,7 +129,7 @@
             <div class="w-full">
               <label class="block text-sm font-medium text-gray-700">Рост (см)</label>
               <input
-                v-model="form.sportsman_profile.height"
+                v-model="form.sportsman_profile.user_metrics.height"
                 type="text"
                 placeholder="Введите рост"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -141,7 +143,7 @@
             <div class="w-full">
               <label class="block text-sm font-medium text-gray-700">Вес (кг)</label>
               <input
-                v-model="form.sportsman_profile.weight"
+                v-model="form.sportsman_profile.user_metrics.weight"
                 type="text"
                 placeholder="Введите вес"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -160,7 +162,7 @@
                 class="inline-flex items-center w-[49%] px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
               >
                 <input
-                  v-model="form.sportsman_profile.gender"
+                  v-model="form.gender"
                   type="radio"
                   value="male"
                   class="form-radio text-blue-500"
@@ -171,7 +173,7 @@
                 class="inline-flex items-center w-[49%] px-4 py-2 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50"
               >
                 <input
-                  v-model="form.sportsman_profile.gender"
+                  v-model="form.gender"
                   type="radio"
                   value="female"
                   class="form-radio text-blue-500"
@@ -229,14 +231,12 @@
             <label class="block text-sm font-medium text-gray-700">Обо мне</label>
 
             <textarea
-              v-model="form.sportsman_profile.about_me"
+              v-model="form.sportsman_profile.bio"
               type="textarea"
               placeholder="Выберите Обо мне"
               class="mt-1 px-2 block w-full rounded-md border-gray-300 border -p-2 focus:border-blue-500 focus:ring-blue-500"
             />
-            <span class="text-red-500 mt-1" v-if="errors.about_me">{{
-              errors.about_me
-            }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.bio">{{ errors.bio }}</span>
           </div>
         </div>
       </section>
@@ -249,7 +249,7 @@
             <label class="block text-sm font-medium text-gray-700">Область / Город</label>
 
             <multiselect
-              v-model="form.sportsman_profile.region"
+              v-model="form.sportsman_profile.address.region"
               :options="regions"
               label="name_uz"
               track-by="name_uz"
@@ -267,7 +267,7 @@
             <label class="block text-sm font-medium text-gray-700">Район</label>
 
             <multiselect
-              v-model="form.sportsman_profile.city"
+              v-model="form.sportsman_profile.address.city"
               :options="filteredDistricts"
               track-by="name_uz"
               label="name_uz"
@@ -282,7 +282,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Улица</label>
             <input
-              v-model="form.sportsman_profile.street"
+              v-model="form.sportsman_profile.address.street"
               type="text"
               placeholder="Введите название улицы"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -328,7 +328,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Место рождения</label>
             <input
-              v-model="form.sportsman_profile.place_of_birth"
+              v-model="form.sportsman_profile.address.place_of_birth"
               type="text"
               placeholder="Введите место рождения"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -342,7 +342,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Гражданство</label>
             <input
-              v-model="form.sportsman_profile.citizenship"
+              v-model="form.sportsman_profile.address.citizenship"
               type="text"
               placeholder="Выберите гражданство"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -355,7 +355,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Телеграм</label>
             <input
-              v-model="form.sportsman_profile.telegram"
+              v-model="form.sportsman_profile.social_media.telegram"
               type="text"
               placeholder="Введите линк в телеграм"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -368,7 +368,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Инстаграм</label>
             <input
-              v-model="form.sportsman_profile.instagram"
+              v-model="form.sportsman_profile.social_media.instagram"
               type="text"
               placeholder="Введите  линк в инстаграм"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -425,21 +425,23 @@ const districts = ref([]);
 const filteredDistricts = ref([]);
 
 const onRegionChange = () => {
-  if (props.form.sportsman_profile.region && props.form.sportsman_profile.region.id) {
-    // Проверка на наличие ID
+  if (
+    props.form.sportsman_profile.address.region &&
+    props.form.sportsman_profile.address.region.id
+  ) {
     filteredDistricts.value = districts.value.filter(
-      (district) => district.region_id === props.form.sportsman_profile.region.id
+      (district) => district.region_id === props.form.sportsman_profile.address.region.id
     );
     if (
       !filteredDistricts.value.find(
-        (city) => city.id === props.form.sportsman_profile.city?.id
+        (city) => city.id === props.form.sportsman_profile.address.city?.id
       )
     ) {
-      props.form.sportsman_profile.city = null;
+      props.form.sportsman_profile.address.city = null;
     }
   } else {
     filteredDistricts.value = [];
-    props.form.sportsman_profile.city = null; // Очищаем город, если регион не выбран
+    props.form.sportsman_profile.address.city = null; // Очищаем город, если регион не выбран
   }
 };
 
@@ -447,41 +449,40 @@ watch(
   () => props.form,
   (newForm) => {
     if (newForm.sportsman_profile) {
-      // Обработка region (с использованием ID)
-      if (typeof newForm.sportsman_profile.region === "string") {
-        const initialRegionName = newForm.sportsman_profile.region;
+      if (typeof newForm.sportsman_profile.address.region === "string") {
+        const initialRegionName = newForm.sportsman_profile.address.region;
         const foundRegion = regions.value.find(
           (region) => region.name_uz === initialRegionName
         );
-        const initialCityName = newForm.sportsman_profile.city;
+        const initialCityName = newForm.sportsman_profile.address.city;
         const foundCity = districts.value.find(
           (city) => city.name_uz === initialCityName
         );
         if (foundRegion) {
-          props.form.sportsman_profile.region = foundRegion;
+          props.form.sportsman_profile.address.region = foundRegion;
           onRegionChange();
         } else {
-          props.form.sportsman_profile.region = null;
+          props.form.sportsman_profile.address.region = null;
         }
         if (foundCity) {
-          props.form.sportsman_profile.city = foundCity;
+          props.form.sportsman_profile.address.city = foundCity;
         } else {
-          props.form.sportsman_profile.city = null;
+          props.form.sportsman_profile.address.city = null;
         }
-      } else if (!newForm.sportsman_profile.region) {
+      } else if (!newForm.sportsman_profile.address.region) {
         filteredDistricts.value = [];
-        props.form.sportsman_profile.city = null;
+        props.form.sportsman_profile.address.city = null;
       }
     }
   },
   { deep: true, immediate: true }
 );
 
-watch(() => props.form.sportsman_profile.region, onRegionChange);
+watch(() => props.form.sportsman_profile.address.region, onRegionChange);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
     data.value = res.data.data;
   } catch (e) {
     console.error(e);
@@ -591,19 +592,19 @@ onMounted(async () => {
 
     if (
       props.form.sportsman_profile &&
-      props.form.sportsman_profile.region &&
-      typeof props.form.sportsman_profile.region === "string"
+      props.form.sportsman_profile.address.region &&
+      typeof props.form.sportsman_profile.address.region === "string"
     ) {
-      const initialRegionName = props.form.sportsman_profile.region;
+      const initialRegionName = props.form.sportsman_profile.address.region;
       const foundRegion = regions.value.find(
         (region) => region.name_uz === initialRegionName
       );
       if (foundRegion) {
-        props.form.sportsman_profile.region = foundRegion;
+        props.form.sportsman_profile.address.region = foundRegion;
         onRegionChange();
       } else {
         console.error(`Region with name "${initialRegionName}" not found!`);
-        props.form.sportsman_profile.region = null;
+        props.form.sportsman_profile.address.region = null;
       }
     }
   } catch (error) {

@@ -19,24 +19,20 @@
 
     <UserStepAthletes2
       v-if="active === 2"
-      :education="form.sportsman_profile.educations"
-      @update-education="
-        (updatedEducation) => (form.sportsman_profile.educations = updatedEducation)
-      "
+      :education="form.educations"
+      @update-education="(updatedEducation) => (form.educations = updatedEducation)"
     />
 
     <UserStepAthletes3
       v-if="active === 3"
-      :type-results="form.sportsman_profile.sportsman_results"
-      @update-result="
-        (updatedResults) => (form.sportsman_profile.sportsman_results = updatedResults)
-      "
+      :type-results="form.results"
+      @update-result="(updatedResults) => (form.results = updatedResults)"
     />
     <UserStepAthletes5
       v-if="active === 4"
-      :media_ids="form.sportsman_profile.media_ids"
+      :media_ids="form.media_ids"
       :media_bay="mediaBay"
-      @update-media="(updatedMedia) => (form.sportsman_profile.media_ids = updatedMedia)"
+      @update-media="(updatedMedia) => (form.media_ids = updatedMedia)"
     />
 
     <div class="flex justify-end space-x-4 mt-5">
@@ -52,8 +48,8 @@
         @click="handleSubmit"
         :disabled="
           isSubmitting ||
-          (active === 2 && form.sportsman_profile.educations.length === 0) ||
-          (active === 3 && form.sportsman_profile.sportsman_results.length === 0)
+          (active === 2 && form.educations.length === 0) ||
+          (active === 3 && form.results.length === 0)
         "
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
       >
@@ -88,34 +84,41 @@ const mediaBay = ref([]);
 const athleteTypes = ["Любитель", "Профессионал", "Начинающий"];
 
 const form = reactive({
-  first_name: "",
-  last_name: "",
-  middle_name: "",
-  birth_date: "",
   phone_number: "",
+  first_name: "",
+  middle_name: "",
+  last_name: "",
+  pinfl: "",
+  gender: "",
   user_role: "sportsman",
   email: "",
-  photo_id: "",
-  pinfl: "",
+  media_ids: [],
+  photoName: "",
+  birth_date: "",
+  educations: [],
+  results: [],
+
   sportsman_profile: {
-    sport_type: "",
+    skill_level: "",
     sport_id: "",
-    motto: "",
-    height: "",
-    weight: "",
-    gender: "",
-    region: "",
-    about_me: "",
-    city: "",
-    street: "",
-    place_of_birth: "",
-    citizenship: "",
-    telegram: "",
-    instagram: "",
-    educations: [],
-    media_ids: [],
-    sportsman_results: [],
     trainer_id: "",
+    division: "",
+    user_metrics: {
+      height: "",
+      weight: "",
+    },
+    bio: "",
+    address: {
+      region: "",
+      city: "",
+      street: "",
+      place_of_birth: "",
+      citizenship: "",
+    },
+    social_media: {
+      telegram: "",
+      instagram: "",
+    },
   },
 });
 
@@ -133,54 +136,62 @@ const getData = async () => {
     form.phone_number = res.data.data.phone_number;
     form.pinfl = res.data.data.pinfl;
     form.email = res.data.data.email;
-    form.photo_id = res.data.data.photo[0]?.id;
-    form.sportsman_profile.sport_type = res.data.data.sportsman_profile.sport_type;
+    form.sportsman_profile.skill_level = res.data.data.sportsman_profile.skill_level;
     form.sportsman_profile.sport_id = res.data.data.sportsman_profile.sport.id;
-    form.sportsman_profile.motto = res.data.data.sportsman_profile.motto;
-    form.sportsman_profile.height = res.data.data.sportsman_profile.height;
-    form.sportsman_profile.weight = res.data.data.sportsman_profile.weight;
-    form.sportsman_profile.gender = res.data.data.sportsman_profile.gender;
-    form.sportsman_profile.about_me = res.data.data.sportsman_profile.about_me;
-    form.sportsman_profile.region = res.data.data.sportsman_profile.region;
-    form.sportsman_profile.city = res.data.data.sportsman_profile.city;
-    form.sportsman_profile.street = res.data.data.sportsman_profile.street;
-    form.sportsman_profile.place_of_birth =
-      res.data.data.sportsman_profile.place_of_birth;
-    form.sportsman_profile.citizenship = res.data.data.sportsman_profile.citizenship;
-    form.sportsman_profile.telegram = res.data.data.sportsman_profile.telegram;
-    form.sportsman_profile.instagram = res.data.data.sportsman_profile.instagram;
+    form.sportsman_profile.division = res.data.data.sportsman_profile.division;
+    form.sportsman_profile.user_metrics.height =
+      res.data.data.sportsman_profile.user_metrics.height;
+    form.sportsman_profile.user_metrics.weight =
+      res.data.data.sportsman_profile.user_metrics.weight;
+    form.gender = res.data.data.gender;
+    form.sportsman_profile.bio = res.data.data.sportsman_profile.bio;
+    form.sportsman_profile.address.region =
+      res.data.data.sportsman_profile.address.region;
+    form.sportsman_profile.address.city = res.data.data.sportsman_profile.address.city;
+    form.sportsman_profile.address.street =
+      res.data.data.sportsman_profile.address.street;
+    form.sportsman_profile.address.place_of_birth =
+      res.data.data.sportsman_profile.address.place_of_birth;
+    form.sportsman_profile.address.citizenship =
+      res.data.data.sportsman_profile.address.citizenship;
+    form.sportsman_profile.social_media.telegram =
+      res.data.data.sportsman_profile.social_media.telegram;
+    form.sportsman_profile.social_media.instagram =
+      res.data.data.sportsman_profile.social_media.instagram;
     form.sportsman_profile.trainer_id = res.data.data.sportsman_profile.trainer_id;
 
-    form.sportsman_profile.educations = res.data.data.sportsman_profile.educations.map(
-      (edu) => ({
-        id: edu.id || "",
-        school: edu.school || "",
-        sport_type: edu.sport_id || "",
-        sport_id: edu.sport_id || "",
-        start_year: edu.start_year || "",
-        end_year: edu.end_year || "",
-        currently_studying: edu.currently_studying || false,
-      })
+    form.educations = res.data.data.educations.map((edu) => ({
+      id: edu.id || "",
+      school_id: edu.school_id || "",
+      sport_id: edu.sport_id || "",
+      start_year: edu.start_year || "",
+      end_year: edu.end_year || "",
+      currently_studying: edu.currently_studying || false,
+    }));
+
+    form.results = res.data.data.results.map((res) => ({
+      id: res.id || "",
+      name: res.tournament_name || "",
+      country: res.country || "",
+      year: res.year || "",
+      tournament_id: res.tournament_id || "",
+      trainer_id: res.trainer_id || "",
+      trainer: res.trainer_name || "",
+      rating: res.rating || "",
+      currently_participating: res.currently_participating || false,
+    }));
+
+    form.media_ids = res.data.data.media.map((item) => item.id);
+    mediaBay.value = res.data.data.media;
+
+    const profilePhoto = res.data.data.media.find(
+      (item) => item.is_profile_photo === true
     );
 
-    form.sportsman_profile.sportsman_results = res.data.data.sportsman_profile.sportsman_results.map(
-      (res) => ({
-        id: res.id || "",
-        name: res.tournament.name || "",
-        country: res.country || "",
-        year: res.year || "",
-        tournament_id: res.tournament.id || "",
-        trainer_id: res.trainer_id || "",
-        trainer: res.trainer_name || "",
-        rating: res.rating || "",
-        currently_participating: res.currently_participating || false,
-      })
-    );
-
-    form.sportsman_profile.media_ids = res.data.data.sportsman_profile.media.map(
-      (item) => item.id
-    );
-    mediaBay.value = res.data.data.sportsman_profile.media;
+    if (profilePhoto) {
+      form.photoId = profilePhoto.id; // Profil rasmining ID sini saqlab qo'yamiz
+      form.photoName = profilePhoto.file?.split("/").pop();
+    }
   } catch (e) {
     console.log(e);
   }
@@ -194,16 +205,7 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = "Имя обязательно.";
     if (!form.last_name) errors.last_name = "Фамилия обязательна.";
-    // if (!form.phone_number) {
-    //   errors.phone_number = 'Номер телефона обязателен.';
-    // } else {
-    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
-    //   if (digitsOnly.length > 17) {
-    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-    //   } else if (digitsOnly.length < 9) {
-    //     errors.phone_number = 'Номер телефона слишком короткий.';
-    //   }
-    // }
+
     if (!form.pinfl) {
       errors.pinfl = "ЖШШИР обязательна.";
     } else {
@@ -212,24 +214,24 @@ const validateForm = () => {
         errors.pinfl = "ЖШШИР должен содержать ровно 14 символов";
       }
     }
-    if (!form.sportsman_profile.trainer_id) errors.trainer_id = "Tренер  обязательна.";
     if (!form.middle_name) errors.middle_name = "Отчество обязательна.";
-    if (!form.sportsman_profile.sport_type)
-      errors.sport_type = "Тип спортсмена обязателен.";
+    if (!form.sportsman_profile.skill_level)
+      errors.skill_level = "Тип спортсмена обязателен.";
     if (!form.sportsman_profile.sport_id)
       errors.sport_direction = "Направление спорта обязательно.";
-    if (!form.sportsman_profile.motto) errors.motto = "Девизион спортсмена обязательно.";
+    if (!form.sportsman_profile.division)
+      errors.division = "Девизион спортсмена обязательно.";
     if (!form.birth_date) errors.birth_date = "Дата рождения обязательна.";
-    if (!form.sportsman_profile.gender) errors.gender = "Пол обязателен.";
-    if (!form.sportsman_profile.about_me) errors.about_me = "Обо мне обязателен.";
-    if (!form.sportsman_profile.height) errors.height = "Рост обязатлен.";
-    if (!form.sportsman_profile.weight) errors.weight = "Вес обязателен.";
-    if (!form.sportsman_profile.region) errors.region = "Регион обязателен.";
-    if (!form.sportsman_profile.city) errors.city = "Город обязателен.";
-    if (!form.sportsman_profile.street) errors.street = "Улица обязателен.";
-    if (!form.sportsman_profile.place_of_birth)
+    if (!form.gender) errors.gender = "Пол обязателен.";
+    if (!form.sportsman_profile.bio) errors.bio = "Обо мне обязателен.";
+    if (!form.sportsman_profile.user_metrics.height) errors.height = "Рост обязатлен.";
+    if (!form.sportsman_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
+    if (!form.sportsman_profile.address.region) errors.region = "Регион обязателен.";
+    if (!form.sportsman_profile.address.city) errors.city = "Город обязателен.";
+    if (!form.sportsman_profile.address.street) errors.street = "Улица обязателен.";
+    if (!form.sportsman_profile.address.place_of_birth)
       errors.place_of_birth = "Место рождения обязательна.";
-    if (!form.sportsman_profile.citizenship)
+    if (!form.sportsman_profile.address.citizenship)
       errors.citizenship = "Гражданство обязательна.";
   }
 
@@ -245,12 +247,20 @@ const handleFileUpload = async (event) => {
   }
   isUploading.value = true;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("owner", "sportsman");
-
   try {
-    // Send the file using axios
+    // Eski profil rasmini o‘chirish (agar mavjud bo‘lsa)
+    if (form.photoId) {
+      await api.delete(`https://api.7srating.uz/api/user/media/${form.photoId}/`);
+      form.media_ids = form.media_ids.filter((id) => id !== form.photoId); // Eski ID ni olib tashlash
+      form.photoId = null; // ID ni tozalash
+    }
+
+    // Yangi rasmni yuklash
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "user");
+    formData.append("is_profile_photo", true);
+
     const response = await api.post(
       "https://api.7srating.uz/api/user/media-upload/",
       formData,
@@ -261,12 +271,10 @@ const handleFileUpload = async (event) => {
       }
     );
 
-    isUploading.value = true;
-    // if (!Array.isArray(form.photo_id)) {
-    //   form.photo_id = '';
-    // }
-    form.photo_id = response.data.data.id;
-
+    // Yangi profil rasm ma'lumotlarini saqlash
+    const newPhotoId = response.data.data.id;
+    form.photoId = newPhotoId; // Yangi yuklangan rasm ID sini saqlash
+    form.media_ids.push(newPhotoId); // Yangi ID ni media_ids ga qo‘shish
     form.photoName = file.name;
   } catch (error) {
     console.error("File upload failed:", error.response?.data || error.message);
@@ -288,6 +296,7 @@ const handleSubmit = async () => {
 
   if (active.value < 4) {
     active.value++;
+    console.log(form);
   } else {
     isSubmitting.value = true;
     isLoading.value = true;
@@ -299,8 +308,8 @@ const handleSubmit = async () => {
           form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
         sportsman_profile: {
           ...form.sportsman_profile,
-          city: form.sportsman_profile.city.name_uz,
-          region: form.sportsman_profile.region.name_uz,
+          city: form.sportsman_profile.address.city.name_uz,
+          region: form.sportsman_profile.address.region.name_uz,
         },
       };
 

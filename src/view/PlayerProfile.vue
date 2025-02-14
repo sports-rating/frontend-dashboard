@@ -29,7 +29,7 @@
               {{ data?.sportsman_profile?.sport?.name }}
             </span>
             <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm">
-              {{ data?.sportsman_profile?.sport_type }}
+              {{ data?.sportsman_profile?.skill_level }}
             </span>
           </div>
 
@@ -38,14 +38,14 @@
             <div>
               <p class="text-gray-500">Место рождения</p>
               <p>
-                {{ data?.sportsman_profile?.place_of_birth }}
-                {{ data?.sportsman_profile?.region }} ,
-                {{ data?.sportsman_profile?.city }} район
+                {{ data?.sportsman_profile?.address?.place_of_birth }}
+                {{ data?.sportsman_profile?.address?.region?.name_uz }} ,
+                {{ data?.sportsman_profile?.address?.city?.name_uz }} район
               </p>
             </div>
             <div>
               <p class="text-gray-500">Гражданство</p>
-              <p>{{ data?.sportsman_profile?.citizenship }}</p>
+              <p>{{ data?.sportsman_profile?.address?.citizenship }}</p>
             </div>
             <div>
               <p class="text-gray-500">День рождения</p>
@@ -53,15 +53,19 @@
             </div>
             <div>
               <p class="text-gray-500">Рост</p>
-              <p>{{ Number(data?.sportsman_profile?.height).toFixed(0) }} см</p>
+              <p>
+                {{ Number(data?.sportsman_profile?.user_metrics?.height).toFixed(0) }} см
+              </p>
             </div>
             <div>
               <p class="text-gray-500">Вес</p>
-              <p>{{ Number(data?.sportsman_profile?.weight).toFixed(0) }} кг</p>
+              <p>
+                {{ Number(data?.sportsman_profile?.user_metrics?.weight).toFixed(0) }} кг
+              </p>
             </div>
             <div>
               <p class="text-gray-500">Воспитанник</p>
-              <p>{{ data?.sportsman_profile?.educations[0]?.school_name }}</p>
+              <p>{{ data?.educations?.[0]?.school_name }}</p>
             </div>
           </div>
         </div>
@@ -69,7 +73,7 @@
         <!-- Profile Image -->
         <div class="py-20 pr-28">
           <img
-            :src="data.photo?.[0]?.file"
+            :src="data?.media?.find((item) => item.is_profile_photo === true)?.file"
             alt="Player Profile"
             class="w-[40vh] h-[40vh] p-2 object-cover rounded-full border"
           />
@@ -165,15 +169,15 @@
             <div class="">
               <dl class="grid grid-cols-3">
                 <div
-                  v-for="(stat, index) in data?.sportsman_profile?.sportsman_results"
+                  v-for="(stat, index) in data?.results"
                   :key="index"
-                  class="px-4 py-5 border border overflow-hidden sm:p-6"
+                  class="px-4 py-5 border overflow-hidden sm:p-6"
                 >
                   <dt class="text-3xl font-medium text-[#11101B] truncate">
-                    {{ stat.tournament.name }}
+                    {{ stat.tournament_name }}
                   </dt>
                   <dd class="mt-1 text-sm font-semibold text-[#11101B]">
-                    {{ stat.tournament.start_time.split("-")[0] }}
+                    {{ stat.year }}
                   </dd>
                 </div>
               </dl>

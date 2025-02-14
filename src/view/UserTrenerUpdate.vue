@@ -19,18 +19,14 @@
 
     <UserStepTrener2
       v-if="active === 2"
-      :education="form.trainer_profile.educations"
-      @update-education="
-        (updatedEducation) => (form.trainer_profile.educations = updatedEducation)
-      "
+      :education="form.educations"
+      @update-education="(updatedEducation) => (form.educations = updatedEducation)"
     />
 
     <UserStepTrener3
       v-if="active === 3"
-      :type-results="form.trainer_profile.trainer_results"
-      @update-result="
-        (updatedResults) => (form.trainer_profile.trainer_results = updatedResults)
-      "
+      :type-results="form.results"
+      @update-result="(updatedResults) => (form.results = updatedResults)"
       :errors="errors"
     />
     <!-- v-model:games="form.trainer_profile.number_of_games"
@@ -38,9 +34,9 @@
     v-model:awards="form.trainer_profile.number_of_awards" -->
     <UserStepTrener5
       v-if="active === 4"
-      :media_ids="form.trainer_profile.media_ids"
+      :media_ids="form.media_ids"
       :media_bay="mediaBay"
-      @update-media="(updatedMedia) => (form.trainer_profile.media_ids = updatedMedia)"
+      @update-media="(updatedMedia) => (form.media_ids = updatedMedia)"
     />
 
     <div class="flex justify-end space-x-4 mt-5">
@@ -56,8 +52,8 @@
         @click="handleSubmit"
         :disabled="
           isSubmitting ||
-          (active === 2 && form.trainer_profile.educations.length === 0) ||
-          (active === 3 && form.trainer_profile.trainer_results.length === 0)
+          (active === 2 && form.educations.length === 0) ||
+          (active === 3 && form.results.length === 0)
         "
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
       >
@@ -92,33 +88,41 @@ const mediaBay = ref([]);
 const athleteTypes = ["Любитель", "Профессионал", "Начинающий"];
 
 const form = reactive({
-  first_name: "",
-  last_name: "",
-  middle_name: "",
-  birth_date: "",
   phone_number: "",
+  first_name: "",
+  middle_name: "",
+  last_name: "",
+  pinfl: "",
+  gender: "",
   user_role: "trainer",
   email: "",
-  photo_id: "",
-  pinfl: "",
+  media_ids: [],
+  photoName: "",
+  birth_date: "",
+  educations: [],
+  results: [],
+
   trainer_profile: {
-    sport_type: "",
+    skill_level: "",
     sport_id: "",
-    motto: "",
-    height: null,
-    weight: null,
-    gender: "",
-    about_me: "",
-    region: "",
-    city: "",
-    street: "",
-    place_of_birth: "",
-    citizenship: "",
-    telegram: "",
-    instagram: "",
-    educations: [],
-    media_ids: [],
-    trainer_results: [],
+    trainer_id: "",
+    division: "",
+    user_metrics: {
+      height: "",
+      weight: "",
+    },
+    bio: "",
+    address: {
+      region: "",
+      city: "",
+      street: "",
+      place_of_birth: "",
+      citizenship: "",
+    },
+    social_media: {
+      telegram: "",
+      instagram: "",
+    },
   },
 });
 
@@ -136,53 +140,60 @@ const getData = async () => {
     form.phone_number = res.data.data.phone_number;
     form.pinfl = res.data.data.pinfl;
     form.email = res.data.data.email;
-    form.photo_id = res.data.data.photo[0]?.id;
-    form.trainer_profile.sport_type = res.data.data.trainer_profile.sport_type;
+    form.trainer_profile.skill_level = res.data.data.trainer_profile.skill_level;
     form.trainer_profile.sport_id = res.data.data.trainer_profile.sport.id;
-    form.trainer_profile.motto = res.data.data.trainer_profile.motto;
-    form.trainer_profile.height = res.data.data.trainer_profile.height;
-    form.trainer_profile.weight = res.data.data.trainer_profile.weight;
-    form.trainer_profile.gender = res.data.data.trainer_profile.gender;
-    form.trainer_profile.about_me = res.data.data.trainer_profile.about_me;
-    form.trainer_profile.region = res.data.data.trainer_profile.region;
-    form.trainer_profile.city = res.data.data.trainer_profile.city;
-    form.trainer_profile.street = res.data.data.trainer_profile.street;
-    form.trainer_profile.place_of_birth = res.data.data.trainer_profile.place_of_birth;
-    form.trainer_profile.citizenship = res.data.data.trainer_profile.citizenship;
-    form.trainer_profile.telegram = res.data.data.trainer_profile.telegram;
-    form.trainer_profile.instagram = res.data.data.trainer_profile.instagram;
+    form.trainer_profile.division = res.data.data.trainer_profile.division;
+    form.trainer_profile.user_metrics.height =
+      res.data.data.trainer_profile.user_metrics.height;
+    form.trainer_profile.user_metrics.weight =
+      res.data.data.trainer_profile.user_metrics.weight;
+    form.gender = res.data.data.gender;
+    form.trainer_profile.bio = res.data.data.trainer_profile.bio;
+    form.trainer_profile.address.region = res.data.data.trainer_profile.address.region;
+    form.trainer_profile.address.city = res.data.data.trainer_profile.address.city;
+    form.trainer_profile.address.street = res.data.data.trainer_profile.address.street;
+    form.trainer_profile.address.place_of_birth =
+      res.data.data.trainer_profile.address.place_of_birth;
+    form.trainer_profile.address.citizenship =
+      res.data.data.trainer_profile.address.citizenship;
+    form.trainer_profile.social_media.telegram =
+      res.data.data.trainer_profile.social_media.telegram;
+    form.trainer_profile.social_media.instagram =
+      res.data.data.trainer_profile.social_media.instagram;
+    form.trainer_profile.trainer_id = res.data.data.trainer_profile.trainer_id;
 
-    form.trainer_profile.educations = res.data.data.trainer_profile.educations.map(
-      (edu) => ({
-        id: edu.id || "",
-        school: edu.school || "",
-        sport_type: edu.sport_id || "",
-        sport_id: edu.sport_id || "",
-        start_year: edu.start_year || "",
-        end_year: edu.end_year || "",
-        currently_studying: edu.currently_studying || false,
-      })
+    form.educations = res.data.data.educations.map((edu) => ({
+      id: edu.id || "",
+      school_id: edu.school_id || "",
+      sport_id: edu.sport_id || "",
+      start_year: edu.start_year || "",
+      end_year: edu.end_year || "",
+      currently_studying: edu.currently_studying || false,
+    }));
+
+    form.results = res.data.data.results.map((res) => ({
+      id: res.id || "",
+      name: res.tournament_name || "",
+      country: res.country || "",
+      year: res.year || "",
+      tournament_id: res.tournament_id || "",
+      trainer_id: res.trainer_id || "",
+      trainer: res.trainer_name || "",
+      rating: res.rating || "",
+      currently_participating: res.currently_participating || false,
+    }));
+
+    form.media_ids = res.data.data.media.map((item) => item.id);
+    mediaBay.value = res.data.data.media;
+
+    const profilePhoto = res.data.data.media.find(
+      (item) => item.is_profile_photo === true
     );
 
-    form.trainer_profile.trainer_results = res.data.data.trainer_profile.trainer_results.map(
-      (res) => ({
-        id: res.id || "",
-        name: res.tournament.name || "",
-        country: res.country || "",
-        year: res.year || "",
-        tournament_id: res.tournament.id || "",
-        number_of_gold: res.number_of_gold || 0,
-        number_of_silver: res.number_of_silver || 0,
-        number_of_bronze: res.number_of_bronze || 0,
-        currently_participating: res.currently_participating || false,
-        rating: res.rating || 0,
-      })
-    );
-
-    form.trainer_profile.media_ids = res.data.data.trainer_profile.media.map(
-      (item) => item.id
-    );
-    mediaBay.value = res.data.data.trainer_profile.media;
+    if (profilePhoto) {
+      form.photoId = profilePhoto.id; // Profil rasmining ID sini saqlab qo'yamiz
+      form.photoName = profilePhoto.file?.split("/").pop();
+    }
   } catch (e) {
     console.log(e);
   }
@@ -196,16 +207,7 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = "Имя обязательно.";
     if (!form.last_name) errors.last_name = "Фамилия обязательна.";
-    // if (!form.phone_number) {
-    //   errors.phone_number = 'Номер телефона обязателен.';
-    // } else {
-    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
-    //   if (digitsOnly.length > 17) {
-    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-    //   } else if (digitsOnly.length < 9) {
-    //     errors.phone_number = 'Номер телефона слишком короткий.';
-    //   }
-    // }
+
     if (!form.pinfl) {
       errors.pinfl = "ЖШШИР обязательна.";
     } else {
@@ -214,23 +216,24 @@ const validateForm = () => {
         errors.pinfl = "ЖШШИР должен содержать ровно 14 символов";
       }
     }
-
     if (!form.middle_name) errors.middle_name = "Отчество обязательна.";
-    if (!form.trainer_profile.sport_type) errors.sport_type = "Тип тренера обязателен.";
+    if (!form.trainer_profile.skill_level)
+      errors.skill_level = "Тип спортсмена обязателен.";
     if (!form.trainer_profile.sport_id)
       errors.sport_direction = "Направление спорта обязательно.";
-    if (!form.trainer_profile.motto) errors.motto = "Девизион тренера обязательно.";
+    if (!form.trainer_profile.division)
+      errors.division = "Девизион спортсмена обязательно.";
     if (!form.birth_date) errors.birth_date = "Дата рождения обязательна.";
-    if (!form.trainer_profile.gender) errors.gender = "Пол обязателен.";
-    if (!form.trainer_profile.about_me) errors.about_me = "Обо мне обязателен.";
-    if (!form.trainer_profile.height) errors.height = "Рост обязатлен.";
-    if (!form.trainer_profile.weight) errors.weight = "Вес обязателен.";
-    if (!form.trainer_profile.region) errors.region = "Регион обязателен.";
-    if (!form.trainer_profile.city) errors.city = "Город обязателен.";
-    if (!form.trainer_profile.street) errors.street = "Улица обязателен.";
-    if (!form.trainer_profile.place_of_birth)
+    if (!form.gender) errors.gender = "Пол обязателен.";
+    if (!form.trainer_profile.bio) errors.bio = "Обо мне обязателен.";
+    if (!form.trainer_profile.user_metrics.height) errors.height = "Рост обязатлен.";
+    if (!form.trainer_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
+    if (!form.trainer_profile.address.region) errors.region = "Регион обязателен.";
+    if (!form.trainer_profile.address.city) errors.city = "Город обязателен.";
+    if (!form.trainer_profile.address.street) errors.street = "Улица обязателен.";
+    if (!form.trainer_profile.address.place_of_birth)
       errors.place_of_birth = "Место рождения обязательна.";
-    if (!form.trainer_profile.citizenship)
+    if (!form.trainer_profile.address.citizenship)
       errors.citizenship = "Гражданство обязательна.";
   }
 
@@ -246,12 +249,20 @@ const handleFileUpload = async (event) => {
   }
   isUploading.value = true;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("owner", "trainer");
-
   try {
-    // Send the file using axios
+    // Eski profil rasmini o‘chirish (agar mavjud bo‘lsa)
+    if (form.photoId) {
+      await api.delete(`https://api.7srating.uz/api/user/media/${form.photoId}/`);
+      form.media_ids = form.media_ids.filter((id) => id !== form.photoId); // Eski ID ni olib tashlash
+      form.photoId = null; // ID ni tozalash
+    }
+
+    // Yangi rasmni yuklash
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "user");
+    formData.append("is_profile_photo", true);
+
     const response = await api.post(
       "https://api.7srating.uz/api/user/media-upload/",
       formData,
@@ -262,15 +273,10 @@ const handleFileUpload = async (event) => {
       }
     );
 
-    isUploading.value = true;
-    // if (!Array.isArray(form.photo_id)) {
-    //   form.photo_id = [];
-    // }
-    // form.photo_id.push(response.data.data.id);
-
-    form.photo_id = response.data.data.id;
-
-    // Optionally, store the file name
+    // Yangi profil rasm ma'lumotlarini saqlash
+    const newPhotoId = response.data.data.id;
+    form.photoId = newPhotoId; // Yangi yuklangan rasm ID sini saqlash
+    form.media_ids.push(newPhotoId); // Yangi ID ni media_ids ga qo‘shish
     form.photoName = file.name;
   } catch (error) {
     console.error("File upload failed:", error.response?.data || error.message);
@@ -303,8 +309,8 @@ const handleSubmit = async () => {
           form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
         trainer_profile: {
           ...form.trainer_profile,
-          city: form.trainer_profile.city.name_uz,
-          region: form.trainer_profile.region.name_uz,
+          city: form.trainer_profile.address.city.name_uz,
+          region: form.trainer_profile.address.region.name_uz,
         },
       };
 

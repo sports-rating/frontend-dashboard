@@ -302,7 +302,7 @@ const deleteTournament = async () => {
 
 const getSport = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     dataSport.value = res.data.data;
   } catch (e) {

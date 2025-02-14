@@ -20,9 +20,16 @@
           class="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
         >
           <img :src="photo.url" :alt="photo.name" class="w-full h-full object-cover" />
-          <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-100 text-white text-xs p-2 flex justify-between items-center">
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-100 text-white text-xs p-2 flex justify-between items-center"
+          >
             <span>{{ photo.name }}</span>
-            <button @click="deletePhoto(photo, index)" class="text-red-500 hover:text-red-700 font-bold z-10">Удалить</button>
+            <button
+              @click="deletePhoto(photo, index)"
+              class="text-red-500 hover:text-red-700 font-bold z-10"
+            >
+              Удалить
+            </button>
           </div>
         </div>
 
@@ -30,7 +37,13 @@
         <label
           class="cursor-pointer aspect-video flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
         >
-          <input type="file" accept="image/*" class="hidden" multiple  @change="handlePhotoUpload" />
+          <input
+            type="file"
+            accept="image/*"
+            class="hidden"
+            multiple
+            @change="handlePhotoUpload"
+          />
           <div class="w-8 h-8 mb-2 text-pink-500">
             <img src="../../assets/img/plus.svg" alt="plus" />
           </div>
@@ -48,10 +61,21 @@
           :key="'video-' + index"
           class="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
         >
-          <img :src="video.thumbnail" :alt="video.name" class="w-full h-full object-cover" />
-          <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 flex justify-between items-center">
+          <img
+            :src="video.thumbnail"
+            :alt="video.name"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 flex justify-between items-center"
+          >
             <span>{{ video.name }}</span>
-            <button @click="deleteVideo(video, index)" class="text-red-500 hover:text-red-700 font-bold">Удалить</button>
+            <button
+              @click="deleteVideo(video, index)"
+              class="text-red-500 hover:text-red-700 font-bold"
+            >
+              Удалить
+            </button>
           </div>
         </div>
 
@@ -59,7 +83,12 @@
         <label
           class="cursor-pointer aspect-video flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
         >
-          <input type="file" accept="video/*" class="hidden" @change="handleVideoUpload" />
+          <input
+            type="file"
+            accept="video/*"
+            class="hidden"
+            @change="handleVideoUpload"
+          />
           <div class="w-8 h-8 mb-2 text-pink-500">
             <img src="../../assets/img/plus.svg" alt="plus" />
           </div>
@@ -70,41 +99,49 @@
 
     <!--  PDF-->
     <section class="mb-8">
-  <h2 class="text-2xl font-semibold mb-4">PDF Файлы</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div
-      v-for="(pdf, index) in pdfs"
-      :key="'pdf-' + index"
-      class="relative bg-gray-100 rounded-lg overflow-hidden p-4"
-    >
-      <div class="flex flex-col items-center justify-center">
-        <img src="../../assets/img/pdf.svg" alt="PDF Icon" class="w-12 h-12 mb-2" />
-        <span class="text-sm text-gray-700 truncate">{{ pdf.name }}</span>
-        <button @click="deletePdf(pdf, index)" class="text-red-500 hover:text-red-700 font-bold mt-2">
-          Удалить
-        </button>
-      </div>
-    </div>
+      <h2 class="text-2xl font-semibold mb-4">PDF Файлы</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          v-for="(pdf, index) in pdfs"
+          :key="'pdf-' + index"
+          class="relative bg-gray-100 rounded-lg overflow-hidden p-4"
+        >
+          <div class="flex flex-col items-center justify-center">
+            <img src="../../assets/img/pdf.svg" alt="PDF Icon" class="w-12 h-12 mb-2" />
+            <span class="text-sm text-gray-700 truncate">{{ pdf.name }}</span>
+            <button
+              @click="deletePdf(pdf, index)"
+              class="text-red-500 hover:text-red-700 font-bold mt-2"
+            >
+              Удалить
+            </button>
+          </div>
+        </div>
 
-    <!-- Add PDF Button -->
-    <label
-      class="cursor-pointer flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
-    >
-      <input type="file" accept="application/pdf" class="hidden" @change="handlePdfUpload" />
-      <div class="w-8 h-8 mb-2 text-pink-500">
-        <img src="../../assets/img/plus.svg" alt="plus" />
+        <!-- Add PDF Button -->
+        <label
+          class="cursor-pointer flex flex-col items-center justify-center bg-pink-50 rounded-lg border-2 border-dashed border-pink-200 hover:bg-pink-100 transition-colors"
+        >
+          <input
+            type="file"
+            accept="application/pdf"
+            class="hidden"
+            @change="handlePdfUpload"
+          />
+          <div class="w-8 h-8 mb-2 text-pink-500">
+            <img src="../../assets/img/plus.svg" alt="plus" />
+          </div>
+          <span class="text-sm text-pink-600">Добавить новый PDF</span>
+        </label>
       </div>
-      <span class="text-sm text-pink-600">Добавить новый PDF</span>
-    </label>
-  </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue';
-import api from '../../utils/axios';
-import Loading from '../../components/Loading.vue';
+import { ref, reactive, watch, onMounted } from "vue";
+import api from "../../utils/axios";
+import Loading from "../../components/Loading.vue";
 
 const props = defineProps({
   media_ids: {
@@ -117,18 +154,18 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update-media']);
+const emit = defineEmits(["update-media"]);
 const isUploading = ref(false);
 const localMediaIds = ref([...props.media_ids]);
-const photos = ref(JSON.parse(localStorage.getItem('photos')) || []);
-const videos = ref(JSON.parse(localStorage.getItem('videos')) || []);
-const pdfs = ref(JSON.parse(localStorage.getItem('pdfs')) || []);
+const photos = ref(JSON.parse(localStorage.getItem("photos")) || []);
+const videos = ref(JSON.parse(localStorage.getItem("videos")) || []);
+const pdfs = ref(JSON.parse(localStorage.getItem("pdfs")) || []);
 
 const saveToLocalStorage = () => {
-  localStorage.setItem('media_ids', JSON.stringify(localMediaIds.value));
-  localStorage.setItem('photos', JSON.stringify(photos.value));
-  localStorage.setItem('videos', JSON.stringify(videos.value));
-  localStorage.setItem('pdfs', JSON.stringify(pdfs.value));
+  localStorage.setItem("media_ids", JSON.stringify(localMediaIds.value));
+  localStorage.setItem("photos", JSON.stringify(photos.value));
+  localStorage.setItem("videos", JSON.stringify(videos.value));
+  localStorage.setItem("pdfs", JSON.stringify(pdfs.value));
 };
 
 const deletePhoto = async (photo, index) => {
@@ -136,10 +173,10 @@ const deletePhoto = async (photo, index) => {
     await api.delete(`https://api.7srating.uz/api/user/media/${photo.id}/`);
     photos.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== photo.id);
-    emit('update-media', localMediaIds.value);
+    emit("update-media", localMediaIds.value);
     saveToLocalStorage();
   } catch (error) {
-    console.error('Failed to delete photo:', error.response?.data || error.message);
+    console.error("Failed to delete photo:", error.response?.data || error.message);
   }
 };
 
@@ -148,10 +185,10 @@ const deleteVideo = async (video, index) => {
     await api.delete(`https://api.7srating.uz/api/user/media/${video.id}/`);
     videos.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== video.id);
-    emit('update-media', localMediaIds.value);
+    emit("update-media", localMediaIds.value);
     saveToLocalStorage();
   } catch (error) {
-    console.error('Failed to delete video:', error.response?.data || error.message);
+    console.error("Failed to delete video:", error.response?.data || error.message);
   }
 };
 
@@ -163,19 +200,20 @@ const handlePhotoUpload = async (event) => {
   try {
     for (const file of files) {
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('owner', 'sportsman');
+      formData.append("file", file);
+      formData.append("type", "user");
+      formData.append("is_profile_photo", false);
 
       const response = await api.post(
-        'https://api.7srating.uz/api/user/media-upload/',
+        "https://api.7srating.uz/api/user/media-upload/",
         formData,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
       localMediaIds.value.push(response.data.data.id);
-      emit('update-media', localMediaIds.value);
+      emit("update-media", localMediaIds.value);
       photos.value.push({
         id: response.data.data.id,
         url: URL.createObjectURL(file),
@@ -184,45 +222,45 @@ const handlePhotoUpload = async (event) => {
     }
     saveToLocalStorage();
   } catch (error) {
-    console.error('Photo upload failed:', error.response?.data || error.message);
+    console.error("Photo upload failed:", error.response?.data || error.message);
   } finally {
     isUploading.value = false;
   }
 };
-
 
 const handleVideoUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
   isUploading.value = true;
   const videoURL = URL.createObjectURL(file);
-  const videoElement = document.createElement('video');
+  const videoElement = document.createElement("video");
   videoElement.src = videoURL;
   videoElement.currentTime = 1;
 
-  videoElement.addEventListener('loadeddata', async () => {
-    const canvas = document.createElement('canvas');
+  videoElement.addEventListener("loadeddata", async () => {
+    const canvas = document.createElement("canvas");
     canvas.width = videoElement.videoWidth;
     canvas.height = videoElement.videoHeight;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-    const thumbnail = canvas.toDataURL('image/png');
+    const thumbnail = canvas.toDataURL("image/png");
     URL.revokeObjectURL(videoURL);
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('owner', 'sportsman');
+    formData.append("file", file);
+    formData.append("type", "user");
+    formData.append("is_profile_photo", false);
 
     try {
       const response = await api.post(
-        'https://api.7srating.uz/api/user/media-upload/',
+        "https://api.7srating.uz/api/user/media-upload/",
         formData,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       localMediaIds.value.push(response.data.data.id);
-      emit('update-media', localMediaIds.value);
+      emit("update-media", localMediaIds.value);
       videos.value.push({
         id: response.data.data.id,
         thumbnail,
@@ -230,7 +268,7 @@ const handleVideoUpload = async (event) => {
       });
       saveToLocalStorage();
     } catch (error) {
-      console.error('Video upload failed:', error.response?.data || error.message);
+      console.error("Video upload failed:", error.response?.data || error.message);
     } finally {
       isUploading.value = false;
     }
@@ -240,7 +278,7 @@ const handleVideoUpload = async (event) => {
 const fetchMediaData = async () => {
   try {
     const fetchedPhotos = props.media_bay
-      .filter((item) => item.media_type === 'image')
+      .filter((item) => item.media_type === "image")
       .map((item) => ({
         id: item.id,
         url: `https://api.7srating.uz${item.file}`,
@@ -248,7 +286,7 @@ const fetchMediaData = async () => {
       }));
 
     const fetchedVideos = props.media_bay
-      .filter((item) => item.media_type === 'video')
+      .filter((item) => item.media_type === "video")
       .map((item) => ({
         id: item.id,
         thumbnail: `https://api.7srating.uz${item.file}`,
@@ -258,10 +296,9 @@ const fetchMediaData = async () => {
     photos.value = fetchedPhotos;
     videos.value = fetchedVideos;
   } catch (error) {
-    console.error('Failed to fetch media data:', error.response?.data || error.message);
+    console.error("Failed to fetch media data:", error.response?.data || error.message);
   }
 };
-
 
 const handlePdfUpload = async (event) => {
   const files = Array.from(event.target.files);
@@ -271,19 +308,20 @@ const handlePdfUpload = async (event) => {
   try {
     for (const file of files) {
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('owner', 'sportsman');
+      formData.append("file", file);
+      formData.append("type", "user");
+      formData.append("is_profile_photo", false);
 
       const response = await api.post(
-        'https://api.7srating.uz/api/user/media-upload/',
+        "https://api.7srating.uz/api/user/media-upload/",
         formData,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
       localMediaIds.value.push(response.data.data.id);
-      emit('update-media', localMediaIds.value);
+      emit("update-media", localMediaIds.value);
       pdfs.value.push({
         id: response.data.data.id,
         name: file.name,
@@ -292,7 +330,7 @@ const handlePdfUpload = async (event) => {
     }
     saveToLocalStorage();
   } catch (error) {
-    console.error('PDF upload failed:', error.response?.data || error.message);
+    console.error("PDF upload failed:", error.response?.data || error.message);
   } finally {
     isUploading.value = false;
   }
@@ -303,27 +341,26 @@ const deletePdf = async (pdf, index) => {
     await api.delete(`https://api.7srating.uz/api/user/media/${pdf.id}/`);
     pdfs.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== pdf.id);
-    emit('update-media', localMediaIds.value);
+    emit("update-media", localMediaIds.value);
     saveToLocalStorage();
   } catch (error) {
-    console.error('Failed to delete PDF:', error.response?.data || error.message);
+    console.error("Failed to delete PDF:", error.response?.data || error.message);
   }
 };
 
 onMounted(() => {
-  const storedMediaIds = JSON.parse(localStorage.getItem('media_ids'));
+  const storedMediaIds = JSON.parse(localStorage.getItem("media_ids"));
   if (storedMediaIds) localMediaIds.value = storedMediaIds;
 
-  const storedPhotos = JSON.parse(localStorage.getItem('photos'));
+  const storedPhotos = JSON.parse(localStorage.getItem("photos"));
   if (storedPhotos) photos.value = storedPhotos;
 
-  const storedVideos = JSON.parse(localStorage.getItem('videos'));
+  const storedVideos = JSON.parse(localStorage.getItem("videos"));
   if (storedVideos) videos.value = storedVideos;
 
-  const storedPdfs = JSON.parse(localStorage.getItem('pdfs'));
+  const storedPdfs = JSON.parse(localStorage.getItem("pdfs"));
   if (storedPdfs) pdfs.value = storedPdfs;
-  
-  fetchMediaData();
 
+  fetchMediaData();
 });
 </script>

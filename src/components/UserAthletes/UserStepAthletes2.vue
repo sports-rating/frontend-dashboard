@@ -33,10 +33,9 @@
               <tr v-for="(school, index) in schools" :key="school.id" class="border-b">
                 <td class="py-3 px-4">{{ index + 1 }}</td>
                 <td class="py-3 px-4">
-                  {{ getName(school.school) }}
+                  {{ getName(school.school_id) }}
                 </td>
                 <td class="py-3 px-4">
-                  <!-- {{ school.sport_type }} -->
                   {{ getSportName() }}
                 </td>
                 <td class="py-3 px-4">{{ school.start_year }} - {{ school.end_year }}</td>
@@ -102,7 +101,7 @@
 
               <div class="flex gap-2 items-center justify-center">
                 <multiselect
-                  v-model="currentSchool.school"
+                  v-model="currentSchool.school_id"
                   :options="dataSchool"
                   label="name"
                   track-by="id"
@@ -228,8 +227,8 @@ const editingSchool = ref(null);
 
 const currentSchool = ref({
   id: "",
-  school: "",
-  sport_type: "",
+  school_id: "",
+  sport_id: "",
   start_year: "",
   end_year: "",
   currently_studying: false,
@@ -237,7 +236,7 @@ const currentSchool = ref({
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/sport/");
+    const res = await api.get("https://api.7srating.uz/api/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -250,7 +249,7 @@ const getDataa = async () => {
   const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/school/?sport=${selectedSport.name}`
+      `https://api.7srating.uz/api/education/school/?sport=${selectedSport.name}`
     );
 
     dataSchool.value = res.data.data;
@@ -268,8 +267,8 @@ onMounted(() => {
   if (props.education.length > 0) {
     schools.value = props.education.map((edu) => ({
       id: edu.id || "",
-      school: edu.school || "",
-      sport_type: edu.sport_id || "",
+      school_id: edu.school_id || "",
+      sport_id: edu.sport_id || "",
       start_year: edu.start_year || "",
       end_year: edu.end_year || "",
       currently_studying: edu.currently_studying || false,
@@ -296,8 +295,8 @@ const openModal = () => {
   editingSchool.value = null;
   currentSchool.value = {
     id: "",
-    school: "",
-    sport_type: "",
+    school_id: "",
+    sport_id: "",
     start_year: "",
     end_year: "",
     currently_studying: false,
@@ -325,10 +324,10 @@ const getName = (sportTypeId) => {
 
 // Validate fields
 const validateForm = () => {
-  const { school, start_year, end_year } = currentSchool.value;
+  const { school_id, start_year, end_year } = currentSchool.value;
   const validationErrors = {};
 
-  if (!school) validationErrors.school = "Наименование школы обязательно.";
+  if (!school_id) validationErrors.school = "Наименование школы обязательно.";
   // if (!sport_type) validationErrors.sport_type = "Вид спорта обязателен.";
   if (!start_year) validationErrors.start_year = "Укажите начальный год.";
   if (!end_year) validationErrors.end_year = "Укажите конечный год.";
@@ -344,11 +343,11 @@ const submitForm = () => {
   if (!validateForm()) return;
   const savedSport = localStorage.getItem("selectedSport");
   const typeId = JSON.parse(savedSport);
-  const { id, school, start_year, end_year, currently_studying } = currentSchool.value;
+  const { id, school_id, start_year, end_year, currently_studying } = currentSchool.value;
   const newSchool = {
     id: id || String(Math.floor(10000 + Math.random() * 90000)),
-    school: school.id,
-    sport_type: typeId.id,
+    school_id: school_id.id,
+    sport_id: typeId.id,
     start_year,
     end_year,
     currently_studying,
@@ -370,7 +369,9 @@ const submitForm = () => {
 
 const editSchool = (school) => {
   // const selectedSchool = data.value.find((item) => item.id === school.sport_type);
-  const selectedName = dataSchool.value.find((item) => item.id === school.school);
+  const selectedName = dataSchool.value.find((item) => item.id === school.school_id);
+
+  console.log(school, "da");
 
   const savedSport = localStorage.getItem("selectedSport");
   const typeId = JSON.parse(savedSport);
@@ -378,8 +379,8 @@ const editSchool = (school) => {
   editingSchool.value = school;
   currentSchool.value = {
     id: school.id || "",
-    school: selectedName || "",
-    sport_type: typeId.id,
+    school_id: selectedName || "",
+    sport_id: typeId.id,
     start_year: school.start_year || "",
     end_year: school.end_year || "",
     currently_studying: school.currently_studying || false,
