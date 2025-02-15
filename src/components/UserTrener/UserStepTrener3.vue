@@ -283,6 +283,9 @@ const newResult = ref({
   rating: null,
   currently_participating: true,
   name: "",
+  gold: null,
+  silver: null,
+  bronze: null,
 });
 
 const show = () => {
@@ -313,7 +316,7 @@ const editResult = (result) => {
     country: result.country || "",
     year: result.year || "",
     tournament_id: selectedTournament,
-    rating: result.rating,
+    rating: result.rating || 0,
     name: selectedTournament,
     currently_participating: result.currently_participating || true,
   };
@@ -368,9 +371,12 @@ onMounted(() => {
       country: res.country || "",
       year: res.year || "",
       tournament_id: res.tournament_id || "",
-      rating: res.rating,
+      rating: res.rating || 0,
       name: res.name || "",
       currently_participating: res.currently_participating || true,
+      gold: res.gold || 0,
+      silver: res.silver || 0,
+      bronze: res.bronze || 0,
     }));
   }
 

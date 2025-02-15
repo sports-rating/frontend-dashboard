@@ -179,8 +179,11 @@ const getData = async () => {
       tournament_id: res.tournament_id || "",
       trainer_id: res.trainer_id || "",
       trainer: res.trainer_name || "",
-      rating: res.rating || "",
+      rating: res.rating || 0,
       currently_participating: res.currently_participating || false,
+      gold: res.gold || 0,
+      silver: res.silver || 0,
+      bronze: res.bronze || 0,
     }));
 
     form.media_ids = res.data.data.media.map((item) => item.id);
