@@ -154,7 +154,7 @@ const isModalOpen = ref(false);
 const sportToDelete = ref(null);
 
 const currentPage = ref(1);
-const perPage = ref(5);
+const perPage = ref(10);
 
 const getData = async () => {
   try {

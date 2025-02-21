@@ -190,7 +190,7 @@ const isCreate = ref(false);
 const data = ref([]);
 
 const currentPage = ref(1);
-const perPage = ref(5);
+const perPage = ref(10);
 
 const isModalOpen = ref(false);
 const tournamentToDelete = ref(null);

@@ -250,7 +250,7 @@ const sportToDelete = ref(null);
 const toRole = ref(null);
 
 const currentPage = ref(1);
-const perPage = ref(5);
+const perPage = ref(10);
 
 const headers = ref([
   "#",

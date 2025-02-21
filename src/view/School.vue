@@ -179,7 +179,7 @@ const dataTrainer = ref([]);
 const isModalOpen = ref(false);
 const schoolDelete = ref(null);
 const currentPage = ref(1);
-const perPage = ref(5);
+const perPage = ref(10);
 
 const getData = async () => {
   try {
