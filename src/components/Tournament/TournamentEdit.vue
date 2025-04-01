@@ -44,17 +44,16 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Время </label>
 
-            <input
-              v-model="form.start_time"
-              type="date"
-              min="2000-01-01"
-              max="2026-01-01"
+            <select
+              v-model="form.year"
               class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
-            />
+            >
+              <option v-for="year in getYears()" :key="year" :value="year">
+                {{ year }}
+              </option>
+            </select>
 
-            <span class="text-red-500 mt-1" v-if="errors.start_time">{{
-              errors.start_time
-            }}</span>
+            <span class="text-red-500 mt-1" v-if="errors.year">{{ errors.year }}</span>
           </div>
 
           <div>
@@ -151,7 +150,7 @@ const form = reactive({
   name: "",
   place: "",
   division: "",
-  start_time: "",
+  year: new Date().getFullYear(),
   sport_type: "",
   logo: "",
   sport_id: null,
@@ -177,6 +176,14 @@ const handleFileUpload = (event) => {
   }
 };
 
+const getYears = () => {
+  const years = [];
+  for (let i = 1900; i <= 2026; i++) {
+    years.push(i);
+  }
+  return years;
+};
+
 const validateForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 
@@ -185,10 +192,10 @@ const validateForm = () => {
   if (!form.division) errors.division = "Разделение обязательно.";
   if (!form.sport_id) errors.sport_id = "Тип спорта обязателен.";
   if (!form.logo) errors.photo = "Фотография обязательна.";
-  if (!form.start_time) {
-    errors.start_time = "Время обязательно.";
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(form.start_time)) {
-    errors.start_time = "Введите корректную дату (YYYY-MM-DD).";
+  if (!form.year) {
+    errors.year = "Время обязательно.";
+  } else if (!/^\d{4}$/.test(form.year)) {
+    errors.year = "Введите корректную дату (YYYY-MM-DD).";
   }
 
   return Object.keys(errors).length === 0;
@@ -213,7 +220,7 @@ const getData = async () => {
     form.place = res.data.data.place;
     form.division = res.data.data.division;
     form.sport_type = res.data.data.sport_type;
-    form.start_time = res.data.data.start_time;
+    form.year = res.data.data.year;
     form.logo = res.data.data.logo;
     form.photoName = res.data.data.logo.match(/[^/]+$/)[0];
     form.sport_id = res.data.data.sport;
@@ -247,7 +254,7 @@ const handleSubmit = async () => {
     formData.append("logo", form.logo);
   }
 
-  formData.append("start_time", form.start_time);
+  formData.append("year", form.year);
   formData.append("place", form.place);
   formData.append("division", form.division);
   formData.append("sport_id", form.sport_id.id);

@@ -42,7 +42,7 @@
             />
           </div>
 
-          <div>
+          <!-- <div>
             <el-date-picker
               style="width: 20rem !important"
               v-model="dateRange"
@@ -50,7 +50,7 @@
               start-placeholder="Весь период"
               end-placeholder="Весь период"
             />
-          </div>
+          </div> -->
           <select
             v-model="userType"
             class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
@@ -59,6 +59,16 @@
             <option value="trainer">Тренер</option>
             <option value="sportsman">Спортсмен</option>
           </select>
+
+          <select
+            v-model="sport"
+            placeholder="Все cпорт"
+            class="px-3 py-2 text-sm !w-[20%] text-black bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
+          >
+            <option value="">Все cпорт</option>
+            <option v-for="item in dataSport">{{ item.name }}</option>
+          </select>
+
           <button
             @click="showExportModal = true"
             class="flex gap-2 items-center px-4 py-2 text-sm text-white bg-green-500 rounded-lg hover:bg-green-600"
@@ -220,6 +230,7 @@
         &gt;
       </button>
     </div>
+    <div></div>
     <ExportModal
       :is-open="showExportModal"
       @close="showExportModal = false"
@@ -234,12 +245,15 @@ import { ref, computed, onUnmounted, onMounted } from "vue";
 import ExportModal from "../components/ExportModal.vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../utils/axios";
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.min.css";
 // import VuePagination from "@hennge/vue3-pagination";
 // import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 
 const router = useRouter();
 const search = ref("");
 const userType = ref("");
+const sport = ref("");
 const dateRange = ref(null);
 const showExportModal = ref(false);
 const isCreate = ref(false);
@@ -328,12 +342,13 @@ const filteredUsers = computed(() => {
       user.email?.toLowerCase().includes(search.value?.toLowerCase());
 
     const matchesUserType = userType.value ? user.user_role === userType.value : true;
+    const matchesUserSport = sport.value ? user.sport === sport.value : true;
     const matchesDateRange = dateRange.value
       ? new Date(user.created_time) >= new Date(dateRange.value[0]) &&
         new Date(user.created_time) <= new Date(dateRange.value[1])
       : true;
 
-    return matchesSearch && matchesUserType && matchesDateRange;
+    return matchesSearch && matchesUserType && matchesDateRange && matchesUserSport;
   });
 });
 

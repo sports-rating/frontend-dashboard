@@ -41,7 +41,7 @@
             />
           </div>
           <div class="flex gap-6">
-            <div>
+            <!-- <div>
               <el-date-picker
                 style="width: 20rem !important"
                 v-model="dateRange"
@@ -49,7 +49,7 @@
                 start-placeholder="Весь период"
                 end-placeholder="Весь период"
               />
-            </div>
+            </div> -->
 
             <div class="relative">
               <button
@@ -111,7 +111,7 @@
                 <p v-else>-</p>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.start_time ? user.start_time : "-" }}
+                {{ user.year ? user.year : "-" }}
               </td>
               <td
                 class="px-6 py-4 gap-2 flex justify-center whitespace-nowrap text-sm text-gray-500"
@@ -227,7 +227,7 @@ const filteredUsers = computed(() => {
   return data.value.filter((user) => {
     const matchesSearch = user.name?.toLowerCase().includes(search.value.toLowerCase());
     const matchesDateRange = dateRange.value
-      ? new Date(user.start_time) >= new Date(dateRange.value[0]) &&
+      ? new Date(user.year) >= new Date(dateRange.value[0]) &&
         new Date(user.end_time) <= new Date(dateRange.value[1])
       : true;
     return matchesSearch && matchesDateRange;
