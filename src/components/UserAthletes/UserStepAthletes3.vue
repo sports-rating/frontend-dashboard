@@ -147,16 +147,13 @@
             <div>
               <label class="block text-sm font-medium text-gray-700">Период оценки</label>
               <div class="grid gap-4 mt-1">
-                <el-date-picker
+                <input
                   v-model="newResult.year"
-                  type="date"
-                  format="YYYY-MM-DD"
+                  type="text"
                   disabled
-                  value-format="YYYY-MM-DD"
                   placeholder="Pick a day"
-                  class="!h-10 !w-full !mt-1 !border !rounded-md !bg-[#EFF0F3]"
+                  class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
                 />
-                <!-- :size="size" -->
               </div>
               <p v-if="errors.year" class="text-sm text-red-500">
                 {{ errors.year }}
@@ -430,7 +427,7 @@ const addResult = () => {
       tournament_id: selectedTournament ? selectedTournament.id : "",
       trainer_id: selected ? selected.id : "",
       country: newResult.value.country,
-      year: new Date(newResult.value.year).toLocaleDateString("en-CA"),
+      year: newResult.value.year,
       rating: Number(newResult.value.rating),
       currently_participating: newResult.value.currently_participating,
       name: selectedTournament ? selectedTournament.name : "",
@@ -469,7 +466,7 @@ onMounted(() => {
 const handleSelection = (selectedOption) => {
   const selectedItem = data.value.find((item) => item.id === selectedOption.id);
   if (selectedItem) {
-    newResult.value.year = selectedItem.start_time;
+    newResult.value.year = selectedItem.year;
     newResult.value.country = selectedItem.place;
   }
 };
