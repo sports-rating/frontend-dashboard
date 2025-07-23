@@ -174,7 +174,7 @@ const getData = async () => {
     form.results = res.data.data.results.map((res) => ({
       id: res.id || "",
       name: res.tournament_name || "",
-      country: res.country || "",
+      // country: res.country || "",
       year: res.year || "",
       tournament_id: res.tournament_id || "",
       trainer_id: res.trainer_id || "",

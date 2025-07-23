@@ -17,46 +17,6 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Место</label>
-            <input
-              v-model="form.place"
-              type="text"
-              placeholder="Введите Место"
-              class="mt-1 bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-
-            <span class="text-red-500 mt-1" v-if="errors.place">{{ errors.place }}</span>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Разделение</label>
-            <input
-              v-model="form.division"
-              type="text"
-              placeholder="Введите Разделение"
-              class="mt-1 bg-white block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.division">{{
-              errors.division
-            }}</span>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Время </label>
-
-            <select
-              v-model="form.year"
-              class="!h-10 !w-full !mt-1 !border !rounded-md p-2"
-            >
-              <option v-for="year in getYears()" :key="year" :value="year">
-                {{ year }}
-              </option>
-            </select>
-
-            <span class="text-red-500 mt-1" v-if="errors.year">{{ errors.year }}</span>
-          </div>
-
-          <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
 
             <multiselect
@@ -148,9 +108,6 @@ const preview = ref(null);
 
 const form = reactive({
   name: "",
-  place: "",
-  division: "",
-  year: new Date().getFullYear(),
   sport_type: "",
   logo: "",
   sport_id: null,
@@ -176,27 +133,12 @@ const handleFileUpload = (event) => {
   }
 };
 
-const getYears = () => {
-  const years = [];
-  for (let i = 1900; i <= 2026; i++) {
-    years.push(i);
-  }
-  return years;
-};
-
 const validateForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
 
   if (!form.name) errors.name = "Имя обязательно.";
-  if (!form.place) errors.place = "Место обязательно.";
-  if (!form.division) errors.division = "Разделение обязательно.";
   if (!form.sport_id) errors.sport_id = "Тип спорта обязателен.";
   if (!form.logo) errors.photo = "Фотография обязательна.";
-  if (!form.year) {
-    errors.year = "Время обязательно.";
-  } else if (!/^\d{4}$/.test(form.year)) {
-    errors.year = "Введите корректную дату (YYYY-MM-DD).";
-  }
 
   return Object.keys(errors).length === 0;
 };
@@ -217,10 +159,7 @@ const getData = async () => {
     );
 
     form.name = res.data.data.name;
-    form.place = res.data.data.place;
-    form.division = res.data.data.division;
     form.sport_type = res.data.data.sport_type;
-    form.year = res.data.data.year;
     form.logo = res.data.data.logo;
     form.photoName = res.data.data.logo.match(/[^/]+$/)[0];
     form.sport_id = res.data.data.sport;
@@ -254,9 +193,6 @@ const handleSubmit = async () => {
     formData.append("logo", form.logo);
   }
 
-  formData.append("year", form.year);
-  formData.append("place", form.place);
-  formData.append("division", form.division);
   formData.append("sport_id", form.sport_id.id);
 
   try {

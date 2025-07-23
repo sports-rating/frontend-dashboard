@@ -92,12 +92,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.name ? user.name : "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.place ? user.place : "-" }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.division ? user.division : "-" }}
-              </td>
+
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.sport ? user.sport.name : "-" }}
               </td>
@@ -110,9 +105,7 @@
                 />
                 <p v-else>-</p>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.year ? user.year : "-" }}
-              </td>
+
               <td
                 class="px-6 py-4 gap-2 flex justify-center whitespace-nowrap text-sm text-gray-500"
               >
@@ -172,16 +165,7 @@ import { ref, computed, onUnmounted, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "../utils/axios";
 
-const headers = ref([
-  "#",
-  "Имя",
-  "Место",
-  "Разделение",
-  "Тип спорта",
-  "Image",
-  "Дата",
-  "Действия",
-]);
+const headers = ref(["#", "Имя", "Тип спорта", "Image", "Действия"]);
 
 const router = useRouter();
 const search = ref("");

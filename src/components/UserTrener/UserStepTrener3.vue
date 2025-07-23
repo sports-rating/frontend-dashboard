@@ -22,11 +22,7 @@
             >
               Название
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Страна
-            </th>
+
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
@@ -54,9 +50,7 @@
                 <span class="ml-2 text-sm text-gray-900">{{ result.name }} </span>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ result.country }}
-            </td>
+
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ result.year }}
             </td>
@@ -125,22 +119,6 @@
               <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
             </div>
 
-            <!-- Country Field -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Страна</label>
-
-              <input
-                v-model="newResult.country"
-                type="text"
-                disabled
-                placeholder="Выберите страна"
-                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
-              />
-              <p v-if="errors.country" class="text-sm text-red-500">
-                {{ errors.country }}
-              </p>
-            </div>
-
             <!-- Dates -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Период оценки</label>
@@ -148,7 +126,6 @@
                 <input
                   v-model="newResult.year"
                   type="text"
-                  disabled
                   placeholder="Pick a day"
                   class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
                 />
@@ -240,7 +217,6 @@ const handleSelection = (selectedOption) => {
 
 const errors = ref({
   tournament_id: "",
-  country: "",
   year: "",
   logo: "",
   name: "",
@@ -258,12 +234,6 @@ const validateForm = () => {
     isValid = false;
   }
 
-  // Validate Country
-  if (!newResult.value.country) {
-    errors.value.country = "Пожалуйста, выберите страну.";
-    isValid = false;
-  }
-
   // Validate Dates
   if (!newResult.value.year) {
     errors.value.year = "Начальная дата обязательна.";
@@ -275,7 +245,6 @@ const validateForm = () => {
 
 const newResult = ref({
   tournament_id: "",
-  country: "",
   year: "",
   rating: null,
   currently_participating: true,
@@ -287,8 +256,7 @@ const newResult = ref({
 
 const show = () => {
   showModal.value = false;
-  (newResult.value.country = ""),
-    (newResult.value.year = ""),
+  (newResult.value.year = ""),
     (newResult.value.rating = 0),
     (newResult.value.name = ""),
     (newResult.value.currently_participating = true),
@@ -297,8 +265,7 @@ const show = () => {
 
 const close = () => {
   showModal.value = false;
-  (newResult.value.country = ""),
-    (newResult.value.year = ""),
+  (newResult.value.year = ""),
     (newResult.value.name = ""),
     (newResult.value.rating = 0),
     (newResult.value.currently_participating = true),
@@ -310,7 +277,6 @@ const editResult = (result) => {
 
   newResult.value = {
     id: result.id || "",
-    country: result.country || "",
     year: result.year || "",
     tournament_id: selectedTournament,
     rating: result.rating || 0,
@@ -348,7 +314,6 @@ const addResult = () => {
     results.value.push({
       id: String(results.value.length + 1).padStart(4, "0"),
       tournament_id: selectedTournament ? selectedTournament.id : "",
-      country: newResult.value.country,
       year: newResult.value.year,
       rating: newResult.value.rating,
       currently_participating: newResult.value.currently_participating,
@@ -365,7 +330,6 @@ onMounted(() => {
   if (props.typeResults.length > 0) {
     results.value = props.typeResults.map((res) => ({
       id: res.id || "",
-      country: res.country || "",
       year: res.year || "",
       tournament_id: res.tournament_id || "",
       rating: res.rating || 0,
