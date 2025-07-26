@@ -42,7 +42,10 @@ const handleOtp = async () => {
         autoClose: 3000,
       });
       errorMessage.value = "You do not have permission to access this panel.";
-      authStore.logout();
+
+      setTimeout(() => {
+        authStore.logout();
+      }, 3000);
     }
   } catch (error) {
     toast.error(error?.response?.data?.message || "Verification failed.", {
