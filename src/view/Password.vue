@@ -38,14 +38,14 @@ const handleOtp = async () => {
     if (authStore.userRole === "admin" || authStore.userRole === "super_admin") {
       router.push("/");
     } else {
-      toast.error("Access denied: insufficient permissions", {
-        autoClose: 3000,
+      toast.error("You do not have permission to access this page.", {
+        autoClose: 5000,
       });
       errorMessage.value = "You do not have permission to access this panel.";
 
       setTimeout(() => {
         authStore.logout();
-      }, 3000);
+      }, 5000);
     }
   } catch (error) {
     toast.error(error?.response?.data?.message || "Verification failed.", {
