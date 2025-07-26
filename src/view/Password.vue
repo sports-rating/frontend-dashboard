@@ -1,53 +1,63 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import OtpInput from '../components/OtpInput.vue';  
-import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-
+import { ref, watch, onMounted } from "vue";
+import OtpInput from "../components/OtpInput.vue";
+import { useAuthStore } from "../stores/auth";
+import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const isLoading = ref(false);
-const errorMessage = ref('');
+const errorMessage = ref("");
 const router = useRouter();
 const authStore = useAuthStore();
-const data = ref('');
-const timer = ref(60); 
+const data = ref("");
+const timer = ref(60);
 const resendAvailable = ref(false);
 
 watch(data, (newVal) => {
-  data.value = String(newVal).padStart(6, "0"); 
+  data.value = String(newVal).padStart(6, "0");
   if (data.value.length < 6) {
-    errorMessage.value = 'Please enter the complete OTP.';
+    errorMessage.value = "Please enter the complete OTP.";
   } else {
-    errorMessage.value = '';
+    errorMessage.value = "";
   }
 });
 
 const handleOtp = async () => {
   if (data.value.length < 6) {
-    errorMessage.value = 'OTP is invalid or incomplete!';
-  } else {
-    const formattedOtp = String(data.value).padStart(6, "0"); 
-    try {
-      isLoading.value = true;
-      await authStore.verify({ code: formattedOtp }); 
-      router.push('/');
-    } catch (error) {
-      toast.error(error.response.data.message, {
-      autoClose: 3000,
-    })
-      errorMessage.value = 'Verification failed. Please try again.';
-    } finally {
-      isLoading.value = false;
-      resetOtp();
+    errorMessage.value = "OTP is invalid or incomplete!";
+    return;
+  }
+
+  const formattedOtp = String(data.value).padStart(6, "0");
+
+  try {
+    isLoading.value = true;
+    await authStore.verify({ code: formattedOtp });
+
+    if (authStore.userRole === "admin" || authStore.userRole === "super_admin") {
+      router.push("/");
+    } else {
+      toast.error("Access denied: insufficient permissions", {
+        autoClose: 3000,
+      });
+      errorMessage.value = "You do not have permission to access this panel.";
+      authStore.logout();
     }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Verification failed.", {
+      autoClose: 3000,
+    });
+    errorMessage.value = "Verification failed. Please try again.";
+  } finally {
+    isLoading.value = false;
+    resetOtp();
   }
 };
 
 const resetOtp = () => {
-  data.value = ''; 
-  errorMessage.value = ''; 
+  data.value = "";
+  errorMessage.value = "";
 };
 
 const startTimer = () => {
@@ -66,14 +76,13 @@ const startTimer = () => {
 const handleResend = () => {
   resetOtp();
   startTimer();
-  authStore.resetVerify(); 
+  authStore.resetVerify();
 };
 
 onMounted(() => {
-  startTimer(); 
+  startTimer();
 });
 </script>
-
 
 <template>
   <div class="min-h-screen bg-[#1E1E2D] flex items-center justify-center p-4">
@@ -83,10 +92,11 @@ onMounted(() => {
       </div>
 
       <h1 class="text-center text-sm text-gray-600 mb-6">
-        Введите код, отправленный вам по SMS. Если вы не получили код, дождитесь истечения таймера и повторите запрос.
+        Введите код, отправленный вам по SMS. Если вы не получили код, дождитесь истечения
+        таймера и повторите запрос.
       </h1>
-      
-      <div class="w-[300px] mx-auto bg-white rounded-xl ">
+
+      <div class="w-[300px] mx-auto bg-white rounded-xl">
         <OtpInput v-model="data" :fields="6" />
         <p v-if="errorMessage" class="text-red-500 text-xs mt-2">
           {{ errorMessage }}
@@ -101,7 +111,9 @@ onMounted(() => {
         >
           Отправить снова
         </button>
-        <span class="text-gray-500">{{ timer > 0 ? `0:${timer.toString().padStart(2, '0')}` : '' }}</span>
+        <span class="text-gray-500">{{
+          timer > 0 ? `0:${timer.toString().padStart(2, "0")}` : ""
+        }}</span>
       </div>
 
       <button
@@ -110,7 +122,7 @@ onMounted(() => {
         :disabled="isLoading"
         class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors duration-200 disabled:opacity-50"
       >
-        {{ isLoading ? 'Вход...' : 'Отправить' }}
+        {{ isLoading ? "Вход..." : "Отправить" }}
       </button>
     </div>
   </div>

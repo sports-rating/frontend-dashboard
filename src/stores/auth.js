@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", {
     token: null,
     refreshToken: null,
     loginPayload: null,
+    userRole: null,
   }),
   actions: {
     async login(payload) {
@@ -42,9 +43,9 @@ export const useAuthStore = defineStore("auth", {
           "https://api.7srating.uz/api/user/auth/verify-code/",
           payload
         );
-        console.log("API response:", response.data.data);
         this.token = response.data.data.tokens.access;
         this.refreshToken = response.data.data.tokens.refresh;
+        this.userRole = response.data.data.user_role;
 
         api.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
       } catch (error) {
@@ -67,6 +68,7 @@ export const useAuthStore = defineStore("auth", {
     logout() {
       this.token = null;
       this.refreshToken = null;
+      this.userRole = null;
       delete api.defaults.headers.common["Authorization"];
       router.push("/login");
     },
