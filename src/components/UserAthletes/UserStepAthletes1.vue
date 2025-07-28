@@ -78,7 +78,7 @@
               >Спортивное направление</label
             >
 
-            <multiselect
+            <Multiselect
               v-model="selectedSport"
               :options="data"
               label="name"
@@ -213,7 +213,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Tренер</label>
 
-            <multiselect
+            <Multiselect
               v-model="selectedTrainer"
               :options="filteredTrainerData"
               label="full_name"
@@ -248,7 +248,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Область / Город</label>
 
-            <multiselect
+            <Multiselect
               v-model="form.sportsman_profile.address.region"
               :options="regions"
               label="name_uz"
@@ -266,7 +266,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Район</label>
 
-            <multiselect
+            <Multiselect
               v-model="form.sportsman_profile.address.city"
               :options="filteredDistricts"
               track-by="name_uz"
@@ -398,7 +398,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { ref, computed, watch, onMounted } from "vue";
 import api from "../../utils/axios";
 import regionsData from "../../assets/data/regions.json";
@@ -489,14 +489,13 @@ const getData = async () => {
   }
 };
 
-// Fetch Trainers Data
 const getTrainer = async () => {
   try {
     const res = await api.get("https://api.7srating.uz/api/user/profile/trainer/");
     dataTrainer.value = res.data.data;
 
     if (props.form.sportsman_profile.trainer_id) {
-      selectedTrainer.value = dataTrainer.value.find(
+      selectedTrainer.value = dataTrainer?.value.find(
         (trainer) => trainer.id === props.form.sportsman_profile.trainer_id
       );
       if (selectedTrainer.value) {
@@ -508,7 +507,6 @@ const getTrainer = async () => {
   }
 };
 
-// Watchers
 watch(selectedSport, (newVal) => {
   selectedSportName.value = newVal ? newVal.name : "";
   props.form.sportsman_profile.sport_id = newVal ? newVal.id : null;
@@ -553,19 +551,25 @@ watch(
 
 // Computed Property for Filtered Trainers Data
 const filteredTrainerData = computed(() => {
+  console.log("dataTrainer.value:", dataTrainer.value);
+
   if (!selectedSportName.value) {
-    return dataTrainer.value.map((trainer) => ({
-      ...trainer,
-      full_name: `${trainer.first_name} ${trainer.last_name}`,
-    }));
+    return Array.isArray(dataTrainer.value)
+      ? dataTrainer.value.map((trainer) => ({
+          ...trainer,
+          full_name: `${trainer.first_name} ${trainer.last_name}`,
+        }))
+      : [];
   }
 
-  return dataTrainer.value
-    .filter((trainer) => trainer.sport === selectedSportName.value)
-    .map((trainer) => ({
-      ...trainer,
-      full_name: `${trainer.first_name} ${trainer.last_name}`,
-    }));
+  return Array.isArray(dataTrainer.value)
+    ? dataTrainer.value
+        .filter((trainer) => trainer.sport === selectedSportName.value)
+        .map((trainer) => ({
+          ...trainer,
+          full_name: `${trainer.first_name} ${trainer.last_name}`,
+        }))
+    : [];
 });
 
 // Mounted Hook for LocalStorage Data

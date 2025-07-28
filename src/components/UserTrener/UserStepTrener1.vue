@@ -77,7 +77,7 @@
             <label class="block text-sm font-medium text-gray-700"
               >Спортивное направление</label
             >
-            <multiselect
+            <Multiselect
               v-model="selectedSport"
               :options="data"
               label="name"
@@ -230,7 +230,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Область / Город</label>
 
-            <multiselect
+            <Multiselect
               v-model="form.trainer_profile.address.region"
               :options="regions"
               label="name_uz"
@@ -246,7 +246,7 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Район</label>
-            <multiselect
+            <Multiselect
               v-model="form.trainer_profile.address.city"
               :options="filteredDistricts"
               track-by="name_uz"
@@ -395,7 +395,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { VueTelInput } from "vue-tel-input";
 import { ref, computed, watch, onMounted } from "vue";
 import api from "../../utils/axios";

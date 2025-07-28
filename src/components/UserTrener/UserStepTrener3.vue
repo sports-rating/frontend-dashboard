@@ -106,7 +106,7 @@
                 >Название турнира</label
               >
 
-              <multiselect
+              <Multiselect
                 v-model="newResult.name"
                 @update:modelValue="handleSelection"
                 :options="data"
@@ -162,7 +162,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { ref, watch, onMounted } from "vue";
 import api from "../../utils/axios";
 

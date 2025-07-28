@@ -84,7 +84,7 @@
           <div class="relative gap-2 flex flex-col">
             <label>Тип спорта</label>
 
-            <multiselect
+            <Multiselect
               v-model="sport"
               :options="props.data"
               label="name"
@@ -163,7 +163,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { ref } from "vue";
 import api from "../utils/axios";
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";

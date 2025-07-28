@@ -100,7 +100,7 @@
               /> -->
 
               <div class="flex gap-2 items-center justify-center">
-                <multiselect
+                <Multiselect
                   v-model="currentSchool.school_id"
                   :options="dataSchool"
                   label="name"
@@ -199,7 +199,8 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
+
 import { ref, onMounted, watch } from "vue";
 import api from "../../utils/axios";
 
@@ -252,7 +253,9 @@ const getDataa = async () => {
       `https://api.7srating.uz/api/education/school/?sport=${selectedSport.name}`
     );
 
-    dataSchool.value = res.data.data;
+    console.log(res.data.data.data);
+
+    dataSchool.value = Array.isArray(res.data.data.data) ? res.data.data.data : [];
   } catch (e) {
     console.log(e);
   }

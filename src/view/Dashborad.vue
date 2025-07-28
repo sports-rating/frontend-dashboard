@@ -245,8 +245,6 @@ import { ref, computed, onUnmounted, onMounted } from "vue";
 import ExportModal from "../components/ExportModal.vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../utils/axios";
-import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
 // import VuePagination from "@hennge/vue3-pagination";
 // import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 

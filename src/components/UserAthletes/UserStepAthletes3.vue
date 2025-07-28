@@ -108,7 +108,7 @@
                 >Название турнира</label
               >
 
-              <multiselect
+              <Multiselect
                 v-model="newResult.name"
                 @update:modelValue="handleSelection"
                 :options="data"
@@ -162,7 +162,7 @@
               <label class="block text-sm font-medium text-gray-700">Tренер</label>
 
               <!-- v-model="newResult.trainer_id" -->
-              <multiselect
+              <Multiselect
                 v-model="newResult.trainer"
                 :options="trainersWithFullName"
                 label="fullName"
@@ -207,7 +207,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { ref, watch, onMounted, computed } from "vue";
 import api from "../../utils/axios";
 

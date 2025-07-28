@@ -116,7 +116,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
 
-            <multiselect
+            <Multiselect
               v-model="form.sport_ids"
               :options="data"
               label="name"
@@ -162,7 +162,7 @@ import api from "../../utils/axios";
 import router from "../../router";
 import { useRoute, useRouter } from "vue-router";
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 
 const route = useRoute();
 

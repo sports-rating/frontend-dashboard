@@ -19,7 +19,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Введите sport</label>
 
-            <multiselect
+            <Multiselect
               v-model="form.sport_id"
               :options="data"
               label="name"
@@ -91,7 +91,7 @@
 
 <script setup>
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.min.css";
+import "vue-multiselect/dist/vue-multiselect.css";
 import { reactive, ref, onMounted } from "vue";
 import api from "../../utils/axios";
 import { toast } from "vue3-toastify";
