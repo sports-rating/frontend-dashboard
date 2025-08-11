@@ -255,6 +255,11 @@ const menuItems = [
       },
     ],
   },
+  {
+    name: "Федерация",
+    path: "/federation-list",
+    icon: CpuChipIcon,
+  },
   // {
   //   name: 'Заявки на регистрацию',
   //   path: '/applications-for-registration',

@@ -223,6 +223,32 @@ const router = createRouter({
       name: "NotFound",
       component: () => import("../view/NotFound.vue"),
     },
+
+    {
+      path: "/federation-app",
+      name: "Federation-app",
+      redirect: { name: "federation-list" },
+
+      children: [
+        {
+          path: "/federation-list",
+          name: "federation-list",
+          component: () => import("../view/Federation.vue"),
+        },
+        {
+          path: "/federation/create",
+          name: "federation-create",
+          component: () =>
+            import("../components/Federation/CreateFederation.vue"),
+        },
+        {
+          path: "/federation/edit/:id",
+          name: "federation-edit",
+          component: () =>
+            import("../components/Federation/EditFederation.vue"),
+        },
+      ],
+    },
   ],
 });
 
