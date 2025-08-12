@@ -1,8 +1,8 @@
 <template>
-  <div class="p-10">
-    <div class="mx-auto bg-white rounded-3xl p-10 border border-gray-100">
+  <div class="">
+    <div class="mx-auto rounded-3xl">
       <!-- Title -->
-      <div class="mb-10 text-center">
+      <div class="mb-10">
         <h2 class="text-4xl font-extrabold text-gray-800 mb-2">Создать федерацию</h2>
       </div>
 
@@ -97,22 +97,22 @@
 
         <!-- Row 5 -->
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Номер телефона" prop="phone_number">
               <el-input v-model="form.phone_number" placeholder="+1 (555) 123-4567" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Адрес электронной почты" prop="email">
               <el-input v-model="form.email" placeholder="example@federation.org" />
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="Социальные сети" prop="social_media">
               <el-input v-model="form.social_media" placeholder="@federation_handle" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
 
         <!-- Address -->
@@ -326,7 +326,7 @@ const form = reactive({
   logo_file: null,
   website: "",
   document_file: null,
-  social_media: "",
+  // social_media: "",
   ageGroups: [],
 });
 
@@ -429,13 +429,13 @@ const rules = {
       trigger: ["blur", "change"],
     },
   ],
-  social_media: [
-    {
-      pattern: /^@?[a-zA-Z0-9_]{1,30}$/,
-      message: "Пожалуйста, введите действительный адрес социальной сети.",
-      trigger: ["blur", "change"],
-    },
-  ],
+  // social_media: [
+  //   {
+  //     pattern: /^@?[a-zA-Z0-9_]{1,30}$/,
+  //     message: "Пожалуйста, введите действительный адрес социальной сети.",
+  //     trigger: ["blur", "change"],
+  //   },
+  // ],
   address: [
     { required: true, message: "Пожалуйста, введите адрес федерации", trigger: "blur" },
     {
@@ -498,7 +498,7 @@ const resetForm = () => {
     logo_file: null,
     website: "",
     document_file: null,
-    social_media: "",
+    // social_media: "",
     ageGroups: [],
   });
 };

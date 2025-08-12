@@ -1,8 +1,8 @@
 <template>
-  <div class="p-10">
-    <div class="mx-auto bg-white rounded-3xl p-10 border border-gray-100">
+  <div class="">
+    <div class="mx-auto bg-white rounded-3xl">
       <!-- Title -->
-      <div class="mb-10 text-center">
+      <div class="mb-10">
         <h2 class="text-4xl font-extrabold text-gray-800 mb-2">Обновить федерацию</h2>
       </div>
 
@@ -97,22 +97,22 @@
 
         <!-- Row 5 -->
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Номер телефона" prop="phone_number">
               <el-input v-model="form.phone_number" placeholder="+1 (555) 123-4567" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Адрес электронной почты" prop="email">
               <el-input v-model="form.email" placeholder="example@federation.org" />
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="Социальные сети" prop="social_media">
               <el-input v-model="form.social_media" placeholder="@federation_handle" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
 
         <!-- Address -->
@@ -264,7 +264,7 @@
         <div class="flex justify-end gap-4 pt-6 border-t mt-8">
           <el-button @click="goBack">Отмена</el-button>
           <el-button type="primary" :loading="loading" @click="submitForm">
-            Создать федерацию
+            Обновить федерацию
           </el-button>
         </div>
       </el-form>
@@ -301,7 +301,7 @@ const form = reactive({
   address: "",
   phone_number: "",
   email: "",
-  social_media: "",
+  // social_media: "",
   website: "",
   logo_file: null,
   document_file: [],
@@ -395,7 +395,7 @@ const loadFederation = async () => {
     form.address = d.address || "";
     form.phone_number = d.phone_number || "";
     form.email = d.email || "";
-    form.social_media = d.social_media || "";
+    // form.social_media = d.social_media || "";
     form.website = d.website || "";
     form.ageGroups =
       d.age_groups?.map((ag) => ({
@@ -478,7 +478,7 @@ const resetForm = () => {
     logo_file: null,
     website: "",
     document_file: null,
-    social_media: "",
+    // social_media: "",
     ageGroups: [],
   });
 };
@@ -509,7 +509,7 @@ const submitForm = async () => {
       fd.append("address", form.address);
       fd.append("phone_number", form.phone_number);
       fd.append("email", form.email);
-      fd.append("social_media", JSON.stringify(form.social_media || {}));
+      // fd.append("social_media", JSON.stringify(form.social_media || {}));
 
       fd.append("website", form.website || "");
 

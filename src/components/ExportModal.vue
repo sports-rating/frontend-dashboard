@@ -248,9 +248,9 @@ select {
   background-image: none;
 }
 
-.el-input__wrapper {
+/* .el-input__wrapper {
   box-shadow: none !important;
-}
+} */
 
 .custom-date-picker {
   width: 100% !important;

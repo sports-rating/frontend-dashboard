@@ -1,10 +1,9 @@
 <template>
-  <div class="min-h-screen p-8">
+  <div class="min-h-screen">
     <!-- Header -->
     <div class="flex justify-between items-center mb-10">
       <div>
-        <h1 class="text-4xl font-bold text-gray-900">🏆 Федерации</h1>
-        <p class="text-gray-500 mt-1">Управляйте и изучайте все спортивные федерации</p>
+        <h1 class="text-4xl font-bold text-gray-900">Федерации</h1>
       </div>
       <el-button
         type="primary"
@@ -19,16 +18,9 @@
 
     <!-- Federation Table Card -->
     <el-card shadow="never" class="rounded-xl border border-gray-200">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <span class="text-xl font-semibold text-gray-800">📋 Список федераций</span>
-          <el-tag type="info" size="large">{{ federations.length }} Общий</el-tag>
-        </div>
-      </template>
-
       <el-table
         :data="federations"
-        class="rounded-lg overflow-hidden"
+        class="rounded-lg"
         style="width: 100%"
         stripe
         highlight-current-row
@@ -80,18 +72,6 @@
             </div>
           </template>
         </el-table-column>
-
-        <!-- <el-table-column label="Logo" width="80">
-          <template #default="scope">
-            <img
-              v-if="scope.row.logo"
-              :src="scope.row.logo"
-              alt="Logo"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <span v-else class="text-gray-400">No logo</span>
-          </template>
-        </el-table-column> -->
 
         <el-table-column label="Действия" width="160" fixed="right">
           <template #default="scope">
@@ -216,11 +196,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.el-table__row:hover {
-  background-color: #f3f4f6 !important;
-}
-</style>
+<style scoped></style>
 
 <style>
 .red-pagination .el-pager li.is-active {
