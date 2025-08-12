@@ -399,6 +399,7 @@ const loadFederation = async () => {
     form.website = d.website || "";
     form.ageGroups =
       d.age_groups?.map((ag) => ({
+        id: ag.id,
         sport: ag.sport.id || ag.sport,
         name: ag.name,
         age: ag.age,
@@ -538,6 +539,9 @@ const submitForm = async () => {
       });
 
       uniqueAgeGroups.forEach((ag, i) => {
+        if (ag.id) {
+          fd.append(`age_groups[${i}]id`, ag.id);
+        }
         fd.append(`age_groups[${i}]name`, ag.name);
         fd.append(`age_groups[${i}]sport`, ag.sport);
         fd.append(`age_groups[${i}]age`, ag.age ?? "");
