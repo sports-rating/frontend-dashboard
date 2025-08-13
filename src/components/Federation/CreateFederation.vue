@@ -165,146 +165,151 @@
 
           <!-- Sport Groups -->
           <div
-            v-for="(sportGroup, sportIndex) in form.sportGroups"
-            :key="sportIndex"
-            class="bg-gray-50 rounded-xl border p-6 mb-6 transition"
+  v-for="(sportGroup, sportIndex) in form.sportGroups"
+  :key="sportIndex"
+  class="bg-white rounded-2xl  border border-gray-200 p-6 mb-8 transition "
+>
+  <!-- Sport Selection Header -->
+  <div class="mb-5 pb-5 border-b border-gray-200 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <i class="el-icon-basketball text-primary text-xl"></i>
+      <el-select
+        v-model="sportGroup.sport"
+        placeholder="Выберите Спорт"
+        clearable
+        filterable
+        class="w-64"
+        @change="onSportChange(sportIndex)"
+      >
+        <el-option
+          v-for="sport in selectedSports"
+          :key="sport.id"
+          :label="sport.name"
+          :value="sport.id"
+        />
+      </el-select>
+    </div>
+    <el-button 
+      type="danger" 
+      size="small" 
+      plain
+      round
+      @click="removeSportGroup(sportIndex)"
+    >
+      Удалить
+    </el-button>
+  </div>
+
+  <!-- Age Groups -->
+  <transition-group name="fade" tag="div">
+    <div
+      v-for="(ageGroup, ageIndex) in sportGroup.ageGroups"
+      :key="ageIndex"
+      class="bg-gray-50 rounded-xl border border-gray-200 p-5 mb-4 hover:border-primary transition"
+    >
+      <el-row :gutter="20" class="mb-4 items-center">
+        <!-- Age -->
+        <el-col :span="5">
+          <el-input
+            v-model="ageGroup.age"
+            placeholder="Например, 17"
+            type="number"
+            class="rounded-lg"
+            @input="ageGroup.name = `U-${ageGroup.age}`"
           >
-            <!-- Sport Selection Header -->
-            <div class="mb-4 pb-4 border-b border-gray-200">
-              <el-row :gutter="20">
-                <el-col :span="8">
-                  <el-select
-                    v-model="sportGroup.sport"
-                    placeholder="Выберите Спорт"
-                    clearable
-                    filterable
-                    class="w-full"
-                    @change="onSportChange(sportIndex)"
-                  >
-                    <el-option
-                      v-for="sport in selectedSports"
-                      :key="sport.id"
-                      :label="sport.name"
-                      :value="sport.id"
-                    />
-                  </el-select>
-                </el-col>
-                <el-col :span="8">
-                  <div class="text-lg font-medium text-gray-700">
-                    {{ getSportName(sportGroup.sport) }}
-                  </div>
-                </el-col>
-                <el-col :span="8">
-                  <div class="flex justify-end">
-                    <el-button type="danger" size="small" @click="removeSportGroup(sportIndex)">
-                      Удалить группу
-                    </el-button>
-                  </div>
-                </el-col>
-              </el-row>
-            </div>
+            <template #prepend>U-</template>
+          </el-input>
+        </el-col>
 
-            <!-- Age Groups within this Sport -->
-            <div
-              v-for="(ageGroup, ageIndex) in sportGroup.ageGroups"
-              :key="ageIndex"
-              class="bg-white rounded-lg border p-4 mb-4"
+        <!-- Display age -->
+        <el-col :span="2">
+          <el-input :model-value="ageGroup.age" disabled  placeholder="Возраст"/>
+        </el-col>
+
+        <!-- Gender -->
+        <el-col :span="5">
+          <el-select
+            v-model="ageGroup.gender"
+            placeholder="Пол"
+            clearable
+            class="w-full rounded-lg"
+          >
+            <el-option label="Мужской" value="male" />
+            <el-option label="Женский" value="female" />
+          </el-select>
+        </el-col>
+
+        <!-- Add weight -->
+        <el-col :span="6">
+          <div class="flex gap-2 items-center">
+            <el-input
+              v-model="ageGroup.newWeight"
+              placeholder="Введите вес"
+              type="number"
+            />
+            <el-button 
+              type="primary" 
+              size="default" 
+              plain
+              round
+              @click="addWeight(sportIndex, ageIndex)"
             >
-              <el-row :gutter="20" class="mb-4">
-                <!-- Age name har doim U- bilan -->
-                <el-col :span="6">
-                  <el-input
-                    v-model="ageGroup.age"
-                    placeholder="например, 17"
-                    type="number"
-                    @input="ageGroup.name = `U-${ageGroup.age}`"
-                  >
-                    <template #prepend>U-</template>
-                  </el-input>
-                </el-col>
-
-                <el-col :span="6">
-                  <el-input :model-value="ageGroup.age" disabled placeholder="Возраст" />
-                </el-col>
-
-                <el-col :span="8">
-                  <el-select
-                    v-model="ageGroup.gender"
-                    placeholder="Пол"
-                    clearable
-                    class="w-full rounded-xl"
-                  >
-                    <el-option label="Мужской" value="male" />
-                    <el-option label="Женский" value="female" />
-                  </el-select>
-                </el-col>
-
-                
-
-                <el-col :span="6">
-                  <div class="flex justify-end">
-                    <el-button 
-                      type="danger" 
-                      size="small" 
-                      @click="removeAgeGroup(sportIndex, ageIndex)"
-                      v-if="sportGroup.ageGroups.length > 1"
-                    >
-                      Удалить
-                    </el-button>
-                  </div>
-                </el-col>
-              </el-row>
-
-              <el-row :gutter="20" class="mb-4">
-                
-
-                <el-col :span="6">
-                  <div class="flex gap-2">
-                    <el-input
-                      v-model="ageGroup.newWeight"
-                      placeholder="Введите вес"
-                      type="number"
-                    />
-                    <el-button 
-                      type="primary" 
-                      class="!h-10" 
-                      @click="addWeight(sportIndex, ageIndex)"
-                    >
-                      +
-                    </el-button>
-                  </div>
-                </el-col>
-
-                <!-- Qo'shilgan weightlar -->
-                <el-col :span="11">
-                  <div class="flex flex-wrap gap-1">
-                    <el-tag
-                      v-for="(w, wi) in ageGroup.weights"
-                      :key="wi"
-                      closable
-                      class="!h-10"
-                      @close="removeWeight(sportIndex, ageIndex, wi)"
-                    >
-                      {{ w }}
-                    </el-tag>
-                  </div>
-                </el-col>
-              </el-row>
-            </div>
-
-            <!-- Add Age Group Button for this Sport -->
-            <div class="flex justify-center pt-4 border-t border-gray-200">
-              <el-button 
-                type="primary" 
-                plain 
-                size="medium" 
-                @click="addAgeGroupToSport(sportIndex)"
-                :disabled="!sportGroup.sport"
-              >
-                + Добавить возрастную группу
-              </el-button>
-            </div>
+              +
+            </el-button>
           </div>
+        </el-col>
+
+        <!-- Delete -->
+        <el-col :span="6">
+          <div class="flex justify-end">
+            <el-button 
+              type="danger" 
+              size="small" 
+              plain
+              @click="removeAgeGroup(sportIndex, ageIndex)"
+              v-if="sportGroup.ageGroups.length > 1"
+            >
+              <img src="/delete.svg" alt="delete" class="w-4 h-4">
+            </el-button>
+          </div>
+        </el-col>
+      </el-row>
+
+      <!-- Weights list -->
+      <el-row>
+        <el-col :span="24">
+          <div class="flex flex-wrap gap-2">
+            <transition-group name="zoom" tag="div" class="flex gap-2 flex-wrap">
+              <el-tag
+                v-for="(w, wi) in ageGroup.weights"
+                :key="wi"
+                closable
+                class="rounded-full px-3 py-1 bg-primary text-white font-medium"
+                @close="removeWeight(sportIndex, ageIndex, wi)"
+              >
+                {{ w }}
+              </el-tag>
+            </transition-group>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+  </transition-group>
+
+  <!-- Add Age Group -->
+  <div class="flex justify-center pt-4 border-t border-gray-100">
+    <el-button 
+      type="primary" 
+      plain
+      round
+      @click="addAgeGroupToSport(sportIndex)"
+      :disabled="!sportGroup.sport"
+    >
+      + Добавить возрастную группу
+    </el-button>
+  </div>
+          </div>
+
         </div>
 
         <!-- Buttons -->
