@@ -107,12 +107,6 @@
               <el-input v-model="form.email" placeholder="example@federation.org" />
             </el-form-item>
           </el-col>
-
-          <!-- <el-col :span="8">
-            <el-form-item label="Социальные сети" prop="social_media">
-              <el-input v-model="form.social_media" placeholder="@federation_handle" />
-            </el-form-item>
-          </el-col> -->
         </el-row>
 
         <!-- Address -->
@@ -157,104 +151,157 @@
           </el-col>
         </el-row>
 
-        <!-- 🎯 Age Groups -->
+        <!-- 🎯 Age Groups - MODIFIED SECTION -->
         <div>
           <div class="w-full flex justify-between items-center">
             <h3 class="text-2xl font-semibold text-gray-800 mb-6">
               🎯 Возрастные и весовые группы
             </h3>
 
-            <el-button type="success" plain size="medium" @click="addAgeGroup"
+            <el-button type="success" plain size="medium" @click="addSportGroup"
               >+ Добавить группу</el-button
             >
           </div>
 
+          <!-- Sport Groups -->
           <div
-            v-for="(ag, index) in form.ageGroups"
-            :key="index"
+            v-for="(sportGroup, sportIndex) in form.sportGroups"
+            :key="sportIndex"
             class="bg-gray-50 rounded-xl border p-6 mb-6 transition"
           >
-            <el-row :gutter="20" class="mb-4">
-              <el-col :span="6">
-                <el-select
-                  v-model="ag.sport"
-                  placeholder="Выберите Спорт"
-                  clearable
-                  filterable
-                  class="w-full"
-                >
-                  <el-option
-                    v-for="sport in selectedSports"
-                    :key="sport.id"
-                    :label="sport.name"
-                    :value="sport.id"
-                  />
-                </el-select>
-              </el-col>
+            <!-- Sport Selection Header -->
+            <div class="mb-4 pb-4 border-b border-gray-200">
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <el-select
+                    v-model="sportGroup.sport"
+                    placeholder="Выберите Спорт"
+                    clearable
+                    filterable
+                    class="w-full"
+                    @change="onSportChange(sportIndex)"
+                  >
+                    <el-option
+                      v-for="sport in selectedSports"
+                      :key="sport.id"
+                      :label="sport.name"
+                      :value="sport.id"
+                    />
+                  </el-select>
+                </el-col>
+                <el-col :span="8">
+                  <div class="text-lg font-medium text-gray-700">
+                    {{ getSportName(sportGroup.sport) }}
+                  </div>
+                </el-col>
+                <el-col :span="8">
+                  <div class="flex justify-end">
+                    <el-button type="danger" size="small" @click="removeSportGroup(sportIndex)">
+                      Удалить группу
+                    </el-button>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
 
-              <!-- Age name har doim U- bilan -->
-              <el-col :span="6">
-                <el-input
-                  v-model="ag.age"
-                  placeholder="например, 17"
-                  type="number"
-                  @input="ag.name = `U-${ag.age}`"
-                >
-                  <template #prepend>U-</template>
-                </el-input>
-              </el-col>
-
-              <el-col :span="8">
-                <el-select
-                  v-model="ag.gender"
-                  placeholder="Пол"
-                  clearable
-                  class="w-full rounded-xl"
-                >
-                  <el-option label="Мужской" value="male" />
-                  <el-option label="Женский" value="female" />
-                </el-select>
-              </el-col>
-            </el-row>
-
-            <el-row :gutter="20" class="mb-4">
-              <!-- Faqat raqam qismi disabled -->
-              <el-col :span="6">
-                <el-input :model-value="ag.age" disabled placeholder="Возраст" />
-              </el-col>
-
-              <el-col :span="6">
-                <div class="flex gap-2">
+            <!-- Age Groups within this Sport -->
+            <div
+              v-for="(ageGroup, ageIndex) in sportGroup.ageGroups"
+              :key="ageIndex"
+              class="bg-white rounded-lg border p-4 mb-4"
+            >
+              <el-row :gutter="20" class="mb-4">
+                <!-- Age name har doim U- bilan -->
+                <el-col :span="6">
                   <el-input
-                    v-model="ag.newWeight"
-                    placeholder="Введите вес"
+                    v-model="ageGroup.age"
+                    placeholder="например, 17"
                     type="number"
-                  />
-                  <el-button type="primary" class="!h-10" @click="addWeight(index)"
-                    >+</el-button
+                    @input="ageGroup.name = `U-${ageGroup.age}`"
                   >
-                </div>
-              </el-col>
+                    <template #prepend>U-</template>
+                  </el-input>
+                </el-col>
 
-              <!-- Qo‘shilgan weightlar -->
-              <el-col :span="11">
-                <div class="flex flex-wrap gap-1">
-                  <el-tag
-                    v-for="(w, wi) in ag.weights"
-                    :key="wi"
-                    closable
-                    class="!h-10"
-                    @close="removeWeight(index, wi)"
+                <el-col :span="6">
+                  <el-input :model-value="ageGroup.age" disabled placeholder="Возраст" />
+                </el-col>
+
+                <el-col :span="8">
+                  <el-select
+                    v-model="ageGroup.gender"
+                    placeholder="Пол"
+                    clearable
+                    class="w-full rounded-xl"
                   >
-                    {{ w }}
-                  </el-tag>
-                </div>
-              </el-col>
-            </el-row>
+                    <el-option label="Мужской" value="male" />
+                    <el-option label="Женский" value="female" />
+                  </el-select>
+                </el-col>
 
-            <div class="flex justify-end w-full">
-              <el-button type="danger" size="small" @click="removeAgeGroup(index)">
-                Удалять
+                
+
+                <el-col :span="6">
+                  <div class="flex justify-end">
+                    <el-button 
+                      type="danger" 
+                      size="small" 
+                      @click="removeAgeGroup(sportIndex, ageIndex)"
+                      v-if="sportGroup.ageGroups.length > 1"
+                    >
+                      Удалить
+                    </el-button>
+                  </div>
+                </el-col>
+              </el-row>
+
+              <el-row :gutter="20" class="mb-4">
+                
+
+                <el-col :span="6">
+                  <div class="flex gap-2">
+                    <el-input
+                      v-model="ageGroup.newWeight"
+                      placeholder="Введите вес"
+                      type="number"
+                    />
+                    <el-button 
+                      type="primary" 
+                      class="!h-10" 
+                      @click="addWeight(sportIndex, ageIndex)"
+                    >
+                      +
+                    </el-button>
+                  </div>
+                </el-col>
+
+                <!-- Qo'shilgan weightlar -->
+                <el-col :span="11">
+                  <div class="flex flex-wrap gap-1">
+                    <el-tag
+                      v-for="(w, wi) in ageGroup.weights"
+                      :key="wi"
+                      closable
+                      class="!h-10"
+                      @close="removeWeight(sportIndex, ageIndex, wi)"
+                    >
+                      {{ w }}
+                    </el-tag>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+
+            <!-- Add Age Group Button for this Sport -->
+            <div class="flex justify-center pt-4 border-t border-gray-200">
+              <el-button 
+                type="primary" 
+                plain 
+                size="medium" 
+                @click="addAgeGroupToSport(sportIndex)"
+                :disabled="!sportGroup.sport"
+              >
+                + Добавить возрастную группу
               </el-button>
             </div>
           </div>
@@ -277,6 +324,7 @@ import { ref, reactive, computed, watch } from "vue";
 import { Upload } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
+
 const emit = defineEmits(["update:visible", "created"]);
 
 // State
@@ -291,7 +339,6 @@ const dataUsers = ref([]);
 const getData = async () => {
   try {
     const res = await api.get("https://api.7srating.uz/api/sport/");
-
     data.value = res.data.data;
   } catch (e) {
     console.log(e);
@@ -303,7 +350,6 @@ const getUsers = async () => {
     const res = await api.get(
       "https://api.7srating.uz/api/dashboard/users/?user_role=federation"
     );
-
     dataUsers.value = res.data.data;
   } catch (e) {
     console.log(e);
@@ -311,8 +357,8 @@ const getUsers = async () => {
 };
 
 getUsers();
-
 getData();
+
 const form = reactive({
   name: "",
   is_national: true,
@@ -326,13 +372,24 @@ const form = reactive({
   logo_file: null,
   website: "",
   document_file: null,
-  // social_media: "",
-  ageGroups: [],
+  sportGroups: [], // New structure: array of sport groups, each containing multiple age groups
 });
 
-const addAgeGroup = () => {
-  form.ageGroups.push({
-    sport: form.sports || "",
+const addSportGroup = () => {
+  form.sportGroups.push({
+    sport: null,
+    ageGroups: [{
+      name: "",
+      age: null,
+      weights: [],
+      newWeight: null,
+      gender: "male",
+    }]
+  });
+};
+
+const addAgeGroupToSport = (sportIndex) => {
+  form.sportGroups[sportIndex].ageGroups.push({
     name: "",
     age: null,
     weights: [],
@@ -341,20 +398,36 @@ const addAgeGroup = () => {
   });
 };
 
-const addWeight = (agIndex) => {
-  const ag = form.ageGroups[agIndex];
-  if (ag.newWeight) {
-    ag.weights.push(ag.newWeight);
-    ag.newWeight = null;
-  }
-};
-const removeWeight = (agIndex, wIndex) => {
-  form.ageGroups[agIndex].weights.splice(wIndex, 1);
+const removeSportGroup = (sportIndex) => {
+  form.sportGroups.splice(sportIndex, 1);
 };
 
-const removeAgeGroup = (index) => {
-  form.ageGroups.splice(index, 1);
+const removeAgeGroup = (sportIndex, ageIndex) => {
+  form.sportGroups[sportIndex].ageGroups.splice(ageIndex, 1);
 };
+
+const onSportChange = (sportIndex) => {
+  // Optional: You can add logic here when sport changes
+  console.log('Sport changed for group', sportIndex);
+};
+
+const getSportName = (sportId) => {
+  const sport = data.value.find(s => s.id === sportId);
+  return sport ? sport.name : '';
+};
+
+const addWeight = (sportIndex, ageIndex) => {
+  const ageGroup = form.sportGroups[sportIndex].ageGroups[ageIndex];
+  if (ageGroup.newWeight) {
+    ageGroup.weights.push(ageGroup.newWeight);
+    ageGroup.newWeight = null;
+  }
+};
+
+const removeWeight = (sportIndex, ageIndex, weightIndex) => {
+  form.sportGroups[sportIndex].ageGroups[ageIndex].weights.splice(weightIndex, 1);
+};
+
 const selectedSports = computed(() => {
   return data.value.filter((sport) => form.sports.includes(sport.id));
 });
@@ -362,6 +435,7 @@ const selectedSports = computed(() => {
 const goBack = () => {
   window.history.go(-1);
 };
+
 const rules = {
   name: [
     { required: true, message: "Введите название федерации", trigger: "blur" },
@@ -429,13 +503,6 @@ const rules = {
       trigger: ["blur", "change"],
     },
   ],
-  // social_media: [
-  //   {
-  //     pattern: /^@?[a-zA-Z0-9_]{1,30}$/,
-  //     message: "Пожалуйста, введите действительный адрес социальной сети.",
-  //     trigger: ["blur", "change"],
-  //   },
-  // ],
   address: [
     { required: true, message: "Пожалуйста, введите адрес федерации", trigger: "blur" },
     {
@@ -498,8 +565,7 @@ const resetForm = () => {
     logo_file: null,
     website: "",
     document_file: null,
-    // social_media: "",
-    ageGroups: [],
+    sportGroups: [],
   });
 };
 
@@ -514,22 +580,26 @@ const handleDocumentChange = (file, fileList) => {
 };
 
 function validateAgeGroups() {
-  if (!form.ageGroups.length) {
-    return "Пожалуйста, добавьте хотя бы одну возрастную и весовую группу.";
+  if (!form.sportGroups.length) {
+    return "Пожалуйста, добавьте хотя бы одну спортивную группу.";
   }
 
-  for (const [i, ag] of form.ageGroups.entries()) {
-    if (!ag.sport) {
-      return `Возрастная группа #${i + 1}: Обязательно «Спорт».`;
+  for (const [sportIndex, sportGroup] of form.sportGroups.entries()) {
+    if (!sportGroup.sport) {
+      return `Спортивная группа #${sportIndex + 1}: Обязательно выберите «Спорт».`;
     }
-    if (!ag.age || ag.age <= 0) {
-      return `Возрастная группа #${i + 1}: «Возраст» должен быть больше нуля.`;
+
+    if (!sportGroup.ageGroups.length) {
+      return `Спортивная группа #${sportIndex + 1}: Добавьте хотя бы одну возрастную группу.`;
     }
-    if (!ag.name || ag.name.trim() === "") {
-      return `Возрастная группа #${i + 1}: Обязательное поле «Имя».`;
-    }
-    if (!ag.gender) {
-      return `Возрастная группа #${i + 1}: Обязательно укажите «Пол».`;
+
+    for (const [ageIndex, ageGroup] of sportGroup.ageGroups.entries()) {
+      if (!ageGroup.age || ageGroup.age <= 0) {
+        return `Спортивная группа #${sportIndex + 1}, Возрастная группа #${ageIndex + 1}: «Возраст» должен быть больше нуля.`;
+      }
+      if (!ageGroup.gender) {
+        return `Спортивная группа #${sportIndex + 1}, Возрастная группа #${ageIndex + 1}: Обязательно укажите «Пол».`;
+      }
     }
   }
   return null;
@@ -589,15 +659,21 @@ const submitForm = async () => {
         });
       }
 
-      form.ageGroups.forEach((ag, i) => {
-        let name =
-          ag.name && ag.name.trim() !== "" ? ag.name.trim() : `U-${ag.age || ""}`.trim();
+      // Convert sportGroups back to flat ageGroups structure for API
+      let ageGroupIndex = 0;
+      form.sportGroups.forEach((sportGroup) => {
+        sportGroup.ageGroups.forEach((ageGroup) => {
+          let name = ageGroup.name && ageGroup.name.trim() !== "" 
+            ? ageGroup.name.trim() 
+            : `U-${ageGroup.age || ""}`.trim();
 
-        fd.append(`age_groups[${i}]name`, name);
-        fd.append(`age_groups[${i}]sport`, ag.sport);
-        fd.append(`age_groups[${i}]age`, ag.age ?? "");
-        fd.append(`age_groups[${i}]weights`, JSON.stringify(ag.weights));
-        fd.append(`age_groups[${i}]gender`, ag.gender);
+          fd.append(`age_groups[${ageGroupIndex}]name`, name);
+          fd.append(`age_groups[${ageGroupIndex}]sport`, sportGroup.sport);
+          fd.append(`age_groups[${ageGroupIndex}]age`, ageGroup.age ?? "");
+          fd.append(`age_groups[${ageGroupIndex}]weights`, JSON.stringify(ageGroup.weights));
+          fd.append(`age_groups[${ageGroupIndex}]gender`, ageGroup.gender);
+          ageGroupIndex++;
+        });
       });
 
       await api.post("/sport/federations/", fd, {
@@ -615,6 +691,7 @@ const submitForm = async () => {
   });
 };
 </script>
+
 <style scoped>
 .custom-dialog .el-dialog__body {
   padding-top: 10px;
@@ -631,6 +708,7 @@ const submitForm = async () => {
   margin-bottom: 20px;
 }
 </style>
+
 <style>
 .el-input {
   height: 40px !important;
