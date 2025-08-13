@@ -326,6 +326,8 @@ import { ref, reactive, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
 import { useRoute, useRouter } from "vue-router";
+import router from "../../router";
+
 
 const route = useRoute();
 const router = useRouter();
@@ -631,7 +633,7 @@ const submitForm = async () => {
       });
 
       ElMessage.success("Федерация успешно обновлена!");
-      router.back();
+      router.push("/federation-list");
     } catch (err) {
       console.error(err);
       ElMessage.error("Не удалось обновить федерацию!");

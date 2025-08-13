@@ -329,7 +329,7 @@ import { ref, reactive, computed, watch } from "vue";
 import { Upload } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
-
+import router from "../../router";
 const emit = defineEmits(["update:visible", "created"]);
 
 // State
@@ -687,6 +687,7 @@ const submitForm = async () => {
 
       ElMessage.success("Федерация успешно создана!");
       formRef.value.resetFields();
+      router.push("/federation-list");
     } catch (err) {
       console.error(err);
       ElMessage.error("Не удалось создать федерацию!");
