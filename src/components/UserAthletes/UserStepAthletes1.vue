@@ -453,7 +453,7 @@ const onRegionChange = () => {
       (district) => district.id === props.form.district?.id
     )
   ) {
-    props.form.district = null;
+    props.form.district.id;
   }
 };
 

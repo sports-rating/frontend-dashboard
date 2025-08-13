@@ -145,9 +145,8 @@ const getData = async () => {
       res.data.data.sportsman_profile.user_metrics.weight;
     form.gender = res.data.data.gender;
     form.sportsman_profile.bio = res.data.data.sportsman_profile.bio;
-    form.region =
-      res.data.data.region.id;
-    form.district = res.data.data.district.id;
+    form.region = res.data.data.region;
+    form.district = res.data.data.district;
     form.sportsman_profile.address.street =
       res.data.data.sportsman_profile.address.street;
     form.sportsman_profile.address.place_of_birth =
