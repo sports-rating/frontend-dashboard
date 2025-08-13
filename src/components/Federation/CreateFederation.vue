@@ -681,7 +681,7 @@ const submitForm = async () => {
         });
       });
 
-      await api.post("/sport/federations/", fd, {
+      await api.post("/federation/", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

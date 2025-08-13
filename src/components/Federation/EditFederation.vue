@@ -432,7 +432,7 @@ const getUsers = async () => {
 
 const getFederations = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/federations/");
+    const res = await api.get("https://api.7srating.uz/api/federation/");
     federations.value = res.data.data;
   } catch (e) {
     console.error(e);
@@ -464,7 +464,7 @@ const loadFederation = async () => {
   }
   try {
     loading.value = true;
-    const res = await api.get(`/sport/federation/${federationId}/`);
+    const res = await api.get(`/federation/${federationId}/`);
     const d = res.data.data;
 
     form.name = d.name || "";
@@ -628,7 +628,7 @@ const submitForm = async () => {
         fd.append(`age_groups[${i}]gender`, ag.gender || "");
       });
 
-      await api.patch(`/sport/federation/${federationId}/`, fd, {
+      await api.patch(`/federation/${federationId}/`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

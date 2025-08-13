@@ -154,7 +154,7 @@ const navigate = (path) => router.push(path);
 
 async function fetchFederations(page = 1) {
   try {
-    const res = await api.get("/sport/federations/", {
+    const res = await api.get("/federation/", {
       params: {
         page,
         page_size: pageSize.value,
@@ -182,7 +182,7 @@ const showDeleteModal = (federation) => {
 
 const handleFederationDeleted = async () => {
   try {
-    await api.delete(`/sport/federation/${federationToDelete.value.id}/`);
+    await api.delete(`/federation/${federationToDelete.value.id}/`);
     showDeleteDialog.value = false;
     federationToDelete.value = null;
     fetchFederations(currentPage.value);

@@ -97,6 +97,8 @@ const form = reactive({
   birth_date: "",
   educations: [],
   results: [],
+  region: "",
+  district: "",
 
   sportsman_profile: {
     skill_level: "",
@@ -109,8 +111,6 @@ const form = reactive({
     },
     bio: "",
     address: {
-      region: "",
-      city: "",
       street: "",
       place_of_birth: "",
       citizenship: "",
@@ -145,9 +145,9 @@ const getData = async () => {
       res.data.data.sportsman_profile.user_metrics.weight;
     form.gender = res.data.data.gender;
     form.sportsman_profile.bio = res.data.data.sportsman_profile.bio;
-    form.sportsman_profile.address.region =
-      res.data.data.sportsman_profile.address.region;
-    form.sportsman_profile.address.city = res.data.data.sportsman_profile.address.city;
+    form.region =
+      res.data.data.region.id;
+    form.district = res.data.data.district.id;
     form.sportsman_profile.address.street =
       res.data.data.sportsman_profile.address.street;
     form.sportsman_profile.address.place_of_birth =
@@ -226,8 +226,8 @@ const validateForm = () => {
     if (!form.sportsman_profile.bio) errors.bio = "Обо мне обязателен.";
     if (!form.sportsman_profile.user_metrics.height) errors.height = "Рост обязатлен.";
     if (!form.sportsman_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
-    if (!form.sportsman_profile.address.region) errors.region = "Регион обязателен.";
-    if (!form.sportsman_profile.address.city) errors.city = "Город обязателен.";
+    if (!form.region) errors.region = "Регион обязателен.";
+    if (!form.district) errors.district = "Город обязателен.";
     if (!form.sportsman_profile.address.street) errors.street = "Улица обязателен.";
     if (!form.sportsman_profile.address.place_of_birth)
       errors.place_of_birth = "Место рождения обязательна.";
@@ -306,10 +306,11 @@ const handleSubmit = async () => {
         ...form,
         phone_number:
           form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
+          district: form.district.id,
+          region: form.region.id,
         sportsman_profile: {
           ...form.sportsman_profile,
-          city: form.sportsman_profile.address.city.name_uz,
-          region: form.sportsman_profile.address.region.name_uz,
+          send_request:false,
         },
       };
 

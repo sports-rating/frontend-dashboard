@@ -50,7 +50,7 @@
           (active === 2 && form.educations.length === 0) ||
           (active === 3 && form.results.length === 0)
         "
-        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opadistrict-50"
       >
         {{ isSubmitting ? "Сохранение..." : active === 4 ? "Сохранить" : "Продолжить" }}
       </button>
@@ -90,6 +90,8 @@ const form = reactive({
   birth_date: "",
   educations: [],
   results: [],
+  region: "",
+  district: "",
 
   sportsman_profile: {
     skill_level: "",
@@ -102,8 +104,7 @@ const form = reactive({
     },
     bio: "",
     address: {
-      region: "",
-      city: "",
+      
       street: "",
       place_of_birth: "",
       citizenship: "",
@@ -153,8 +154,8 @@ const validateForm = () => {
     if (!form.sportsman_profile.bio) errors.bio = "Обо мне обязателен.";
     if (!form.sportsman_profile.user_metrics.height) errors.height = "Рост обязатлен.";
     if (!form.sportsman_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
-    if (!form.sportsman_profile.address.region) errors.region = "Регион обязателен.";
-    if (!form.sportsman_profile.address.city) errors.city = "Город обязателен.";
+    if (!form.region) errors.region = "Регион обязателен.";
+    if (!form.district) errors.district = "Город обязателен.";
     if (!form.sportsman_profile.address.street) errors.street = "Улица обязателен.";
     if (!form.sportsman_profile.address.place_of_birth)
       errors.place_of_birth = "Место рождения обязательна.";
@@ -232,6 +233,9 @@ const handleSubmit = async () => {
     return;
   }
 
+  console.log(form);
+  
+
   if (active.value < 4) {
     active.value++;
     console.log(form, "form");
@@ -244,16 +248,18 @@ const handleSubmit = async () => {
         ...form,
         phone_number:
           form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
+          district: form.district.id,
+        region: form.region.id,
+          
         sportsman_profile: {
           ...form.sportsman_profile,
-          city: form.sportsman_profile.address.city.name_uz,
-          region: form.sportsman_profile.address.region.name_uz,
+          send_request:false,
         },
       };
 
       await api.post("https://api.7srating.uz/api/user/profile/sportsman/", payload, {
         headers: {
-          "Content-Type": "application/json", // JSON formatda yuborish
+          "Content-Type": "application/json",
         },
       });
       toast.success("Success to Sportsman", {
