@@ -325,12 +325,11 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import router from "../../router";
 
 
 const route = useRoute();
-const router = useRouter();
 
 const formRef = ref();
 const loading = ref(false);
