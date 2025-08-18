@@ -16,7 +16,7 @@
       >
         <!-- Row 1 -->
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Название федерации" prop="name">
               <el-input
                 v-model="form.name"
@@ -24,7 +24,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Тип федерации" prop="is_national">
               <el-select v-model="form.is_national" placeholder="Выберите тип" clearable>
                 <el-option label="Региональный" :value="false" />
@@ -33,23 +33,7 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
-            <el-form-item label="Пользователи" prop="users">
-              <el-select
-                v-model="form.users"
-                placeholder="Выберите пользователей"
-                clearable
-                multiple
-              >
-                <el-option
-                  v-for="user in dataUsers"
-                  :key="user.id"
-                  :label="user.first_name + ' ' + user.last_name"
-                  :value="user.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
+         
         </el-row>
 
         <!-- Row 2 -->
@@ -338,14 +322,11 @@ const logoFileList = ref([]);
 const documentFileList = ref([]);
 
 const data = ref([]);
-const dataUsers = ref([]);
 const federations = ref([]);
 
-// CHANGE: Updated form structure to use sportGroups instead of ageGroups
 const form = reactive({
   name: "",
   is_national: true,
-  users: [],
   parent_federation: "",
   region: "",
   sports: [],
@@ -355,10 +336,9 @@ const form = reactive({
   website: "",
   logo_file: null,
   document_file: [],
-  sportGroups: [], // CHANGE: New structure for sport-grouped age groups
+  sportGroups: [],
 });
 
-// CHANGE: Updated functions to work with sport groups
 const addSportGroup = () => {
   form.sportGroups.push({
     sport: null,
@@ -404,10 +384,6 @@ const removeWeight = (sportIndex, ageIndex, weightIndex) => {
   form.sportGroups[sportIndex].ageGroups[ageIndex].weights.splice(weightIndex, 1);
 };
 
-const getSportName = (sportId) => {
-  const sport = data.value.find(s => s.id === sportId);
-  return sport ? sport.name : '';
-};
 
 const getData = async () => {
   try {
@@ -418,16 +394,7 @@ const getData = async () => {
   }
 };
 
-const getUsers = async () => {
-  try {
-    const res = await api.get(
-      "https://api.7srating.uz/api/dashboard/users/?user_role=federation"
-    );
-    dataUsers.value = res.data.data;
-  } catch (e) {
-    console.error(e);
-  }
-};
+
 
 const getFederations = async () => {
   try {
@@ -447,7 +414,6 @@ const selectedSports = computed(() =>
 );
 
 onMounted(() => {
-  getUsers();
   getData();
   getFederations();
   loadFederation();
@@ -468,7 +434,6 @@ const loadFederation = async () => {
 
     form.name = d.name || "";
     form.is_national = d.is_national;
-    form.users = d.users?.map((u) => u.id) || [];
     form.parent_federation = d.parent_federation || "";
     form.region = d.region || "";
     form.sports = d.sports?.map((s) => s.id) || [];
@@ -477,7 +442,6 @@ const loadFederation = async () => {
     form.email = d.email || "";
     form.website = d.website || "";
 
-    // CHANGE: Convert old age groups structure to new sport-grouped structure
     if (d.age_groups && d.age_groups.length > 0) {
       const sportGroupsMap = new Map();
       
@@ -506,7 +470,6 @@ const loadFederation = async () => {
       form.sportGroups = [];
     }
 
-    // Logo files for upload component
     if (d.logo) {
       logoFileList.value = [
         {
@@ -550,7 +513,6 @@ const handleDocumentChange = (file, fileList) => {
   form.document_file = fileList.filter((f) => f.raw).map((f) => f.raw);
 };
 
-// CHANGE: Updated submitForm to handle new sport-grouped structure
 const submitForm = async () => {
   if (!formRef.value) return;
 
@@ -568,7 +530,6 @@ const submitForm = async () => {
       fd.append("name", form.name);
       fd.append("is_national", form.is_national ? "true" : "false");
 
-      form.users.forEach((u) => fd.append("users", u));
       form.sports.forEach((s) => fd.append("sports", s));
 
       if (form.parent_federation) fd.append("parent_federation", form.parent_federation);

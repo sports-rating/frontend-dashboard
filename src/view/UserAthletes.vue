@@ -92,9 +92,9 @@ const form = reactive({
   results: [],
   region: "",
   district: "",
-
+  
   sportsman_profile: {
-    skill_level: "",
+    sport_rank: "",
     sport_id: "",
     trainer_id: "",
     division: "",
@@ -143,8 +143,8 @@ const validateForm = () => {
     }
     if (!form.middle_name) errors.middle_name = "Отчество обязательна.";
     if (!form.sportsman_profile.trainer_id) errors.trainer_id = "Tренер  обязательна.";
-    if (!form.sportsman_profile.skill_level)
-      errors.skill_level = "Тип спортсмена обязателен.";
+    if (!form.sportsman_profile.sport_rank)
+      errors.sport_rank = "Cпортивный разряд обязателен.";
     if (!form.sportsman_profile.sport_id)
       errors.sport_direction = "Направление спорта обязательно.";
     if (!form.sportsman_profile.division)

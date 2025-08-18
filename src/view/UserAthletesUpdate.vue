@@ -101,7 +101,7 @@ const form = reactive({
   district: "",
 
   sportsman_profile: {
-    skill_level: "",
+    sport_rank: "",
     sport_id: "",
     trainer_id: "",
     division: "",
@@ -136,7 +136,7 @@ const getData = async () => {
     form.phone_number = res.data.data.phone_number;
     form.pinfl = res.data.data.pinfl;
     form.email = res.data.data.email;
-    form.sportsman_profile.skill_level = res.data.data.sportsman_profile.skill_level;
+    form.sportsman_profile.sport_rank = res.data.data.sportsman_profile.sport_rank;
     form.sportsman_profile.sport_id = res.data.data.sportsman_profile.sport.id;
     form.sportsman_profile.division = res.data.data.sportsman_profile.division;
     form.sportsman_profile.user_metrics.height =
@@ -214,8 +214,8 @@ const validateForm = () => {
       }
     }
     if (!form.middle_name) errors.middle_name = "Отчество обязательна.";
-    if (!form.sportsman_profile.skill_level)
-      errors.skill_level = "Тип спортсмена обязателен.";
+    if (!form.sportsman_profile.sport_rank)
+      errors.sport_rank = "Cпортивный разряд обязателен.";
     if (!form.sportsman_profile.sport_id)
       errors.sport_direction = "Направление спорта обязательно.";
     if (!form.sportsman_profile.division)
@@ -270,10 +270,9 @@ const handleFileUpload = async (event) => {
       }
     );
 
-    // Yangi profil rasm ma'lumotlarini saqlash
     const newPhotoId = response.data.data.id;
-    form.photoId = newPhotoId; // Yangi yuklangan rasm ID sini saqlash
-    form.media_ids.push(newPhotoId); // Yangi ID ni media_ids ga qo‘shish
+    form.photoId = newPhotoId; 
+    form.media_ids.push(newPhotoId); 
     form.photoName = file.name;
   } catch (error) {
     console.error("File upload failed:", error.response?.data || error.message);

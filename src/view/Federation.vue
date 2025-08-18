@@ -76,6 +76,17 @@
         <el-table-column label="Действия" width="160" fixed="right">
           <template #default="scope">
             <div class="flex gap-2">
+            <el-tooltip content="Request" placement="top">
+                <el-button
+                  size="small"
+                  type="success"
+                  circle
+                  @click="navigate(`/federation/request/${scope.row.id}`)"
+                >
+                  <el-icon><Document /></el-icon>
+                </el-button>
+              </el-tooltip>
+
               <el-tooltip content="Edit" placement="top">
                 <el-button
                   size="small"
@@ -136,7 +147,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Plus, Edit, Delete } from "@element-plus/icons-vue";
+import { Plus, Edit, Delete, Document } from "@element-plus/icons-vue";
 import DeleteModal from "../components/Federation/DeleteModal.vue";
 import api from "../utils/axios";
 

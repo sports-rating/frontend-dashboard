@@ -120,16 +120,6 @@ const validateForm = () => {
   if (active.value === 1) {
     if (!form.first_name) errors.first_name = "Имя обязательно.";
     if (!form.last_name) errors.last_name = "Фамилия обязательна.";
-    // if (!form.phone_number) {
-    //   errors.phone_number = 'Номер телефона обязателен.';
-    // } else {
-    //   const digitsOnly = form.phone_number.replace(/\D/g, '');
-    //   if (digitsOnly.length > 17) {
-    //     errors.phone_number = 'Номер телефона не должен превышать 17 цифр.';
-    //   } else if (digitsOnly.length < 9) {
-    //     errors.phone_number = 'Номер телефона слишком короткий.';
-    //   }
-    // }
 
     if (!form.pinfl) {
       errors.pinfl = "ЖШШИР обязательна.";
@@ -191,7 +181,6 @@ const handleFileUpload = async (event) => {
   formData.append("is_profile_photo", true);
 
   try {
-    // Yangi faylni yuklash
     const response = await api.post(
       "https://api.7srating.uz/api/user/media-upload/",
       formData,
@@ -206,9 +195,8 @@ const handleFileUpload = async (event) => {
       form.media_ids = [];
     }
 
-    // Eski IDni o‘chirib, yangisini qo‘shish
     form.media_ids = [response.data.data.id];
-    form.photoId = response.data.data.id; // Oxirgi yuklangan fayl ID sini saqlash
+    form.photoId = response.data.data.id; 
     form.photoName = file.name;
 
     console.log("Yangi fayl yuklandi:", response.data.data.id);

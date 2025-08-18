@@ -16,7 +16,7 @@
       >
         <!-- Row 1 -->
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Название федерации" prop="name">
               <el-input
                 v-model="form.name"
@@ -24,7 +24,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="Тип федерации" prop="is_national">
               <el-select v-model="form.is_national" placeholder="Выберите тип" clearable>
                 <el-option label="Региональный" :value="false" />
@@ -33,23 +33,7 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
-            <el-form-item label="Пользователи" prop="users">
-              <el-select
-                v-model="form.users"
-                placeholder="Выберите пользователей"
-                clearable
-                multiple
-              >
-                <el-option
-                  v-for="user in dataUsers"
-                  :key="user.id"
-                  :label="user.first_name + ' ' + user.last_name"
-                  :value="user.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
+          
         </el-row>
 
         <!-- Row 2 -->
@@ -339,7 +323,6 @@ const loading = ref(false);
 const logoFileList = ref([]);
 const documentFileList = ref([]);
 const data = ref([]);
-const dataUsers = ref([]);
 
 const getData = async () => {
   try {
@@ -350,24 +333,12 @@ const getData = async () => {
   }
 };
 
-const getUsers = async () => {
-  try {
-    const res = await api.get(
-      "https://api.7srating.uz/api/dashboard/users/?user_role=federation"
-    );
-    dataUsers.value = res.data.data;
-  } catch (e) {
-    console.log(e);
-  }
-};
 
-getUsers();
 getData();
 
 const form = reactive({
   name: "",
   is_national: true,
-  users: [],
   parent_federation: "",
   region: "",
   sports: [],
@@ -377,7 +348,7 @@ const form = reactive({
   logo_file: null,
   website: "",
   document_file: null,
-  sportGroups: [], // New structure: array of sport groups, each containing multiple age groups
+  sportGroups: [],
 });
 
 const addSportGroup = () => {
@@ -412,14 +383,9 @@ const removeAgeGroup = (sportIndex, ageIndex) => {
 };
 
 const onSportChange = (sportIndex) => {
-  // Optional: You can add logic here when sport changes
   console.log('Sport changed for group', sportIndex);
 };
 
-const getSportName = (sportId) => {
-  const sport = data.value.find(s => s.id === sportId);
-  return sport ? sport.name : '';
-};
 
 const addWeight = (sportIndex, ageIndex) => {
   const ageGroup = form.sportGroups[sportIndex].ageGroups[ageIndex];
@@ -452,14 +418,6 @@ const rules = {
     },
   ],
   is_national: [{ required: true, message: "Выберите тип федерации", trigger: "change" }],
-  users: [
-    {
-      type: "array",
-      required: true,
-      message: "Пожалуйста, выберите хотя бы одного пользователя.",
-      trigger: "change",
-    },
-  ],
   parent_federation: [
     {
       required: () => form.is_national === false,
@@ -560,7 +518,6 @@ const resetForm = () => {
   Object.assign(form, {
     name: "",
     is_national: false,
-    users: [],
     parent_federation: "",
     region: "",
     sports: [],
@@ -646,7 +603,6 @@ const submitForm = async () => {
       fd.append("name", form.name);
       fd.append("is_national", form.is_national);
 
-      form.users.forEach((u) => fd.append("users", u));
       form.sports.forEach((s) => fd.append("sports", s));
 
       if (form.parent_federation) fd.append("parent_federation", form.parent_federation);

@@ -57,15 +57,19 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Тип спортсмена</label>
+            <label class="block text-sm font-medium text-gray-700">Pазряд</label>
             <select
-              v-model="form.sportsman_profile.skill_level"
+              v-model="form.sportsman_profile.sport_rank"
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
-              <option value="">Выберите тип спортсмена</option>
-              <option v-for="type in athleteTypes" :key="type" :value="type">
-                {{ type }}
-              </option>
+              <option value="">Выберите razzryad</option>
+              <option
+                        v-for="rank in sportRanks"
+                        :key="rank.value"
+                        :value="rank.label"
+                      >
+                        {{ rank.label }}
+                      </option>
             </select>
 
             <span class="text-red-500 mt-1" v-if="errors.skill_level">{{
@@ -419,6 +423,16 @@ const selectedTrainer = ref(null);
 
 const regions = ref([]);
 const filteredDistricts = ref([]);
+const sportRanks = [
+  { value: "YOUTH_3", label: "Youth Third Rank" },
+  { value: "YOUTH_2", label: "Youth Second Rank" },
+  { value: "YOUTH_1", label: "Youth First Rank" },
+  { value: "ADULT_3", label: "Adult Third Rank" },
+  { value: "ADULT_2", label: "Adult Second Rank" },
+  { value: "ADULT_1", label: "Adult First Rank" },
+  { value: "CANDIDATE", label: "Candidate for Master of Sport" },
+];
+
 
 const getRegions = async () => {
   try {
