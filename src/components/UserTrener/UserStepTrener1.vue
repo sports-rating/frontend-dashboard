@@ -421,7 +421,7 @@ const filteredDistricts = ref([]);
 const getRegions = async () => {
   try {
     const res = await api.get("/user/regions/");
-    regions.value = res.data.data.data; 
+    regions.value = res.data.data; 
 
     
   } catch (err) {
@@ -436,7 +436,7 @@ const getDistricts = async (regionId) => {
   }
   try {
     const res = await api.get(`/user/districts/?region=${regionId}`);
-    filteredDistricts.value = res.data.data.data;
+    filteredDistricts.value = res.data.data;
   } catch (err) {
     console.error("Districts yuklashda xatolik:", err);
   }
