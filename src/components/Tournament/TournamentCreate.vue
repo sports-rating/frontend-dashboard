@@ -90,7 +90,7 @@
     <div class="w-1/2">
       <label class="block text-sm font-medium text-gray-700">Позиция</label>
       <input
-        v-model.number="policy.place"
+        v-model.number="policy.position"
         type="number"
         min="1"
         class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -101,7 +101,7 @@
     <div class="w-1/2">
       <label class="block text-sm font-medium text-gray-700">Счет</label>
       <input
-        v-model.number="policy.points"
+        v-model.number="policy.score"
         type="number"
         min="0"
         class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -179,14 +179,12 @@ const form = reactive({
   sport_id: "",
   logo: "",
   photoName: "",
-   scoring_policies: [
-    { position: 1, score: 10 },
-  ],
+   scoring_policies: [],
 });
 
 // Policy qo‘shish
 const addPolicy = () => {
-  form.scoring_policies.push({ place: null, points: null });
+  form.scoring_policies.push({ position: null, score: null });
 };
 
 // Policy o‘chirish
@@ -271,7 +269,6 @@ const handleSubmit = async () => {
 
   const formData = new FormData();
   formData.append("name", form.name);
-  formData.append("scoring_policies", JSON.stringify(form.scoring_policies));
 
   let scoringPoliciesIndex = 0;
       form.scoring_policies.forEach((policies) => {

@@ -79,7 +79,7 @@
               <div class="w-1/2">
                 <label class="block text-sm font-medium text-gray-700">Позиция</label>
                 <input
-                  v-model.number="policy.place"
+                  v-model.number="policy.position"
                   type="number"
                   min="1"
                   class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -90,7 +90,7 @@
               <div class="w-1/2">
                 <label class="block text-sm font-medium text-gray-700">Счет</label>
                 <input
-                  v-model.number="policy.points"
+                  v-model.number="policy.score"
                   type="number"
                   min="0"
                   class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -172,7 +172,7 @@ const initialData = reactive({
 });
 
 const addPolicy = () => {
-  form.scoring_policies.push({ place: null, points: null });
+  form.scoring_policies.push({ position: null, score: null });
 };
 
 const removePolicy = (index) => {
@@ -202,7 +202,7 @@ const validateForm = () => {
     errors.scoring_policies = "Scoring policies обязательны.";
   } else {
     form.scoring_policies.forEach((p, i) => {
-      if (!p.place || !p.points) {
+      if (!p.position || !p.score) {
         errors.scoring_policies = `Заполните все поля в строке ${i + 1}`;
       }
     });
@@ -236,8 +236,8 @@ const getData = async () => {
 
     form.scoring_policies = d.scoring_policies.map((p) => ({
       id: p.id,
-      place: p.position,
-      points: parseFloat(p.score),
+      position: p.position,
+      score: parseFloat(p.score),
     }));
   } catch (e) {
     console.log(e);
@@ -265,8 +265,8 @@ const handleSubmit = async () => {
     if (p.id) {
       formData.append(`scoring_policies[${index}]id`, p.id);
     }
-    formData.append(`scoring_policies[${index}]position`, p.place);
-    formData.append(`scoring_policies[${index}]score`, p.points);
+    formData.append(`scoring_policies[${index}]position`, p.position);
+    formData.append(`scoring_policies[${index}]score`, p.score);
   });
 
   try {
