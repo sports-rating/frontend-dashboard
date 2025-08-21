@@ -51,16 +51,6 @@ const confirmationText = ref("");
 const loading = ref(false);
 const showError = ref(false);
 
-const hasChildFederations = computed(() => {
-  if (!props.federation) return false;
-  return props.federations.some((f) => f.parent_federation === props.federation.id);
-});
-
-const childFederationsCount = computed(() => {
-  if (!props.federation) return 0;
-  return props.federations.filter((f) => f.parent_federation === props.federation.id)
-    .length;
-});
 
 // Watch
 watch(

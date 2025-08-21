@@ -248,7 +248,6 @@ const fetchRequests = async () => {
       search: search.value || undefined,
       status: selectedStatus.value || undefined,
       date: selectedDate.value || undefined,
-      type:"received"
     };
 
     const res = await api.get(`/federation/${route.params.id }/requests/`, { params });
@@ -318,24 +317,26 @@ const approveRequest = async (id) => {
 const deleteRequest = async (id) => {
   try {
     await ElMessageBox.confirm(
-      "Вы уверены, что хотите удалить эту заявку?",
-      "Подтверждение удаления",
+      "Вы уверены, что хотите Отменить эту заявку?",
+      "Подтверждение Отменить",
       {
-        confirmButtonText: "Удалить",
+        confirmButtonText: "Отменить",
         cancelButtonText: "Отмена",
         type: "warning",
       }
     );
 
-    await api.delete(`user/requests/${id}/`);
-    ElMessage.success("Заявка успешно удалена 🗑️");
+     await api.patch(`user/requests/${id}/`, {
+      status: "rejected",
+    });
+    ElMessage.success("Заявка успешно Отменить 🗑️");
     await fetchRequests();
   } catch (err) {
     if (err === "cancel") {
-      ElMessage.info("Удаление отменено");
+      ElMessage.info(" Oтменено");
     } else {
-      console.error("Ошибка при удалении:", err);
-      ElMessage.error("Ошибка при удалении заявки ❌");
+      console.error("Ошибка при Отменить:", err);
+      ElMessage.error("Ошибка при Отменить заявки ❌");
     }
   }
 };
