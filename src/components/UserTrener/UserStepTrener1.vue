@@ -130,6 +130,7 @@
               <input
                 v-model="form.trainer_profile.height"
                 type="text"
+                step="0.1"
                 placeholder="Введите рост"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -144,6 +145,7 @@
               <input
                 v-model="form.trainer_profile.weight"
                 type="text"
+                step="0.1"
                 placeholder="Введите вес"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
               />

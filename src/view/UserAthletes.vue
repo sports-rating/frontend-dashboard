@@ -249,10 +249,13 @@ const handleSubmit = async () => {
           form.phone_number.length === 17 ? form.phone_number.replaceAll(" ", "") : null,
           district: form.district.id,
         region: form.region.id,
+        
           
         sportsman_profile: {
           ...form.sportsman_profile,
-          send_request:false,
+          send_request: false,
+          height: String(formData.value.height),
+        weight: String(formData.value.weight),
         },
       };
 

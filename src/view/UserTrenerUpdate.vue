@@ -313,7 +313,9 @@ const handleSubmit = async () => {
           region: form.region.id,
         trainer_profile: {
           ...form.trainer_profile,
-          send_request:false,
+          send_request: false,
+          height: String(formData.value.height),
+        weight: String(formData.value.weight),
         },
       };
 
