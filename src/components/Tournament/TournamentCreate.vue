@@ -213,15 +213,7 @@ const validateForm = () => {
   if (!form.federation) errors.federation = "Федерация обязательна.";
   if (!form.sport_id) errors.sport_id = "Тип спорта обязателен.";
   if (!form.logo) errors.photo = "Фотография обязательна.";
-  if (!form.scoring_policies.length) {
-  errors.scoring_policies = "Scoring policies обязательны.";
-  } else {
-    form.scoring_policies.forEach((p, i) => {
-      if (!p.place || !p.points) {
-        errors.scoring_policies = `Заполните все поля в строке ${i + 1}`;
-      }
-    });
-  }
+  
     return Object.keys(errors).length === 0;
   };
 

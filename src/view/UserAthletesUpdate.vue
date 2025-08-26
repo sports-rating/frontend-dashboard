@@ -105,10 +105,8 @@ const form = reactive({
     sport_id: "",
     trainer_id: "",
     division: "",
-    user_metrics: {
       height: "",
       weight: "",
-    },
     bio: "",
     address: {
       street: "",
@@ -139,10 +137,10 @@ const getData = async () => {
     form.sportsman_profile.sport_rank = res.data.data.sportsman_profile.sport_rank;
     form.sportsman_profile.sport_id = res.data.data.sportsman_profile.sport.id;
     form.sportsman_profile.division = res.data.data.sportsman_profile.division;
-    form.sportsman_profile.user_metrics.height =
-      res.data.data.sportsman_profile.user_metrics.height;
-    form.sportsman_profile.user_metrics.weight =
-      res.data.data.sportsman_profile.user_metrics.weight;
+    form.sportsman_profile.height =
+      res.data.data.sportsman_profile.height;
+    form.sportsman_profile.weight =
+      res.data.data.sportsman_profile.weight;
     form.gender = res.data.data.gender;
     form.sportsman_profile.bio = res.data.data.sportsman_profile.bio;
     form.region = res.data.data.region;
@@ -223,8 +221,8 @@ const validateForm = () => {
     if (!form.birth_date) errors.birth_date = "Дата рождения обязательна.";
     if (!form.gender) errors.gender = "Пол обязателен.";
     if (!form.sportsman_profile.bio) errors.bio = "Обо мне обязателен.";
-    if (!form.sportsman_profile.user_metrics.height) errors.height = "Рост обязатлен.";
-    if (!form.sportsman_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
+    if (!form.sportsman_profile.height) errors.height = "Рост обязатлен.";
+    if (!form.sportsman_profile.weight) errors.weight = "Вес обязателен.";
     if (!form.region) errors.region = "Регион обязателен.";
     if (!form.district) errors.district = "Город обязателен.";
     if (!form.sportsman_profile.address.street) errors.street = "Улица обязателен.";

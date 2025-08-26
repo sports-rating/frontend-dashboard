@@ -96,10 +96,8 @@ const form = reactive({
     skill_level: "",
     sport_id: "",
     division: "",
-    user_metrics: {
       height: "",
       weight: "",
-    },
     bio: "",
     address: {
       
@@ -139,8 +137,8 @@ const validateForm = () => {
     if (!form.birth_date) errors.birth_date = "Дата рождения обязательна.";
     if (!form.gender) errors.gender = "Пол обязателен.";
     if (!form.trainer_profile.bio) errors.bio = "Обо мне обязателен.";
-    if (!form.trainer_profile.user_metrics.height) errors.height = "Рост обязатлен.";
-    if (!form.trainer_profile.user_metrics.weight) errors.weight = "Вес обязателен.";
+    if (!form.trainer_profile.height) errors.height = "Рост обязатлен.";
+    if (!form.trainer_profile.weight) errors.weight = "Вес обязателен.";
     if (!form.region) errors.region = "Регион обязателен.";
     if (!form.district) errors.district = "Город обязателен.";
     if (!form.trainer_profile.address.street) errors.street = "Улица обязателен.";

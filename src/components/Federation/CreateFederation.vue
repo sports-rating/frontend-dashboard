@@ -620,7 +620,6 @@ const submitForm = async () => {
         });
       }
 
-      // Convert sportGroups back to flat ageGroups structure for API
       let ageGroupIndex = 0;
       form.sportGroups.forEach((sportGroup) => {
         sportGroup.ageGroups.forEach((ageGroup) => {
@@ -646,7 +645,7 @@ const submitForm = async () => {
       router.push("/federation-list");
     } catch (err) {
       console.error(err);
-      ElMessage.error("Не удалось создать федерацию!");
+      ElMessage.error(err.response.data.message);
     } finally {
       loading.value = false;
     }

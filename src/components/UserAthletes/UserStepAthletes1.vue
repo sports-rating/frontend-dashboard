@@ -133,7 +133,7 @@
             <div class="w-full">
               <label class="block text-sm font-medium text-gray-700">Рост (см)</label>
               <input
-                v-model="form.sportsman_profile.user_metrics.height"
+                v-model="form.sportsman_profile.height"
                 type="text"
                 placeholder="Введите рост"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
@@ -147,7 +147,7 @@
             <div class="w-full">
               <label class="block text-sm font-medium text-gray-700">Вес (кг)</label>
               <input
-                v-model="form.sportsman_profile.user_metrics.weight"
+                v-model="form.sportsman_profile.weight"
                 type="text"
                 placeholder="Введите вес"
                 class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"

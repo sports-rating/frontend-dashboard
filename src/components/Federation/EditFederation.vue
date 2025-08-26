@@ -596,7 +596,7 @@ const submitForm = async () => {
       router.push("/federation-list");
     } catch (err) {
       console.error(err);
-      ElMessage.error("Не удалось обновить федерацию!");
+       ElMessage.error(err.response.data.message);
     } finally {
       loading.value = false;
     }
