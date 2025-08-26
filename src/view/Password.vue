@@ -5,6 +5,7 @@ import { useAuthStore } from "../stores/auth";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { ElMessage } from "element-plus";
 
 const isLoading = ref(false);
 const errorMessage = ref("");
@@ -48,9 +49,7 @@ const handleOtp = async () => {
       }, 5000);
     }
   } catch (error) {
-    toast.error(error?.response?.data?.message || "Verification failed.", {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
     errorMessage.value = "Verification failed. Please try again.";
   } finally {
     isLoading.value = false;

@@ -158,6 +158,7 @@
 import { reactive, ref, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
 import router from "../../router";
 import { useRoute, useRouter } from "vue-router";
@@ -273,9 +274,7 @@ const handleSubmit = async () => {
     router.push("/school-list");
   } catch (error) {
     console.error("Submission error:", error);
-    toast.error(error.response?.data?.message || "An error occurred", {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
   } finally {
     isSubmitting.value = false;
   }

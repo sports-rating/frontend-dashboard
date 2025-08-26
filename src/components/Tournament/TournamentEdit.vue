@@ -144,6 +144,8 @@ import { reactive, ref, onMounted, watch } from "vue";
 import api from "../../utils/axios";
 import { toast } from "vue3-toastify";
 import { useRoute, useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+
 
 const route = useRoute();
 const router = useRouter();
@@ -276,7 +278,7 @@ const handleSubmit = async () => {
     router.push("/tournament-list");
   } catch (error) {
     console.error("Submission error:", error);
-    toast.error(error.response?.data?.data || "Ошибка при обновлении");
+    ElMessage.error(error.response.data.message);
   } finally {
     isSubmitting.value = false;
   }

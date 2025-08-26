@@ -55,7 +55,7 @@ import { ref, reactive } from 'vue';
 import { VueTelInput } from 'vue-tel-input'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-
+import { ElMessage } from "element-plus";
 const isLoading = ref(false);
 const router = useRouter();
 const authStore = useAuthStore();
@@ -92,9 +92,7 @@ const handleSubmit = async () => {
     await authStore.login(formData);
     router.push('/password');
   } catch (error) {
-    toast.error(error.response.data.message, {
-      autoClose: 3000,
-    })
+   ElMessage.error(error.response.data.message);
     
   } finally {
     isLoading.value = false;

@@ -78,6 +78,7 @@ import { reactive, ref, onMounted } from "vue";
 import api from "../../utils/axios";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
@@ -169,9 +170,7 @@ const handleSubmit = async () => {
     router.push("/sport-list");
   } catch (error) {
     console.error("Submission error:", error);
-    toast.error(error.response?.data?.message || "Ошибка при отправке", {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
   } finally {
     isSubmitting.value = false;
   }

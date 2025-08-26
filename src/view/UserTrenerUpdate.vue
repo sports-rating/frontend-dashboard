@@ -67,6 +67,7 @@
 import { reactive, ref, computed } from "vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { ElMessage } from "element-plus";
 import UserStepTrener1 from "../components/UserTrener/UserStepTrener1.vue";
 import UserStepTrener2 from "../components/UserTrener/UserStepTrener2.vue";
 import UserStepTrener3 from "../components/UserTrener/UserStepTrener3.vue";
@@ -333,9 +334,7 @@ const handleSubmit = async () => {
       router.push("/");
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error(error.response.data.message, {
-        autoClose: 3000,
-      });
+      ElMessage.error(error.response.data.message);
     } finally {
       isSubmitting.value = false;
       isLoading.value = false;

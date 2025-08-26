@@ -64,7 +64,7 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import api from "../../../utils/axios"
 import router from '../../../router';
-
+import { ElMessage } from "element-plus";
 const newPolicy = ref({
   title: '',
   language: 'en',
@@ -102,9 +102,7 @@ const submitPolicy = async () => {
     router.push('/privacy-policy-list');
   } catch (error) {
     console.error('Submission error:', error);
-    toast.error(error.response?.data?.data || 'An error occurred', {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
   }
 };
 

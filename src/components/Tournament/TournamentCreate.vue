@@ -162,6 +162,7 @@ import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 import { reactive, ref, watch } from "vue";
 import { toast } from "vue3-toastify";
+import { ElMessage } from "element-plus";
 import "vue3-toastify/dist/index.css";
 import api from "../../utils/axios";
 import router from "../../router";
@@ -290,9 +291,7 @@ const handleSubmit = async () => {
     router.push("/tournament-list");
   } catch (error) {
     console.error("Submission error:", error);
-    toast.error(error.response?.data?.data || "An error occurred", {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
   } finally {
     isSubmitting.value = false;
   }

@@ -69,6 +69,8 @@ import UserStepAthletes4 from "../components/UserAthletes/UserStepAthletes4.vue"
 import Loading from "../components/Loading.vue";
 import api from "../utils/axios";
 import router from "../router";
+import { ElMessage } from "element-plus";
+
 
 const errors = reactive({});
 const isSubmitting = ref(false);
@@ -268,9 +270,7 @@ const handleSubmit = async () => {
       router.push("/");
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error(error.response.data.message, {
-        autoClose: 3000,
-      });
+      ElMessage.error(error.response.data.message);
     } finally {
       isSubmitting.value = false;
       isLoading.value = false;

@@ -61,6 +61,8 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { useRoute } from 'vue-router';
 import router from '../../../router';
+import { ElMessage } from "element-plus";
+
 
 const route = useRoute();
 
@@ -129,9 +131,7 @@ const submitPolicy = async () => {
     router.push('/privacy-policy-list');
   } catch (error) {
     console.error('Error updating policy:', error);
-    toast.error(error.response?.data?.data || 'An error occurred', {
-      autoClose: 3000,
-    });
+    ElMessage.error(error.response.data.message);
   }
 };
 </script>
