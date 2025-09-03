@@ -83,7 +83,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Номер телефона" prop="phone_number">
-              <el-input v-model="form.phone_number" placeholder="+1 (555) 123-4567" />
+              <el-input v-model="form.phone_number" placeholder="+998 99 857 72 32" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -135,7 +135,6 @@
           </el-col>
         </el-row>
 
-        <!-- 🎯 Sport Groups - CHANGE: Updated to new sport-grouped structure -->
         <div>
           <div class="w-full flex justify-between items-center">
             <h3 class="text-2xl font-semibold text-gray-800 mb-6">
@@ -146,13 +145,11 @@
             </el-button>
           </div>
 
-          <!-- CHANGE: Each sport group now contains multiple age groups -->
          <div
   v-for="(sportGroup, sportIndex) in form.sportGroups"
   :key="sportIndex"
   class="bg-white rounded-2xl border border-gray-200 p-6 mb-8  hover:border-primary transition"
 >
-  <!-- Sport Group Header -->
   <div class="flex justify-between items-center mb-5 pb-4 border-b border-gray-200">
     <div class="flex items-center gap-3">
       <i class="el-icon-basketball text-primary text-xl"></i>
@@ -191,7 +188,7 @@
     >
       <el-row :gutter="20" class="mb-4">
         <!-- Age -->
-        <el-col :span="5">
+        <el-col :span="4">
           <el-input
             v-model="ageGroup.age"
             placeholder="Например, 17"
@@ -202,13 +199,25 @@
           </el-input>
         </el-col>
 
+         <el-col :span="2">
+          <el-select
+            v-model="ageGroup.sign"
+            placeholder="Знак"
+            clearable
+            class="w-full rounded-lg"
+          >
+            <el-option label="-" value="-" />
+            <el-option label="+" value="+" />
+          </el-select>
+        </el-col>
+
         <!-- Age display -->
         <el-col :span="2">
           <el-input :model-value="ageGroup.age" disabled  placeholder="Возраст"/>
         </el-col>
 
         <!-- Gender -->
-        <el-col :span="5">
+        <el-col :span="4">
           <el-select
             v-model="ageGroup.gender"
             placeholder="Пол"
@@ -226,7 +235,7 @@
             <el-input
               v-model="ageGroup.newWeight"
               placeholder="Введите вес"
-              type="number"
+              type="text"
             />
             <el-button 
               type="primary" 
@@ -289,7 +298,7 @@
       + Добавить возрастную группу
     </el-button>
   </div>
-</div>
+        </div>
 
         </div>
 
@@ -349,6 +358,7 @@ const addSportGroup = () => {
         weights: [],
         newWeight: null,
         gender: "male",
+        sign:null,
       }
     ]
   });
@@ -365,6 +375,7 @@ const addAgeGroup = (sportIndex) => {
     weights: [],
     newWeight: null,
     gender: "male",
+    sign:null,
   });
 };
 
@@ -374,8 +385,20 @@ const removeAgeGroup = (sportIndex, ageIndex) => {
 
 const addWeight = (sportIndex, ageIndex) => {
   const ageGroup = form.sportGroups[sportIndex].ageGroups[ageIndex];
-  if (ageGroup.newWeight) {
-    ageGroup.weights.push(ageGroup.newWeight);
+  let val = ageGroup.newWeight?.toString().trim();
+
+  if (val) {
+    if (val.endsWith("+")) {
+      val = "+" + val.replace("+", "");
+    }
+    else if (val.endsWith("-")) {
+      val = "-" + val.replace("-", "");
+    }
+    else {
+      val = val;
+    }
+
+    ageGroup.weights.push(val);
     ageGroup.newWeight = null;
   }
 };
@@ -462,6 +485,7 @@ const loadFederation = async () => {
           weights: ag.weights || [],
           newWeight: null,
           gender: ag.gender,
+          sign:ag.sign
         });
       });
       
@@ -586,6 +610,7 @@ const submitForm = async () => {
         fd.append(`age_groups[${i}]age`, ag.age ?? "");
         fd.append(`age_groups[${i}]weights`, JSON.stringify(ag.weights || []));
         fd.append(`age_groups[${i}]gender`, ag.gender || "");
+        fd.append(`age_groups[${i}]sign`, ag.sign || "");
       });
 
       await api.patch(`/federation/${federationId}/`, fd, {
