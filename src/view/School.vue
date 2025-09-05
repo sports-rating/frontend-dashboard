@@ -185,7 +185,7 @@ const getData = async () => {
   try {
     const res = await api.get("https://api.7srating.uz/api/education/school/");
 
-    data.value = res.data.data;
+    data.value = res.data.data.data;
   } catch (e) {
     console.log(e);
   }

@@ -69,23 +69,20 @@ import { ElMessage } from "element-plus";
 const newPolicy = ref({
   title: '',
   language: 'en',
-  text: '' // This will hold the content of the Quill editor
+  text: '' 
 })
 
-// Ref to store the editor instance
 const quillEditor = ref(null)
 
-// Capture the editor instance and set the text manually
 const onEditorReady = (editor) => {
   quillEditor.value = editor
   editor.on('text-change', () => {
-    newPolicy.value.text = editor.root.innerHTML // Update the text field with the editor's content
+    newPolicy.value.text = editor.root.innerHTML
   })
 }
 
 const submitPolicy = async () => {
   try {
-    // Create a plain object by cloning newPolicy (removes reactivity)
     const policyData = {
       title: newPolicy.value.title,
       language: newPolicy.value.language,
@@ -94,7 +91,7 @@ const submitPolicy = async () => {
 
     await api.post(
       "https://api.7srating.uz/api/dashboard/terms-of-condition/",
-      policyData // Send the plain object without circular references
+      policyData
     );
     
     toast.success("Успех в использовании пользовательских условий", {

@@ -96,6 +96,9 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.sport ? user.sport.name : "-" }}
               </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.federation ? user.federation.name : "-" }}
+              </td>
               <td class="h-[4rem] w-[4rem]">
                 <img
                   v-if="user?.logo"
@@ -165,7 +168,7 @@ import { ref, computed, onUnmounted, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "../utils/axios";
 
-const headers = ref(["#", "Имя", "Тип спорта", "Image", "Действия"]);
+const headers = ref(["#", "Имя", "Тип спорта", "Федерация", "Image",  "Действия"]);
 
 const router = useRouter();
 const search = ref("");

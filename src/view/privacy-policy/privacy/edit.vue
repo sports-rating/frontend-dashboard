@@ -90,17 +90,15 @@ const getData = async () => {
     newPolicy.value.title = res.data.data.title;
     newPolicy.value.language = res.data.data.language;
 
-    // Set the Quill editor's content after it's initialized
     if (quillEditor.value) {
       quillEditor.value.root.innerHTML = res.data.data.text;
     } else {
-      // If the editor isn't ready yet, store the text and set it in onEditorReady
       const storedText = res.data.data.text;
-      const originalOnEditorReady = onEditorReady; // Store the original function
+      const originalOnEditorReady = onEditorReady;
 
         onEditorReady = (editor) => {
-            originalOnEditorReady(editor); // Call the original function
-            editor.root.innerHTML = storedText; // Set the content after the editor is ready
+            originalOnEditorReady(editor); 
+            editor.root.innerHTML = storedText; 
         };
     }
   } catch (e) {
