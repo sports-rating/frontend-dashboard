@@ -195,10 +195,10 @@
       <el-row :gutter="20" class="mb-4 items-center">
         <!-- Age -->
         
-        <el-col :span="4">
+        <el-col :span="6">
           <el-input
             v-model="ageGroup.name"
-            placeholder="Например, U-17, U-17-56, +45"
+            placeholder="U-17, +45, U-15-35"
             type="text"
             class="rounded-lg"
           >
