@@ -190,31 +190,13 @@
         <!-- Age -->
         <el-col :span="4">
           <el-input
-            v-model="ageGroup.age"
-            placeholder="Например, 17"
-            type="number"
-            @input="ageGroup.name = `U-${ageGroup.age}`"
+            v-model="ageGroup.name"
+            placeholder="Например, U-17, U-17-56, +45"
+            type="text"
           >
-            <template #prepend>U-</template>
           </el-input>
         </el-col>
 
-         <el-col :span="2">
-          <el-select
-            v-model="ageGroup.sign"
-            placeholder="Знак"
-            clearable
-            class="w-full rounded-lg"
-          >
-            <el-option label="-" value="-" />
-            <el-option label="+" value="+" />
-          </el-select>
-        </el-col>
-
-        <!-- Age display -->
-        <el-col :span="2">
-          <el-input :model-value="ageGroup.age" disabled  placeholder="Возраст"/>
-        </el-col>
 
         <!-- Gender -->
         <el-col :span="4">
@@ -354,11 +336,9 @@ const addSportGroup = () => {
     ageGroups: [
       {
         name: "",
-        age: null,
         weights: [],
         newWeight: null,
         gender: "male",
-        sign:null,
       }
     ]
   });
@@ -371,11 +351,9 @@ const removeSportGroup = (sportIndex) => {
 const addAgeGroup = (sportIndex) => {
   form.sportGroups[sportIndex].ageGroups.push({
     name: "",
-    age: null,
     weights: [],
     newWeight: null,
     gender: "male",
-    sign:null,
   });
 };
 
@@ -444,7 +422,6 @@ onMounted(() => {
 
 const federationId = route.params.id;
 
-// CHANGE: Updated loadFederation to convert old structure to new sport-grouped structure
 const loadFederation = async () => {
   if (!federationId) {
     ElMessage.error("Идентификатор федерации не найден");
@@ -481,11 +458,9 @@ const loadFederation = async () => {
         sportGroupsMap.get(sportId).ageGroups.push({
           id: ag.id,
           name: ag.name,
-          age: ag.age,
           weights: ag.weights || [],
           newWeight: null,
           gender: ag.gender,
-          sign:ag.sign
         });
       });
       
@@ -574,17 +549,11 @@ const submitForm = async () => {
         });
       }
 
-      // CHANGE: Convert sport groups back to flat age groups structure for API
       const flatAgeGroups = [];
       form.sportGroups.forEach((sportGroup) => {
         sportGroup.ageGroups.forEach((ageGroup) => {
-          const name = ageGroup.name && ageGroup.name.trim() !== "" 
-            ? ageGroup.name.trim() 
-            : `U-${ageGroup.age || ""}`.trim();
-          
           flatAgeGroups.push({
             ...ageGroup,
-            name,
             sport: sportGroup.sport
           });
         });
@@ -607,10 +576,8 @@ const submitForm = async () => {
         }
         fd.append(`age_groups[${i}]name`, ag.name);
         fd.append(`age_groups[${i}]sport`, ag.sport);
-        fd.append(`age_groups[${i}]age`, ag.age ?? "");
         fd.append(`age_groups[${i}]weights`, JSON.stringify(ag.weights || []));
         fd.append(`age_groups[${i}]gender`, ag.gender || "");
-        fd.append(`age_groups[${i}]sign`, ag.sign || "");
       });
 
       await api.patch(`/federation/${federationId}/`, fd, {
