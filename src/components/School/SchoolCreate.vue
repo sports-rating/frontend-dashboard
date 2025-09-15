@@ -250,17 +250,17 @@ const onMapClick = (mapboxInstance) => {
   })
 };
 
-const getData = async () => {
-  try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+// const getData = async () => {
+//   try {
+//     const res = await api.get("https://api.7srating.uz/api/sport/");
 
-    data.value = res.data.data;
-  } catch (e) {
-    console.log(e);
-  }
-};
+//     data.value = res.data.data;
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
-getData();
+// getData();
 
 const getDataFederation = async () => {
   try {
@@ -273,6 +273,28 @@ const getDataFederation = async () => {
 };
 
 getDataFederation()
+
+const getSportsByFederation = async (federationId) => {
+  if (!federationId) return;
+  try {
+    const res = await api.get(`/federation/${federationId}/`);
+    data.value = res.data.data.sports;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+watch(
+  () => form.federation,
+  (newVal) => {
+    if (newVal) {
+      getSportsByFederation(newVal.id); 
+    } else {
+      data.value = [];
+    }
+  }
+);
+
 const validateForm = () => {
   // Clear previous errors
   Object.keys(errors).forEach((key) => delete errors[key]);

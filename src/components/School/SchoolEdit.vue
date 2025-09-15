@@ -248,14 +248,6 @@ const onMapClick = (mapboxInstance) => {
   });
 };
 
-const getData = async () => {
-  try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
-    data.value = res.data.data;
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 const getDataFederation = async () => {
   try {
@@ -265,6 +257,27 @@ const getDataFederation = async () => {
     console.log(e);
   }
 };
+
+const getSportsByFederation = async (federationId) => {
+  if (!federationId) return;
+  try {
+    const res = await api.get(`/federation/${federationId}/`);
+    data.value = res.data.data.sports;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+watch(
+  () => form.federation,
+  (newVal) => {
+    if (newVal) {
+      getSportsByFederation(newVal.id); 
+    } else {
+      data.value = [];
+    }
+  }
+);
 
 const getRegions = async () => {
   try {
@@ -360,7 +373,6 @@ const handleSubmit = async () => {
 watch(() => form.region, onRegionChange);
 
 onMounted(() => {
-  getData();
   getDataFederation();
   getRegions();
   getRegions();
