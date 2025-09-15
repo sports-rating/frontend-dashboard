@@ -31,13 +31,27 @@
 
     <div class="bg-white dark:bg-[#1E1E2D] rounded-lg border mb-6 w-full">
       <div class="p-4">
-        <div class="flex gap-4 w-full">
-          <div class="flex-1">
+        <div class="flex gap-4 w-full justify-between">
+          <div class="flex gap-4">
             <input
               v-model="search"
               type="search"
               placeholder="Поиск..."
               class="2xl:w-[15rem] w-[10rem] px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
+            />
+
+            <Multiselect
+              v-model="federation"
+              :options="dataFederation"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите Федерация"
+              :clear-on-select="false"
+              :close-on-select="true"
+              :show-labels="false"
+              :allow-empty="true"
+              :clearable="true"
             />
           </div>
           <div class="flex gap-6">
@@ -87,15 +101,18 @@
                 {{ user.phone_number ? user.phone_number : "-" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.address.region ? user.address.region : "-" }}
+                {{ user.federation ? user.federation.name : "-" }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ user.region ? user.region.name : "-" }}
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.address.district ? user.address.district : "-" }}
+                {{ user.district ? user.district.name : "-" }}
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.address.address ? user.address.address : "-" }}
+                {{ user.address ? user.address : "-" }}
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -156,14 +173,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted, onMounted } from "vue";
+import { ref, computed, onUnmounted, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import api from "../utils/axios";
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.css";
 
 const headers = ref([
   "#",
   "Название школы",
   "Номер телефона",
+  "Федерация",
   "Область",
   "Район",
   "Адрес",
@@ -180,10 +200,30 @@ const isModalOpen = ref(false);
 const schoolDelete = ref(null);
 const currentPage = ref(1);
 const perPage = ref(10);
+const federation = ref("")
+const dataFederation = ref([]);
+
+const getDataFederation = async () => {
+  try {
+    const res = await api.get("https://api.7srating.uz/api/federation/?page_size=500");
+
+    dataFederation.value = res.data.data.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+getDataFederation()
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/education/school/");
+    const params = {};
+    if (search.value) params.search = search.value; 
+    if (federation.value) params.federation = federation.value.id;
+
+    const res = await api.get("https://api.7srating.uz/api/education/school/", {
+      params,
+    });
 
     data.value = res.data.data.data;
   } catch (e) {
@@ -217,24 +257,16 @@ const deleteTournament = async () => {
   }
 };
 
-const filteredUsers = computed(() => {
-  return data.value.filter((user) => {
-    const matchesSearch = user.name?.toLowerCase().includes(search.value.toLowerCase());
 
-    const matchesDateRange = dateRange.value
-      ? new Date(user.start_time) >= new Date(dateRange.value[0]) &&
-        new Date(user.end_time) <= new Date(dateRange.value[1])
-      : true;
 
-    return matchesSearch && matchesDateRange;
-  });
-});
-
-const totalPages = computed(() => Math.ceil(filteredUsers.value.length / perPage.value));
+const totalPages = computed(() => Math.ceil(data.value.length / perPage.value));
 
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * perPage.value;
-  return filteredUsers.value.slice(start, start + perPage.value);
+  return data.value.slice(start, start + perPage.value);
+});
+watch([search, federation], () => {
+  getData();
 });
 
 const setPage = (page) => {

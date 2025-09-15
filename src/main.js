@@ -12,6 +12,10 @@ import "vue-tel-input/vue-tel-input.css";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
+
 const app = createApp(App);
 const pinia = createPinia();
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
