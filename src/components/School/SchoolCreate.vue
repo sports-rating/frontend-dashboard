@@ -124,6 +124,22 @@
             <span class="text-red-500 mt-1" v-if="errors.type">{{ errors.type }}</span>
           </div>
 
+            <div>
+            <label class=" block text-sm font-medium text-gray-700">Введите Федерация</label>
+
+            <Multiselect
+              v-model="form.federation"
+              :options="dataFederation"
+              label="name"
+              track-by="id"
+              value-prop="id"
+              placeholder="Выберите Федерация"
+              class="mt-1"
+            />
+            <span class="text-red-500 mt-1" v-if="errors.federation">{{
+              errors.federation
+            }}</span>
+          </div>
           <div>
             <label class=" block text-sm font-medium text-gray-700">Введите sport</label>
 
@@ -142,22 +158,7 @@
             }}</span>
           </div>
 
-          <div>
-            <label class=" block text-sm font-medium text-gray-700">Введите Федерация</label>
-
-            <Multiselect
-              v-model="form.federation"
-              :options="dataFederation"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите Федерация"
-              class="mt-1"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.federation">{{
-              errors.federation
-            }}</span>
-          </div>
+          
 
         <div class="col-span-3">
           <label class="block text-sm font-medium text-gray-700">Локация на карте</label>
