@@ -88,9 +88,9 @@
 
             <div
               v-if="isCreate"
-              class="absolute w-[120px] top-12 -right-3 bg-white dark:bg-[#1E1E2D] rounded-xl border p-2"
+              class="absolute w-[160px] top-12 -right-3 bg-white dark:bg-[#1E1E2D] rounded-xl border p-2 "
             >
-              <div class="flex flex-col divide-y divide-[#EFF0F3] gap-2 m-0">
+              <div class="flex flex-col divide-y divide-[#EFF0F3] gap-2 m-0 justify-center">
                 <p
                   @click="navigate('/create-user-athletes')"
                   class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold"
@@ -99,9 +99,16 @@
                 </p>
                 <p
                   @click="navigate('/create-user-trener')"
-                  class="text-base m-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold"
+                  class="text-base m-0 p-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold"
                 >
                   Тренеры
+                </p>
+
+                <p
+                  @click="navigate('/create-user-federation')"
+                  class="text-base whitespace-nowrap m-0 p-0 cursor-pointer hover:text-[#1E1E2D] hover:font-bold"
+                >
+                  Админ Федерации
                 </p>
               </div>
             </div>
@@ -156,9 +163,9 @@
               </td>
 
               <td
-                class="px-6 py-4 gap-2 flex whitespace-nowrap justify-center text-sm text-gray-500"
+                class="px-6 py-4 gap-2 flex whitespace-nowrap  text-sm text-gray-500"
               >
-                <button class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <button v-if="user.user_role !== 'federation'" class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                   <router-link
                     v-if="user.user_role !== 'trainer'"
                     :to="`/sportsman-view/${user.id}`"
@@ -174,7 +181,7 @@
                   </router-link>
                 </button>
 
-                <button class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
+                <button  v-if="user.user_role !== 'federation'" class="hover:text-gray-900 border p-2 rounded-lg bg-[#EFF0F3]">
                   <router-link
                     v-if="user.user_role !== 'trainer'"
                     :to="`/user-athletes/edit/${user.id}`"
@@ -282,9 +289,8 @@ const confirmDelete = (id, role) => {
 
 const deleteTournament = async () => {
   try {
-    if (toRole.value === "sportsman") {
       await api.delete(
-        `https://api.7srating.uz/api/user/profile/sportsman/${sportToDelete.value}/`
+        `https://api.7srating.uz/api/user/auth/delete-account/?user_id=${sportToDelete.value}`
       );
       data.value = data.value.filter((user) => user.id !== sportToDelete.value);
       await getData();
@@ -294,19 +300,6 @@ const deleteTournament = async () => {
       if (paginatedUsers.value.length === 0 && currentPage.value > 1) {
         currentPage.value -= 1;
       }
-    } else if (toRole.value === "trainer") {
-      await api.delete(
-        `https://api.7srating.uz/api/user/profile/trainer/${sportToDelete.value}/`
-      );
-      data.value = data.value.filter((user) => user.id !== sportToDelete.value);
-      await getData();
-
-      isModalOpen.value = false;
-
-      if (paginatedUsers.value.length === 0 && currentPage.value > 1) {
-        currentPage.value -= 1;
-      }
-    }
   } catch (e) {
     console.error("Failed to delete tournament:", e);
   }

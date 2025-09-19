@@ -40,6 +40,12 @@ const router = createRouter({
     },
 
     {
+      path: "/create-user-federation",
+      name: "Trener",
+      component: () => import("../view/UserFederation.vue"),
+    },
+
+    {
       path: "/user-trainer/edit/:id",
       name: "user-trainer-edit",
       component: () => import("../view/UserTrenerUpdate.vue"),

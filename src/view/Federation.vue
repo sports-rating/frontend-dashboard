@@ -20,12 +20,13 @@
     <el-card shadow="never" class="rounded-xl border border-gray-200">
       <el-table
         :data="federations"
-        class="rounded-lg"
+        class="rounded-lg cursor-pointer"
         style="width: 100%"
         stripe
         highlight-current-row
+        @row-click="(row) => showUsersDialog(row.id)"
       >
-        <el-table-column label="Федерация" min-width="200">
+        <el-table-column label="Федерация" min-width="400">
           <template #default="scope">
             <div class="flex items-center space-x-4">
               <div>
@@ -135,6 +136,107 @@
       </div>
     </el-card>
 
+    <el-dialog
+  v-model="userDialogVisible"
+  width="80%"
+  :title="selectedFederationUsers?.name"
+>
+  <div v-if="selectedFederationUsers">
+    <div class="flex gap-6 items-center mb-6">
+      <img
+        v-if="selectedFederationUsers.logo"
+        :src="selectedFederationUsers.logo"
+        class="w-24 h-24 rounded-lg object-cover border"
+        alt="Logo"
+      />
+      <div>
+        <p><strong>Телефон:</strong> {{ selectedFederationUsers.phone_number }}</p>
+        <p><strong>Электронная почта:</strong> {{ selectedFederationUsers.email }}</p>
+        <p><strong>Адрес:</strong> {{ selectedFederationUsers.address }}</p>
+        <p><strong>Спорт:</strong> <el-tag
+        v-for="sport in selectedFederationUsers.sports"
+        :key="sport.id"
+        type="success"
+        class="mr-2 mb-2"
+      >
+        {{ sport.name }}
+      </el-tag></p>
+      </div>
+    </div>
+
+
+    <!-- Yosh guruhlari -->
+    <el-card class="mb-4">
+      <h3 class="font-semibold mb-2">Возрастные группы</h3>
+      <el-table
+        :data="selectedFederationUsers.age_groups"
+        border
+        class="no-scrollbar"
+        style="width: 100%; max-height: 15rem; overflow-y: scroll;"
+      >
+        <el-table-column prop="name" label="Полное имя" />
+        <el-table-column prop="gender" label="Пол" />
+        <el-table-column prop="min_age" label="Младший возраст" />
+        <el-table-column prop="max_age" label="Старший возраст" />
+        <el-table-column label="Весовые категории">
+          <template #default="scope">
+            <el-tag
+              v-for="w in scope.row.weights"
+              :key="w"
+              size="small"
+              class="mr-1 mb-1"
+            >
+              {{ w }} кг
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <!-- Hujjatlar -->
+    <el-card class="mb-4" v-if="selectedFederationUsers.documents?.length">
+      <h3 class="font-semibold mb-2">Документы</h3>
+      <el-table
+        :data="selectedFederationUsers.documents"
+        border
+        style="width: 100%"
+      >
+        <el-table-column prop="media_type" label="Тип" width="100" />
+        <el-table-column prop="size" label="Размер" width="120" />
+        <el-table-column label="Файл">
+          <template #default="scope">
+            <a
+              :href="scope.row.file"
+              target="_blank"
+              class="text-blue-500 underline"
+            >
+              {{ scope.row.file.split('/').pop() }}
+            </a>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <!-- Foydalanuvchilar -->
+    <el-card>
+      <h3 class="font-semibold mb-2">Пользователи</h3>
+      <el-table
+        :data="selectedFederationUsers.users"
+        border
+        style="width: 100%"
+      >
+        <el-table-column prop="first_name" label="Имя" />
+        <el-table-column prop="last_name" label="Фамилия" />
+        <el-table-column prop="phone_number" label="Телефон" />
+        <el-table-column prop="email" label="Электронная почта" />
+        <el-table-column prop="user_role" label="Pоль" />
+      </el-table>
+    </el-card>
+  </div>
+    </el-dialog>
+
+
+
     <!-- Delete Modal -->
     <DeleteModal
       v-model:visible="showDeleteDialog"
@@ -150,9 +252,12 @@ import { useRouter } from "vue-router";
 import { Plus, Edit, Delete, Document } from "@element-plus/icons-vue";
 import DeleteModal from "../components/Federation/DeleteModal.vue";
 import api from "../utils/axios";
+import { ElMessage } from "element-plus";
 
 const federations = ref([]);
 const totalCount = ref(0);
+const selectedFederationUsers = ref([]);
+const userDialogVisible = ref(false)
 
 const showDeleteDialog = ref(false);
 const federationToDelete = ref(null);
@@ -162,6 +267,21 @@ const pageSize = ref(10);
 
 const router = useRouter();
 const navigate = (path) => router.push(path);
+
+const showUsersDialog = async (federationId) => {
+  try {
+    const res = await api.get(`/federation/${federationId}/`);
+    // Agar API {count, data: []} qaytarsa:
+    selectedFederationUsers.value = Array.isArray(res.data.data)
+      ? res.data.data
+      : res.data.data || [];
+
+    userDialogVisible.value = true;
+  } catch (error) {
+    console.error(error);
+    ElMessage.error("Не удалось загрузить пользователей");
+  }
+};
 
 async function fetchFederations(page = 1) {
   try {
@@ -227,6 +347,22 @@ onMounted(() => {
 
 .red-pagination .btn-prev:hover,
 .red-pagination .btn-next:hover {
-  background-color: #fee2e2 !important;
+  background-color: #f7cece !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #f7cece;
+  border: 7px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scroll-margin-block-start: 0;
 }
 </style>

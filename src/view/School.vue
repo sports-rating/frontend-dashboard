@@ -40,7 +40,7 @@
               class="2xl:w-[15rem] w-[10rem] px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500"
             />
 
-            <Multiselect
+            <!-- <Multiselect
               v-model="federation"
               :options="dataFederation"
               label="name"
@@ -52,7 +52,7 @@
               :show-labels="false"
               :allow-empty="true"
               :clearable="true"
-            />
+            /> -->
           </div>
           <div class="flex gap-6">
             <div class="relative">
@@ -100,9 +100,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.phone_number ? user.phone_number : "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ user.federation ? user.federation.name : "-" }}
-              </td>
+              
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ user.region ? user.region.name : "-" }}
               </td>
@@ -183,7 +181,6 @@ const headers = ref([
   "#",
   "Название школы",
   "Номер телефона",
-  "Федерация",
   "Область",
   "Район",
   "Адрес",

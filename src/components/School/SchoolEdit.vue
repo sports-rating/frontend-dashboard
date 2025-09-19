@@ -124,22 +124,7 @@
             <span class="text-red-500 mt-1" v-if="errors.type">{{ errors.type }}</span>
           </div>
 
-          <div>
-            <label class=" block text-sm font-medium text-gray-700">Введите Федерация</label>
-
-            <Multiselect
-              v-model="form.federation"
-              :options="dataFederation"
-              label="name"
-              track-by="id"
-              value-prop="id"
-              placeholder="Выберите Федерация"
-              class="mt-1"
-            />
-            <span class="text-red-500 mt-1" v-if="errors.federation">{{
-              errors.federation
-            }}</span>
-          </div>
+          
 
           <div>
             <label class=" block text-sm font-medium text-gray-700">Введите sport</label>
@@ -235,7 +220,6 @@ const form = reactive({
   address: "",
   type: "",
   sports: [],
-  federation: "",
   latitude: 41.311151,
   longitude: 69.279737,
 });
@@ -251,35 +235,17 @@ const onMapClick = (mapboxInstance) => {
 };
 
 
-const getDataFederation = async () => {
+
+const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/federation/?page_size=500");
-    dataFederation.value = res.data.data.data;
+    const res = await api.get("https://api.7srating.uz/api/sport/");
+
+    data.value = res.data.data;
   } catch (e) {
     console.log(e);
   }
 };
 
-const getSportsByFederation = async (federationId) => {
-  if (!federationId) return;
-  try {
-    const res = await api.get(`/federation/${federationId}/`);
-    data.value = res.data.data.sports;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-watch(
-  () => form.federation,
-  (newVal) => {
-    if (newVal) {
-      getSportsByFederation(newVal.id); 
-    } else {
-      data.value = [];
-    }
-  }
-);
 
 const getRegions = async () => {
   try {
@@ -288,6 +254,9 @@ const getRegions = async () => {
   } catch (err) {
     console.error("Regions yuklashda xatolik:", err);
   }
+};
+const goBack = () => {
+  window.history.go(-1);
 };
 
 const getDistricts = async (regionId) => {
@@ -340,7 +309,6 @@ const getDataa = async () => {
     form.district = dataRes.district;
     form.address = dataRes.address;
     form.sports = dataRes.sports;
-    form.federation = dataRes.federation;
     form.latitude = dataRes.latitude;
     form.longitude = dataRes.longitude;
     center.value = [dataRes.longitude, dataRes.latitude];
@@ -356,7 +324,6 @@ const handleSubmit = async () => {
       ...form,
       phone_number: form.phone_number.replaceAll(" ", ""),
       sports: form.sports.map((item) => item.id),
-      federation: form.federation.id,
       region: form.region.id,
       district: form.district.id,
     };
@@ -375,7 +342,7 @@ const handleSubmit = async () => {
 watch(() => form.region, onRegionChange);
 
 onMounted(() => {
-  getDataFederation();
+  getData();
   getRegions();
   getRegions();
   getDataa();
