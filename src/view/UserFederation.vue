@@ -111,7 +111,8 @@ const handleSubmit = async () => {
     loading.value = true;
       const res = await api.post("/dashboard/add-user/", {
           ...form,
-        federation: form.federation.id
+        federation: form.federation.id,
+        phone_number: form.phone_number.replaceAll(" ", ""),
     });
 
     toast.success("Пользователь успешно добавлен!");
