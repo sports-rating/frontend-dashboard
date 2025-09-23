@@ -65,4 +65,4 @@ jobs:
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           script: |
             sudo ln -sfn /var/www/srating-admin_${{ env.INACTIVE }} /var/www/srating-admin
-            sudo service nginx reload
+            sudo systemctl reload nginx
