@@ -3,7 +3,7 @@ name: Dev Blue/Green Deployment via Nginx
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
@@ -25,21 +25,19 @@ jobs:
       - name: Build Vue.js Project
         run: yarn build
 
+      # ✅ Fixed Determine Active Slot
       - name: Determine Active Slot
         id: slot
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_SSH_HOST }}
-          username: ${{ secrets.DEV_SSH_USERNAME }}
-          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
-          script: |
-            if [ "$(readlink /var/www/srating-admin)" = "/var/www/srating-admin_blue" ]; then
-              echo "INACTIVE=green" >> $GITHUB_ENV
-              echo "ACTIVE=blue" >> $GITHUB_ENV
-            else
-              echo "INACTIVE=blue" >> $GITHUB_ENV
-              echo "ACTIVE=green" >> $GITHUB_ENV
-            fi
+        run: |
+          if ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.DEV_SSH_USERNAME }}@${{ secrets.DEV_SSH_HOST }} \
+             'test "$(readlink /var/www/srating-admin)" = "/var/www/srating-admin_blue"';
+          then
+            echo "INACTIVE=green" >> $GITHUB_ENV
+            echo "ACTIVE=blue" >> $GITHUB_ENV
+          else
+            echo "INACTIVE=blue" >> $GITHUB_ENV
+            echo "ACTIVE=green" >> $GITHUB_ENV
+          fi
 
       - name: Prepare Inactive Slot
         uses: appleboy/ssh-action@master
@@ -50,7 +48,6 @@ jobs:
           script: |
             rm -rf /var/www/srating-admin_${{ env.INACTIVE }}/*
 
-      
       - name: Upload Build to Inactive Slot
         uses: appleboy/scp-action@master
         with:
