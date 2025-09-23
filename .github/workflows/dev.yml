@@ -3,7 +3,7 @@ name: Dev Blue/Green Deployment via Nginx
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
