@@ -64,5 +64,5 @@ jobs:
           username: ${{ secrets.DEV_SSH_USERNAME }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           script: |
-            ln -sfn /var/www/srating-admin_${{ env.INACTIVE }} /var/www/srating-admin
+            sudo ln -sfn /var/www/srating-admin_${{ env.INACTIVE }} /var/www/srating-admin
             sudo service nginx reload
