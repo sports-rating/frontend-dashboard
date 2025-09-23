@@ -1,9 +1,10 @@
-name: Deploy Vue.js via Nginx
+name: Dev Blue/Green Deployment via Nginx
 
 on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,21 +25,51 @@ jobs:
       - name: Build Vue.js Project
         run: yarn build
 
-      - name: Transfer Files via SSH
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Determine Active Slot
+        id: slot
+        run: |
+          if ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
+             'test "$(readlink /var/www/srating-admin)" = "/var/www/srating-admin_blue"';
+          then
+            echo "INACTIVE=green" >> $GITHUB_ENV
+            echo "ACTIVE=blue" >> $GITHUB_ENV
+          else
+            echo "INACTIVE=blue" >> $GITHUB_ENV
+            echo "ACTIVE=green" >> $GITHUB_ENV
+          fi
+
+      - name: Prepare Inactive Slot
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /var/www/srating-admin_${{ env.INACTIVE }}/*
+
+      - name: Upload Build to Inactive Slot
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
-          target: "/var/www/srating-admin"
+          target: "/var/www/srating-admin_${{ env.INACTIVE }}"
 
-      - name: SSH into Server and Restart Nginx
+      - name: Switch Symlink & Reload Nginx
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
           script: |
-            sudo service nginx reload
+            sudo rm -rf /var/www/srating-admin   # ensure it’s gone (dir or symlink)
+            sudo ln -sfn /var/www/srating-admin_${{ env.INACTIVE }} /var/www/srating-admin
+            readlink -f /var/www/srating-admin   # debug: show what it points to
+            sudo systemctl reload nginx
