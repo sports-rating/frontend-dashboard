@@ -25,6 +25,13 @@ jobs:
       - name: Build Vue.js Project
         run: yarn build
 
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      
       # ✅ Fixed Determine Active Slot
       - name: Determine Active Slot
         id: slot
