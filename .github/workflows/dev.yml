@@ -1,0 +1,77 @@
+name: Dev Blue/Green Deployment via Nginx
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.11.1
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Vue.js Project
+        run: yarn build
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      
+      # ✅ Fixed Determine Active Slot
+      - name: Determine Active Slot
+        id: slot
+        run: |
+          if ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.DEV_SSH_USERNAME }}@${{ secrets.DEV_SSH_HOST }} \
+             'test "$(readlink /var/www/srating-admin)" = "/var/www/srating-admin_blue"';
+          then
+            echo "INACTIVE=green" >> $GITHUB_ENV
+            echo "ACTIVE=blue" >> $GITHUB_ENV
+          else
+            echo "INACTIVE=blue" >> $GITHUB_ENV
+            echo "ACTIVE=green" >> $GITHUB_ENV
+          fi
+
+      - name: Prepare Inactive Slot
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /var/www/srating-admin_${{ env.INACTIVE }}/*
+
+      - name: Upload Build to Inactive Slot
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          source: "dist/*"
+          target: "/var/www/srating-admin_${{ env.INACTIVE }}"
+
+      - name: Switch Symlink & Reload Nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /var/www/srating-admin   # ensure it’s gone (dir or symlink)
+            sudo ln -sfn /var/www/srating-admin_${{ env.INACTIVE }} /var/www/srating-admin
+            readlink -f /var/www/srating-admin   # debug: show what it points to
+            sudo systemctl reload nginx

@@ -217,7 +217,6 @@
       </el-table>
     </el-card>
 
-    <!-- Foydalanuvchilar -->
     <el-card>
       <h3 class="font-semibold mb-2">Пользователи</h3>
       <el-table
