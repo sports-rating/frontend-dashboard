@@ -1,4 +1,4 @@
-name: Dev Blue/Green Deployment via Nginx
+name: Main Blue/Green Deployment via Nginx
 
 on:
   push:
