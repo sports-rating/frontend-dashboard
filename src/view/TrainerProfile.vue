@@ -151,7 +151,7 @@ const data = ref([]);
 const getData = async () => {
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/user/profile/trainer/${route.params.id}/`
+      `/user/profile/trainer/${route.params.id}/`
     );
     data.value = res.data.data;
   } catch (e) {

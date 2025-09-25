@@ -209,7 +209,7 @@ const handleExport = async () => {
     const query = new URLSearchParams(params).toString();
 
     const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/export-excel/?${query}`,
+      `/dashboard/export-excel/?${query}`,
       {
         responseType: "blob",
       }

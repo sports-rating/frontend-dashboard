@@ -132,7 +132,7 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    await api.post("https://api.7srating.uz/api/sport/", formData, {
+    await api.post("/sport/", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 

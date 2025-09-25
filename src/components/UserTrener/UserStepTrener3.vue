@@ -198,7 +198,7 @@ const getData = async () => {
     const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));
 
     const res = await api.get(
-      `https://api.7srating.uz/api/sport/tournament/?sport=${selectedSport.name}`
+      `/sport/tournament/?sport=${selectedSport.name}`
     );
 
     data.value = res.data.data;

@@ -388,7 +388,7 @@ const removeWeight = (sportIndex, ageIndex, weightIndex) => {
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
     data.value = res.data.data;
   } catch (e) {
     console.error(e);
@@ -399,7 +399,7 @@ const getData = async () => {
 
 const getFederations = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/federation/");
+    const res = await api.get("/federation/");
     federations.value = res.data.data;
   } catch (e) {
     console.error(e);

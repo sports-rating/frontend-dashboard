@@ -237,7 +237,7 @@ const currentSchool = ref({
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -250,7 +250,7 @@ const getDataa = async () => {
   const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/education/school/?sport=${selectedSport.name}`
+      `/education/school/?sport=${selectedSport.name}`
     );
 
     console.log(res.data.data.data);

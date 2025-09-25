@@ -492,7 +492,7 @@ watch(() => props.form.region, onRegionChange);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
     data.value = res.data.data;
   } catch (e) {
     console.error(e);
@@ -501,7 +501,7 @@ const getData = async () => {
 
 const getTrainer = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/user/profile/trainer/");
+    const res = await api.get("/user/profile/trainer/");
     dataTrainer.value = res.data.data;
 
     if (props.form.sportsman_profile.trainer_id) {

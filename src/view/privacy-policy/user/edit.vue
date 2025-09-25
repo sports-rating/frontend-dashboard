@@ -79,7 +79,7 @@ const onEditorReady = (editor) => {
 const getData = async () => {
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/dashboard/terms-of-condition/${route.params.id}/`
+      `/dashboard/terms-of-condition/${route.params.id}/`
     );
 
     newPolicy.value.title = res.data.data.title;
@@ -115,7 +115,7 @@ const submitPolicy = async () => {
     };
 
     await api.put(
-      `https://api.7srating.uz/api/dashboard/terms-of-condition/${route.params.id}/`,
+      `/dashboard/terms-of-condition/${route.params.id}/`,
       policyData
     );
 

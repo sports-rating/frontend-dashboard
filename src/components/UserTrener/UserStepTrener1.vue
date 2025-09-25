@@ -476,7 +476,7 @@ watch(() => props.form.region, onRegionChange);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     data.value = res.data.data;
   } catch (e) {

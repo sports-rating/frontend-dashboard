@@ -237,7 +237,7 @@ const onMapClick = (mapboxInstance) => {
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -354,7 +354,7 @@ const handleSubmit = async () => {
       region: form.region.id,
       district: form.district.id
     };
-    await api.post("https://api.7srating.uz/api/education/school/", payload);
+    await api.post("/education/school/", payload);
     toast.success("Success to School", {
       autoClose: 3000,
     });

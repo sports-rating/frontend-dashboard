@@ -124,7 +124,7 @@ const toDelete = ref(null);
 const getData = async() => {
   try {
     const res = await api.get(
-      'https://api.7srating.uz/api/dashboard/terms-of-condition/');
+      '/dashboard/terms-of-condition/');
 
     data.value = res.data.data
       
@@ -178,7 +178,7 @@ const confirmDelete = (id) => {
 
 const deletePrivacy = async () => {
   try {
-    await api.delete(`https://api.7srating.uz/api/dashboard/terms-of-condition/${toDelete.value}/`);
+    await api.delete(`/dashboard/terms-of-condition/${toDelete.value}/`);
     isModalOpen.value = false;
 
     getData()
