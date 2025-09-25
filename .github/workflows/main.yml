@@ -1,4 +1,4 @@
-name: Dev Blue/Green Deployment via Nginx
+name: Main Blue/Green Deployment via Nginx
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
         run: yarn install
 
       - name: Build Vue.js Project
-        run: yarn build
+        run: VITE_API_URL=https://api.7srating.uz/api/ yarn build
 
       - name: Setup SSH Key
         run: |
