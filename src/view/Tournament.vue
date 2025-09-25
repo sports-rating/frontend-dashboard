@@ -202,7 +202,7 @@ const tournamentToDelete = ref(null);
 
 const getDataFederation = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/federation/?page_size=500");
+    const res = await api.get("/federation/?page_size=500");
 
     dataFederation.value = res.data.data.data;
   } catch (e) {
@@ -218,7 +218,7 @@ const getData = async () => {
     if (search.value) params.search = search.value; 
     if (federation.value) params.federation = federation.value.id;
 
-    const res = await api.get("https://api.7srating.uz/api/sport/tournament/", {
+    const res = await api.get("/sport/tournament/", {
       params,
     });
 
@@ -231,7 +231,7 @@ const getData = async () => {
 const deleteTournament = async () => {
   try {
     await api.delete(
-      `https://api.7srating.uz/api/sport/tournament/${tournamentToDelete.value}/`
+      `/sport/tournament/${tournamentToDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== tournamentToDelete.value);
     await getData();

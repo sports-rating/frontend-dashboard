@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../stores/auth";
 
 const api = axios.create({
-  baseURL: "https://api.7srating.uz/api/",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Accept-Language": localStorage.getItem("locale") || "en",
   },
@@ -29,11 +29,10 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       try {
         const refreshResponse = await axios.post(
-          "https://api.7srating.uz/api/user/refresh-token/",
-          {
-            refresh: authStore.refreshToken,
-          }
+          `${import.meta.env.VITE_API_URL}user/refresh-token/`, 
+          { refresh: authStore.refreshToken }
         );
+
 
         authStore.token = refreshResponse.data.token;
 

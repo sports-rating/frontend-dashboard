@@ -92,7 +92,7 @@ const submitPolicy = async () => {
     };
 
     await api.post(
-      "https://api.7srating.uz/api/dashboard/privacy-policy/",
+      "/dashboard/privacy-policy/",
       policyData // Send the plain object without circular references
     );
     

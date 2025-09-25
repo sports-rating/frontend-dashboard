@@ -290,7 +290,7 @@ const confirmDelete = (id, role) => {
 const deleteTournament = async () => {
   try {
       await api.delete(
-        `https://api.7srating.uz/api/user/auth/delete-account/?user_id=${sportToDelete.value}`
+        `/user/auth/delete-account/?user_id=${sportToDelete.value}`
       );
       data.value = data.value.filter((user) => user.id !== sportToDelete.value);
       await getData();
@@ -307,7 +307,7 @@ const deleteTournament = async () => {
 
 const getSport = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     dataSport.value = res.data.data;
   } catch (e) {
@@ -317,7 +317,7 @@ const getSport = async () => {
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/dashboard/users/");
+    const res = await api.get("/dashboard/users/");
 
     data.value = res.data.data;
   } catch (e) {

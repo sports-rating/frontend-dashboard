@@ -238,7 +238,7 @@ const onMapClick = (mapboxInstance) => {
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -298,7 +298,7 @@ watch(
 
 const getDataa = async () => {
   try {
-    const res = await api.get(`https://api.7srating.uz/api/education/school/${route.params.id}/`);
+    const res = await api.get(`/education/school/${route.params.id}/`);
     const dataRes = res.data.data;
 
     form.name = dataRes.name;
@@ -328,7 +328,7 @@ const handleSubmit = async () => {
       district: form.district.id,
     };
 
-    await api.put(`https://api.7srating.uz/api/education/school/${route.params.id}/`, payload);
+    await api.put(`/education/school/${route.params.id}/`, payload);
     toast.success("School updated successfully", { autoClose: 3000 });
     router.push("/school-list");
   } catch (error) {

@@ -202,7 +202,7 @@ const dataFederation = ref([]);
 
 const getDataFederation = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/federation/?page_size=500");
+    const res = await api.get("/federation/?page_size=500");
 
     dataFederation.value = res.data.data.data;
   } catch (e) {
@@ -218,7 +218,7 @@ const getData = async () => {
     if (search.value) params.search = search.value; 
     if (federation.value) params.federation = federation.value.id;
 
-    const res = await api.get("https://api.7srating.uz/api/education/school/", {
+    const res = await api.get("/education/school/", {
       params,
     });
 
@@ -229,7 +229,7 @@ const getData = async () => {
 };
 const getTrainer = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/user/profile/trainer/");
+    const res = await api.get("/user/profile/trainer/");
     dataTrainer.value = res.data.data;
   } catch (e) {
     console.error(e);
@@ -239,7 +239,7 @@ const getTrainer = async () => {
 const deleteTournament = async () => {
   try {
     await api.delete(
-      `https://api.7srating.uz/api/education/school/${schoolDelete.value}/`
+      `/education/school/${schoolDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== schoolDelete.value);
     await getData();

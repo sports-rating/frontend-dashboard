@@ -90,7 +90,7 @@ const submitPolicy = async () => {
     };
 
     await api.post(
-      "https://api.7srating.uz/api/dashboard/terms-of-condition/",
+      "/dashboard/terms-of-condition/",
       policyData
     );
     

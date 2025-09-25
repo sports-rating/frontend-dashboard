@@ -124,7 +124,7 @@ const form = reactive({
 const getData = async () => {
   try {
     const res = await api.get(
-      `https://api.7srating.uz/api/user/profile/sportsman/${route.params.id}`
+      `/user/profile/sportsman/${route.params.id}`
     );
 
     data.value = res.data.data;
@@ -248,7 +248,7 @@ const handleFileUpload = async (event) => {
   try {
     // Eski profil rasmini o‘chirish (agar mavjud bo‘lsa)
     if (form.photoId) {
-      await api.delete(`https://api.7srating.uz/api/user/media/${form.photoId}/`);
+      await api.delete(`/user/media/${form.photoId}/`);
       form.media_ids = form.media_ids.filter((id) => id !== form.photoId); // Eski ID ni olib tashlash
       form.photoId = null; // ID ni tozalash
     }
@@ -260,7 +260,7 @@ const handleFileUpload = async (event) => {
     formData.append("is_profile_photo", true);
 
     const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
+      "/user/media-upload/",
       formData,
       {
         headers: {
@@ -315,7 +315,7 @@ const handleSubmit = async () => {
       };
 
       await api.put(
-        `https://api.7srating.uz/api/user/profile/sportsman/${route.params.id}/`,
+        `/user/profile/sportsman/${route.params.id}/`,
         payload,
         {
           headers: {

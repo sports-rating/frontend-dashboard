@@ -164,7 +164,7 @@ const handleFileUpload = async (event) => {
   // Agar avval yuklangan fayl bo'lsa, uni o‘chirish
   if (form.photoId) {
     try {
-      await api.delete(`https://api.7srating.uz/api/user/media/${form.photoId}/`);
+      await api.delete(`/user/media/${form.photoId}/`);
       console.log("Oldingi fayl o‘chirildi:", form.photoId);
     } catch (error) {
       console.error(
@@ -181,7 +181,7 @@ const handleFileUpload = async (event) => {
 
   try {
     const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
+      "/user/media-upload/",
       formData,
       {
         headers: {
@@ -238,7 +238,7 @@ const handleSubmit = async () => {
         },
       };
 
-      await api.post("https://api.7srating.uz/api/user/profile/trainer/", payload, {
+      await api.post("/user/profile/trainer/", payload, {
         headers: {
           "Content-Type": "application/json", // JSON formatda yuborish
         },

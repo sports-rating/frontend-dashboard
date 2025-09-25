@@ -166,7 +166,7 @@ const saveToLocalStorage = () => {
 
 const deletePhoto = async (photo, index) => {
   try {
-    await api.delete(`https://api.7srating.uz/api/user/media/${photo.id}/`);
+    await api.delete(`/user/media/${photo.id}/`);
     photos.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== photo.id);
     emit("update-media", localMediaIds.value);
@@ -178,7 +178,7 @@ const deletePhoto = async (photo, index) => {
 
 const deleteVideo = async (video, index) => {
   try {
-    await api.delete(`https://api.7srating.uz/api/user/media/${video.id}/`);
+    await api.delete(`/user/media/${video.id}/`);
     videos.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== video.id);
     emit("update-media", localMediaIds.value);
@@ -190,7 +190,7 @@ const deleteVideo = async (video, index) => {
 
 const deletePdf = async (pdf, index) => {
   try {
-    await api.delete(`https://api.7srating.uz/api/user/media/${pdf.id}/`);
+    await api.delete(`/user/media/${pdf.id}/`);
     pdfs.value.splice(index, 1);
     localMediaIds.value = localMediaIds.value.filter((id) => id !== pdf.id);
     emit("update-media", localMediaIds.value);
@@ -213,7 +213,7 @@ const handlePhotoUpload = async (event) => {
       formData.append("is_profile_photo", false);
 
       const response = await api.post(
-        "https://api.7srating.uz/api/user/media-upload/",
+        "/user/media-upload/",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -261,7 +261,7 @@ const handleVideoUpload = async (event) => {
 
     try {
       const response = await api.post(
-        "https://api.7srating.uz/api/user/media-upload/",
+        "/user/media-upload/",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -294,7 +294,7 @@ const handlePdfUpload = async (event) => {
 
   try {
     const response = await api.post(
-      "https://api.7srating.uz/api/user/media-upload/",
+      "/user/media-upload/",
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },

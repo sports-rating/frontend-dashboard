@@ -13,7 +13,7 @@ export const useAuthStore = defineStore("auth", {
     async login(payload) {
       try {
         await api.post(
-          "https://api.7srating.uz/api/user/auth/send-code/",
+          "user/auth/send-code/",
           payload
         );
         this.loginPayload = payload;
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
       try {
         const payload = { ...this.loginPayload };
         await api.post(
-          "https://api.7srating.uz/api/user/auth/send-code/",
+          "user/auth/send-code/",
           payload
         );
       } catch (error) {
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
       try {
         const payload = { ...this.loginPayload, ...verify };
         const response = await api.post(
-          "https://api.7srating.uz/api/user/auth/verify-code/",
+          "user/auth/verify-code/",
           payload
         );
         this.token = response.data.data.tokens.access;

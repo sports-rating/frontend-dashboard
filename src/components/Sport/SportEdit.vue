@@ -115,7 +115,7 @@ const handleFileUpload = (event) => {
 
 const getData = async () => {
   try {
-    const res = await api.get(`https://api.7srating.uz/api/sport/${route.params.id}/`);
+    const res = await api.get(`/sport/${route.params.id}/`);
 
     form.name = res.data.data.name;
     form.photoName = res.data.data.logo.match(/[^/]+$/)[0];
@@ -163,7 +163,7 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true;
   try {
-    await api.patch(`https://api.7srating.uz/api/sport/${route.params.id}/`, formData, {
+    await api.patch(`/sport/${route.params.id}/`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     toast.success("Muvaffaqiyatli saqlandi", { autoClose: 3000 });

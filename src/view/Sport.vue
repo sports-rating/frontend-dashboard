@@ -158,7 +158,7 @@ const perPage = ref(10);
 
 const getData = async () => {
   try {
-    const res = await api.get("https://api.7srating.uz/api/sport/");
+    const res = await api.get("/sport/");
 
     data.value = res.data.data;
   } catch (e) {
@@ -168,7 +168,7 @@ const getData = async () => {
 
 const deleteTournament = async () => {
   try {
-    await api.delete(`https://api.7srating.uz/api/sport/${sportToDelete.value}/`);
+    await api.delete(`/sport/${sportToDelete.value}/`);
     data.value = data.value.filter((user) => user.id !== sportToDelete.value);
 
     await getData();
