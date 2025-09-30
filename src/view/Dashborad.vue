@@ -209,34 +209,18 @@
       </div>
     </div>
 
-    <div
-      v-if="totalPages !== 1 && data.length"
-      class="flex items-center space-x-2 my-5 justify-end"
-    >
-      <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
-        &lt;
-      </button>
-
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="setPage(page)"
-        :class="{
-          'pagination-btn active': currentPage === page,
-          'pagination-btn': currentPage !== page,
-        }"
-      >
-        {{ page }}
-      </button>
-
-      <button
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-        class="pagination-btn"
-      >
-        &gt;
-      </button>
+    <!-- Pagination -->
+    <div v-if="data.length" class="flex justify-end my-5">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="perPage"
+        :page-sizes="[ 10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next"
+        :total="filteredUsers.length"
+        background
+      />
     </div>
+    
     <div></div>
     <ExportModal
       :is-open="showExportModal"
@@ -325,15 +309,33 @@ const getData = async () => {
   }
 };
 
+const normalizePhone = (str = "") => {
+  return String(str).replace(/\D/g, ""); 
+};
+
 const filteredUsers = computed(() => {
   return data.value.filter((user) => {
-    const matchesSearch =
-      user.first_name?.toLowerCase().includes(search.value?.toLowerCase()) ||
-      user.phone_number?.toLowerCase().includes(search.value?.toLowerCase()) ||
-      user.email?.toLowerCase().includes(search.value?.toLowerCase());
+    const searchText = search.value?.toLowerCase() || "";
 
-    const matchesUserType = userType.value ? user.user_role === userType.value : true;
-    const matchesUserSport = sport.value ? user.sport === sport.value : true;
+    const matchesName = user.first_name?.toLowerCase().includes(searchText);
+    const matchesEmail = user.email?.toLowerCase().includes(searchText);
+
+    const phoneDigits = normalizePhone(user.phone_number);
+    const searchDigits = normalizePhone(searchText);
+    const matchesPhone = searchDigits
+      ? phoneDigits.includes(searchDigits)
+      : false;
+
+    const matchesSearch = matchesName || matchesEmail || matchesPhone;
+
+    const matchesUserType = userType.value
+      ? user.user_role === userType.value
+      : true;
+
+    const matchesUserSport = sport.value
+      ? user.sport === sport.value
+      : true;
+
     const matchesDateRange = dateRange.value
       ? new Date(user.created_time) >= new Date(dateRange.value[0]) &&
         new Date(user.created_time) <= new Date(dateRange.value[1])
@@ -342,6 +344,7 @@ const filteredUsers = computed(() => {
     return matchesSearch && matchesUserType && matchesDateRange && matchesUserSport;
   });
 });
+
 
 const totalPages = computed(() => Math.ceil(filteredUsers.value.length / perPage.value));
 
@@ -402,6 +405,9 @@ onUnmounted(() => {
 </script>
 
 <style>
+.el-pagination.is-background .el-pager li.is-active{
+  background-color: red !important;
+}
 .no-scrollbar::-webkit-scrollbar-thumb {
   background-color: #e1e1e1;
   border: 7px solid transparent;

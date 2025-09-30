@@ -108,6 +108,17 @@
                   <el-icon><Delete /></el-icon>
                 </el-button>
               </el-tooltip>
+
+              <!-- <el-tooltip content="View" placement="top">
+                <el-button
+                  size="small"
+                  type="danger"
+                  circle
+                  @click="navigate(`/federation/view/${scope.row.id}`)"
+                >
+                  View
+                </el-button>
+              </el-tooltip> -->
             </div>
           </template>
         </el-table-column>

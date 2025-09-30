@@ -254,6 +254,12 @@ const router = createRouter({
             import("../components/Federation/EditFederation.vue"),
         },
         {
+          path: "/federation/view/:id",
+          name: "federation-view",
+          component: () =>
+            import("../components/Federation/ViewFederation.vue"),
+        },
+        {
           path: "/federation/request/:id",
           name: "federation-request",
           component: () =>

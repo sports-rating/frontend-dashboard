@@ -250,7 +250,7 @@ const getDataa = async () => {
   const selectedSport = JSON.parse(localStorage.getItem("selectedSport"));
   try {
     const res = await api.get(
-      `/education/school/?sport=${selectedSport.name}`
+      `/sport/sport-institutions/?sport=${selectedSport.name}`
     );
 
     console.log(res.data.data.data);

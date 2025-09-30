@@ -354,7 +354,7 @@ const handleSubmit = async () => {
       region: form.region.id,
       district: form.district.id
     };
-    await api.post("/education/school/", payload);
+    await api.post("/sport/sport-institutions/", payload);
     toast.success("Success to School", {
       autoClose: 3000,
     });

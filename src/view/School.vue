@@ -218,7 +218,7 @@ const getData = async () => {
     if (search.value) params.search = search.value; 
     if (federation.value) params.federation = federation.value.id;
 
-    const res = await api.get("/education/school/", {
+    const res = await api.get("/sport/sport-institutions/", {
       params,
     });
 
@@ -239,7 +239,7 @@ const getTrainer = async () => {
 const deleteTournament = async () => {
   try {
     await api.delete(
-      `/education/school/${schoolDelete.value}/`
+      `/sport/sport-institutions/${schoolDelete.value}/`
     );
     data.value = data.value.filter((user) => user.id !== schoolDelete.value);
     await getData();
