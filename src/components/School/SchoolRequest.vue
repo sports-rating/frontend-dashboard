@@ -1,13 +1,48 @@
 <template>
-  <div >
-    <h1 class="text-2xl font-bold mb-4">Заявки от спортивных учреждений</h1>
+  <div>
+    <h1 class="text-2xl font-bold mb-6">Заявки от спортивных учреждений</h1>
 
+    <!-- Search & Filter -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+      <el-input
+        v-model="search"
+        placeholder="Поиск по названию учреждения или менеджеру"
+        clearable
+        class="sm:w-1/3"
+        @clear="fetchRequests"
+        @keyup.enter="fetchRequests"
+      >
+        <template #append>
+          <el-button @click="fetchRequests">Поиск</el-button>
+        </template>
+      </el-input>
+
+      <el-select
+        v-model="statusFilter"
+        placeholder="Фильтр по статусу"
+        clearable
+        class="sm:w-1/4"
+        @change="fetchRequests"
+      >
+        <el-option label="Все" value="" />
+        <el-option label="В ожидании" value="pending" />
+        <el-option label="Одобрено" value="approved" />
+        <el-option label="Отклонено" value="rejected" />
+      </el-select>
+    </div>
+
+    <!-- Table -->
     <el-table
       v-loading="loading"
       :data="requests"
       border
-      class="w-full cursor-pointer"
+      class="w-full cursor-pointer rounded-t-lg"
       @row-click="openDetail"
+      :header-cell-style="{
+        background: '#f5f7fa',
+        color: '#333',
+        fontWeight: '600',
+      }"
     >
       <el-table-column prop="manager_first_name" label="Имя" />
       <el-table-column prop="manager_last_name" label="Фамилия" />
@@ -29,16 +64,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Действия" width="220">
+      <el-table-column label="Действия" width="150">
         <template #default="scope">
           <el-button
             type="primary"
             size="small"
-            @click.stop="openDetail(scope.row)" 
+            @click.stop="openDetail(scope.row)"
           >
-            Более
+            Подробнее
           </el-button>
-          
         </template>
       </el-table-column>
     </el-table>
@@ -47,7 +81,7 @@
     <div class="flex justify-end mt-6">
       <el-pagination
         background
-        layout="sizes, total, prev, pager, next,"
+        layout="sizes, total, prev, pager, next"
         :total="total"
         :current-page="page"
         :page-size="pageSize"
@@ -56,100 +90,120 @@
       />
     </div>
 
+    <!-- Dialog -->
     <el-dialog
-  v-model="dialogVisible"
-  title="Детали учреждений"
-  width="700px"
-  class="rounded-xl"
->
-  <div v-if="selectedRequest">
-      <el-descriptions
-        border
-        :column="1"
-        size="small"
-        label-class-name="font-semibold text-gray-700"
-        content-class-name="text-gray-900"
-      >
-        <el-descriptions-item label="Менеджер">
-          {{ selectedRequest.manager_first_name }} {{ selectedRequest.manager_last_name }}
-        </el-descriptions-item>
+      v-model="dialogVisible"
+      title="Детали учреждений"
+      width="700px"
+      class="rounded-xl"
+    >
+      <div v-if="selectedRequest">
+        <el-descriptions
+          border
+          :column="1"
+          size="small"
+          label-class-name="font-semibold text-gray-700"
+          content-class-name="text-gray-900"
+        >
+          <el-descriptions-item label="Менеджер">
+            {{ selectedRequest.manager_first_name }}
+            {{ selectedRequest.manager_last_name }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Менеджер телефон">
-          <el-tag type="info">{{ selectedRequest.manager_phone_number }}</el-tag>
-        </el-descriptions-item>
+          <el-descriptions-item label="Телефон">
+            <el-tag type="info">
+              {{ selectedRequest.manager_phone_number }}
+            </el-tag>
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Название учреждения">
-          {{ selectedRequest.school_name }}
-        </el-descriptions-item>
+          <el-descriptions-item label="Учреждение">
+            {{ selectedRequest.school_name }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Директор">
-          {{ selectedRequest.school_director }}
-        </el-descriptions-item>
+          <el-descriptions-item label="Директор">
+            {{ selectedRequest.school_director }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Тип">
-          <el-tag type="warning">{{ selectedRequest.school_type }}</el-tag>
-        </el-descriptions-item>
+          <el-descriptions-item label="Тип">
+            <el-tag type="warning">
+              {{ selectedRequest.school_type }}
+            </el-tag>
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Школьный телефон">
-          {{ selectedRequest.school_phone_number }}
-        </el-descriptions-item>
+          <el-descriptions-item label="Телефон учреждения">
+            {{ selectedRequest.school_phone_number }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Адрес">
-          {{ selectedRequest.school_address }}
-        </el-descriptions-item>
+          <el-descriptions-item label="Адрес">
+            {{ selectedRequest.school_address }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Территория">
-          {{ selectedRequest.school_region }} / {{ selectedRequest.school_district }}
-        </el-descriptions-item>
+          <el-descriptions-item label="Территория">
+            {{ selectedRequest.school_region.name }} /
+            {{ selectedRequest.school_district.name }}
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Спорт">
-          <el-tag type="success">{{ selectedRequest.school_sports }}</el-tag>
-        </el-descriptions-item>
+          <el-descriptions-item label="Спорт">
+            <el-tag
+              v-for="item in selectedRequest.school_sports"
+              :key="item.id"
+              type="success"
+              class="mr-1 mb-1"
+            >
+              {{ item.name }}
+            </el-tag>
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Дополнительная информация">
-          <span class="italic text-gray-600">{{ selectedRequest.additional_info || "—" }}</span>
-        </el-descriptions-item>
+          <el-descriptions-item label="Время обработки">
+            <span class="italic text-gray-600">
+              {{ selectedRequest.processed_time || "—" }}
+            </span>
+          </el-descriptions-item>
 
-        <el-descriptions-item label="Статус">
-          <el-tag
-            :type="selectedRequest.status === 'approved' ? 'success' : selectedRequest.status === 'rejected' ? 'danger' : 'info'"
+          <el-descriptions-item label="Статус">
+            <el-tag
+              :type="
+                selectedRequest.status === 'approved'
+                  ? 'success'
+                  : selectedRequest.status === 'rejected'
+                  ? 'danger'
+                  : 'info'
+              "
+            >
+              {{ selectedRequest.status }}
+            </el-tag>
+          </el-descriptions-item>
+
+          <el-descriptions-item label="Создано">
+            {{ selectedRequest.created_time }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <template #footer>
+        <div
+          v-if="selectedRequest?.status === 'pending'"
+          class="w-full flex justify-center items-center gap-3"
+        >
+          <el-button
+            type="success"
+            size="large"
+            class="rounded-lg px-6 !w-32"
+            @click="updateStatus(selectedRequest.id, 'approved')"
           >
-            {{ selectedRequest.status }}
-          </el-tag>
-        </el-descriptions-item>
-
-        <el-descriptions-item label="Созданный">
-          {{ selectedRequest.created_time }}
-        </el-descriptions-item>
-      </el-descriptions>
-  </div>
-
-  <template #footer>
-  <div
-    v-if="selectedRequest?.status === 'pending'"
-    class="w-full flex justify-center items-center gap-3"
-  >
-    <el-button
-      type="success"
-      size="large"
-      class="rounded-lg px-6 !w-32"
-      @click="updateStatus(selectedRequest.id, 'approved')"
-    >
-      Подтверждение
-    </el-button>
-    <el-button
-      type="danger"
-      size="large"
-      class="rounded-lg px-6 !w-32"
-      @click="updateStatus(selectedRequest.id, 'rejected')"
-    >
-      Отказ
-    </el-button>
-  </div>
-</template>
-
-</el-dialog>
-
+            Подтвердить
+          </el-button>
+          <el-button
+            type="danger"
+            size="large"
+            class="rounded-lg px-6 !w-32"
+            @click="updateStatus(selectedRequest.id, 'rejected')"
+          >
+            Отказать
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -164,6 +218,9 @@ const page = ref(1);
 const pageSize = ref(10);
 const loading = ref(false);
 
+const search = ref("");
+const statusFilter = ref("");
+
 const dialogVisible = ref(false);
 const selectedRequest = ref(null);
 
@@ -171,7 +228,12 @@ const fetchRequests = async () => {
   try {
     loading.value = true;
     const res = await api.get("/sport/sport-institution-request/", {
-      params: { page: page.value, page_size: pageSize.value },
+      params: {
+        page: page.value,
+        page_size: pageSize.value,
+        search: search.value || undefined,
+        status: statusFilter.value || undefined,
+      },
     });
     requests.value = res.data.data.data;
     total.value = res.data.data.count;
@@ -206,8 +268,8 @@ const updateStatus = async (id, status) => {
   try {
     await api.patch(`/sport/sport-institution-request/${id}/`, { status });
     ElMessage.success("Статус обновлен");
-      fetchRequests();
-    dialogVisible.value = false
+    fetchRequests();
+    dialogVisible.value = false;
   } catch (err) {
     ElMessage.error("Ошибка обновления статуса.");
   }
@@ -221,12 +283,5 @@ onMounted(() => {
 <style scoped>
 :deep(.el-dialog) {
   margin-top: 3rem !important;
-}
-</style>
-
-
-<style>
-.el-pagination.is-background .el-pager li.is-active{
-  background-color: red !important;
 }
 </style>
