@@ -58,6 +58,7 @@
             <option value="">Все типы пользователей</option>
             <option value="trainer">Тренер</option>
             <option value="sportsman">Спортсмен</option>
+            <option value="federation">Федерация</option>
           </select>
 
           <select
