@@ -205,6 +205,11 @@ const router = createRouter({
           name: "school-edit",
           component: () => import("../components/School/SchoolEdit.vue"),
         },
+        {
+          path: "/school/request",
+          name: "school-request",
+          component: () => import("../components/School/SchoolRequest.vue"),
+        },
       ],
     },
 

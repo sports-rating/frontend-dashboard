@@ -117,8 +117,9 @@
               class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Выберите тип</option>
-              <option value="ordinary">Спорт школы</option>
-              <option value="club">Спорт клубы</option>
+              <option value="sport_school">Спорт школы</option>
+              <option value="sport_club">Спорт клубы</option>
+               <option value="sport_complex">Спортивный комплекс</option>
             </select>
 
             <span class="text-red-500 mt-1" v-if="errors.type">{{ errors.type }}</span>
