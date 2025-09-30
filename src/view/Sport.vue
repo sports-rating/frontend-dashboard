@@ -109,34 +109,18 @@
       </div>
     </div>
 
-    <div
-      v-if="totalPages !== 1 && data.length"
-      class="flex items-center space-x-2 my-5 justify-end"
-    >
-      <button @click="previousPage" :disabled="currentPage === 1" class="pagination-btn">
-        &lt;
-      </button>
 
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="setPage(page)"
-        :class="{
-          'pagination-btn active': currentPage === page,
-          'pagination-btn': currentPage !== page,
-        }"
-      >
-        {{ page }}
-      </button>
-
-      <button
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-        class="pagination-btn"
-      >
-        &gt;
-      </button>
+    <div v-if="data.length" class="flex justify-end my-5">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="perPage"
+        :page-sizes="[ 10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next"
+        :total="filteredUsers.length"
+        background
+      />
     </div>
+    
   </div>
 </template>
 
@@ -237,6 +221,10 @@ onUnmounted(() => {
 </script>
 
 <style>
+.el-pagination.is-background .el-pager li.is-active{
+  background-color: red !important;
+}
+
 .no-scrollbar::-webkit-scrollbar-thumb {
   background-color: #e1e1e1;
   border: 7px solid transparent;

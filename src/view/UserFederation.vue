@@ -121,15 +121,29 @@ const handleSubmit = async () => {
   }catch (err: any) {
 
     if (err.response?.data) {
-      const errors = err.response.data;
-      Object.keys(errors).forEach((field) => {
-        errors[field].forEach((msg: string) => {
-          toast.error(` ${msg}`);
-        });
-      });
+  const data = err.response.data;
+
+  if (typeof data === "object" && !Array.isArray(data)) {
+    if (data.message && typeof data.message === "string") {
+      ElMessage.error(data.message);
     } else {
-      toast.error("Произошла неизвестная ошибка.");
+      Object.keys(data).forEach((field) => {
+        if (Array.isArray(data[field])) {
+          data[field].forEach((msg: string) => {
+            toast.error(msg);
+          });
+        }
+      });
     }
+  } else if (typeof data === "string") {
+    ElMessage.error(data);
+  } else {
+    toast.error("Произошла неизвестная ошибка.");
+  }
+} else {
+  toast.error("Произошла неизвестная ошибка.");
+}
+
   } finally {
       loading.value = false;
     
