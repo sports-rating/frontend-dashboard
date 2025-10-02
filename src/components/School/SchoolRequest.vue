@@ -35,8 +35,7 @@
     <el-table
       v-loading="loading"
       :data="requests"
-      border
-      class="w-full cursor-pointer rounded-t-lg"
+      class="w-full cursor-pointer rounded-lg border"
       @row-click="openDetail"
       :header-cell-style="{
         background: '#f5f7fa',
@@ -64,17 +63,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Действия" width="150">
-        <template #default="scope">
-          <el-button
-            type="primary"
-            size="small"
-            @click.stop="openDetail(scope.row)"
-          >
-            Подробнее
-          </el-button>
-        </template>
-      </el-table-column>
+     
     </el-table>
 
     <!-- Pagination -->
@@ -116,7 +105,7 @@
             </el-tag>
           </el-descriptions-item>
 
-          <el-descriptions-item label="Учреждение">
+          <el-descriptions-item label="Название учреждения">
             {{ selectedRequest.school_name }}
           </el-descriptions-item>
 
@@ -124,11 +113,11 @@
             {{ selectedRequest.school_director }}
           </el-descriptions-item>
 
-          <el-descriptions-item label="Тип">
-            <el-tag type="warning">
-              {{ selectedRequest.school_type }}
-            </el-tag>
-          </el-descriptions-item>
+          <el-descriptions-item label="Тип учреждения">
+          <el-tag type="warning">
+            {{ schoolTypeMap[selectedRequest.school_type] || selectedRequest.school_type }}
+          </el-tag>
+        </el-descriptions-item>
 
           <el-descriptions-item label="Телефон учреждения">
             {{ selectedRequest.school_phone_number }}
@@ -224,6 +213,12 @@ const statusFilter = ref("");
 const dialogVisible = ref(false);
 const selectedRequest = ref(null);
 
+const schoolTypeMap = ref({
+  sport_school: "Спортивная школа",
+  sport_club: "Спортивный клуб",
+  sport_complex: "Спорткомплекс",
+});
+
 const fetchRequests = async () => {
   try {
     loading.value = true;
@@ -283,5 +278,12 @@ onMounted(() => {
 <style scoped>
 :deep(.el-dialog) {
   margin-top: 3rem !important;
+}
+</style>
+
+
+<style>
+.el-pagination.is-background .el-pager li.is-active{
+  background-color: red !important;
 }
 </style>
