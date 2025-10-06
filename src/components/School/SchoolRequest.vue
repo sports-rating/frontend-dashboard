@@ -58,10 +58,17 @@
                 : 'warning'
             "
           >
-            {{ scope.row.status }}
+            {{
+              scope.row.status === 'approved'
+                ? 'Одобрено'
+                : scope.row.status === 'rejected'
+                ? 'Отклонено'
+                : 'В ожидании'
+            }}
           </el-tag>
         </template>
       </el-table-column>
+
 
      
     </el-table>
@@ -159,13 +166,32 @@
                   : 'info'
               "
             >
-              {{ selectedRequest.status }}
+              {{
+              selectedRequest.status === 'approved'
+                ? 'Одобрено'
+                : selectedRequest.status === 'rejected'
+                ? 'Отклонено'
+                : 'В ожидании'
+            }}
             </el-tag>
           </el-descriptions-item>
 
           <el-descriptions-item label="Создано">
             {{ selectedRequest.created_time }}
           </el-descriptions-item>
+
+           <el-descriptions-item label="Адрес карты">
+            <MapboxMap
+              access-token="pk.eyJ1IjoibXVraGFtbWFkaXJtYXRvdiIsImEiOiJjbHoxNHhmZnkyaXRoMmlxc2ExbWJpYTc1In0.CE43UNvdFFRSiDbgPDNoZQ"
+              style="height: 150px"
+              map-style="mapbox://styles/mapbox/streets-v11"
+              :center="[selectedRequest.school_longitude, selectedRequest.school_latitude]" 
+              :zoom="10"
+            >
+              <MapboxMarker :lng-lat="[selectedRequest.school_longitude, selectedRequest.school_latitude]" />
+            </MapboxMap>
+          </el-descriptions-item>
+
         </el-descriptions>
       </div>
 
@@ -200,13 +226,16 @@
 import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
+import { MapboxMap, MapboxMarker } from "@studiometa/vue-mapbox-gl";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 
 const requests = ref([]);
 const total = ref(0);
 const page = ref(1);
 const pageSize = ref(10);
 const loading = ref(false);
-
 const search = ref("");
 const statusFilter = ref("");
 
