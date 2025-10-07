@@ -55,7 +55,13 @@
             /> -->
           </div>
           <div class="flex gap-6">
-            <div class="relative">
+            <div class="relative flex gap-4">
+            <button
+                @click="navigate('/school/request')"
+                class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              >
+                Запрос учреждения
+              </button>
               <button
                 @click="navigate('/school/create')"
                 class="h-full flex gap-2 items-center px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600"
