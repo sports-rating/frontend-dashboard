@@ -25,7 +25,15 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 const globalOptions = {
   mode: "auto",
 };
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+
+library.add(fas, far);
 app.component("QuillEditor", QuillEditor);
+app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.use(VueTelInput, globalOptions);
 pinia.use(piniaPluginPersistedstate);

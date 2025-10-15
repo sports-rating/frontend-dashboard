@@ -7,18 +7,16 @@ const router = createRouter({
     {
       path: "/",
       name: "dashboard",
-      component: () => import("../view/Dashborad.vue"),
+      component: () => import("../view/Statistisc.vue"),
       meta: {
         requiresAuth: true,
       },
-
-      // children: [
-      //   {
-      //     path: "/user-athletes/edit/:id",
-      //     name: "user-athletes-edit",
-      //     component: () => import("../view/UserAthletesUpdate.vue"),
-      //   },
-      // ],
+     
+    },
+    {
+      path: "/users",
+      name: "users",
+      component: () => import("../view/Dashborad.vue"),
     },
 
     {
