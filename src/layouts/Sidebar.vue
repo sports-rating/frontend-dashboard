@@ -170,6 +170,8 @@ import {
   ShieldCheckIcon,
   DocumentTextIcon,
   ClockIcon,
+  PresentationChartBarIcon,
+  HomeIcon
 } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "../stores/auth";
 
@@ -219,8 +221,13 @@ const navigate = (path) => {
 
 const menuItems = [
   {
-    name: "Пользователи",
+    name: "Панель управления",
     path: "/",
+    icon: HomeIcon,
+  },
+  {
+    name: "Пользователи",
+    path: "/users",
     icon: UsersIcon,
   },
   {
