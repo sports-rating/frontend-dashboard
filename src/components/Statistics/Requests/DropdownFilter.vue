@@ -15,7 +15,7 @@
 
     <div 
       v-if="isOpen"
-      class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class="absolute right-0 z-10 mt-2 w-68 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
     >
       <div class="py-1">
         <button 

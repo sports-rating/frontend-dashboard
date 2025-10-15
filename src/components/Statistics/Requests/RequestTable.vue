@@ -10,6 +10,8 @@
           :total-count="stat.totalCount"
           :pending-count="stat.pendingCount"
           :approved-count="stat.approvedCount"
+          :rejected-count="stat.rejectedCount"
+          :cancelled-count="stat.cancelledCount"
           :icon="stat.icon"
         />
       </div>
@@ -204,6 +206,8 @@ const requestStats = computed(() => {
       totalCount: data.value.sportsman_trainer_request?.total ?? 0,
       pendingCount: data.value.sportsman_trainer_request?.pending ?? 0,
       approvedCount: data.value.sportsman_trainer_request?.approved ?? 0,
+      rejectedCount: data.value.sportsman_trainer_request?.rejected ?? 0,
+      cancelledCount: data.value.sportsman_trainer_request?.cancelled ?? 0,
       icon: ["fas", "file-alt"],
     },
     {
@@ -211,20 +215,26 @@ const requestStats = computed(() => {
       totalCount: data.value.trainer_federation_request?.total ?? 0,
       pendingCount: data.value.trainer_federation_request?.pending ?? 0,
       approvedCount: data.value.trainer_federation_request?.approved ?? 0,
+      rejectedCount: data.value.trainer_federation_request?.rejected ?? 0,
+      cancelledCount: data.value.trainer_federation_request?.cancelled ?? 0,
       icon: ["fas", "envelope"],
     },
     {
-      title: "Проверка результатов",
+      title: "Подтверждение результатов",
       totalCount: data.value.result_verification_request?.total ?? 0,
       pendingCount: data.value.result_verification_request?.pending ?? 0,
       approvedCount: data.value.result_verification_request?.approved ?? 0,
+      rejectedCount: data.value.result_verification_request?.rejected ?? 0,
+      cancelledCount: data.value.result_verification_request?.cancelled ?? 0,
       icon: ["fas", "trophy"],
     },
     {
-      title: "Проверка рабочего места",
+      title: "Подтверждение рабочего места",
       totalCount: data.value.workplace_verification_request?.total ?? 0,
       pendingCount: data.value.workplace_verification_request?.pending ?? 0,
       approvedCount: data.value.workplace_verification_request?.approved ?? 0,
+      rejectedCount: data.value.workplace_verification_request?.rejected ?? 0,
+      cancelledCount: data.value.workplace_verification_request?.cancelled ?? 0,
       icon: ["fas", "building"],
     },
   ];
@@ -234,8 +244,8 @@ const categoryItems = [
   { name: "Все категории", value: "all" },
   { name: "Спортсмены → Тренер", value: "sportsman_trainer" },
   { name: "Тренер → Федерация", value: "trainer_federation" },
-  { name: "Проверка результатов", value: "sportsman_result" },
-  { name: "Проверка рабочего места", value: "trainer_workplace" },
+  { name: "Подтверждение результатов", value: "sportsman_result" },
+  { name: "Подтверждение рабочего места", value: "trainer_workplace" },
 ];
 
 const statusItems = [
