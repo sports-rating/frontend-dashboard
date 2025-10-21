@@ -1,6 +1,7 @@
 <template>
   <div class="mx-auto p-4 rounded-xl border">
     <h2 class="text-2xl font-bold mb-6">Добавить турнир</h2>
+    
 
     <form @submit.prevent="handleSubmit" class="space-y-8">
       <!-- Personal Information Section -->

@@ -48,6 +48,39 @@
               />
             </div>
           </div>
+
+          <!-- Scoring Policies -->
+          <div class="col-span-3 border rounded-lg p-4 space-y-4">
+            <h3 class="text-md font-semibold text-gray-700">Спортивные виды</h3>
+
+            <div v-for="(policy, index) in form.types" :key="index" class="flex items-center gap-4">
+              <div class="w-1/2">
+              <label class="block text-sm font-medium text-gray-700">Имя</label>
+              <input
+                v-model="policy.name"
+                type="text"
+                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Имя"
+              />
+            </div>
+              
+
+              <button type="button" @click="removePolicy(index)" class="mt-6 text-red-600 hover:text-red-800">
+                Удалить
+              </button>
+            </div>
+
+            <button
+              type="button"
+              @click="addPolicy"
+              class="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              + Добавить вид
+            </button>
+
+            <span class="text-red-500 mt-1" v-if="errors.types">{{ errors.types }}</span>
+          </div>
+
         </div>
       </section>
     </form>
@@ -92,7 +125,17 @@ const form = reactive({
   name: "",
   logo: null,
   photoName: "",
+  types: [],
 });
+
+const addPolicy = () => {
+  form.types.push({ name: '' });
+};
+
+const removePolicy = (index) => {
+  form.types.splice(index, 1);
+};
+
 
 const initialData = reactive({
   name: "",
@@ -125,6 +168,11 @@ const getData = async () => {
     // Dastlabki qiymatlarni saqlab qo'yamiz
     initialData.name = res.data.data.name;
     initialData.logo = res.data.data.logo;
+
+    form.types = d.types.map((p) => ({
+      id: p.id,
+      name: p.name,
+    }));
   } catch (e) {
     console.log(e);
   }
@@ -154,6 +202,13 @@ const handleSubmit = async () => {
   if (form.logo instanceof File) {
     formData.append("logo", form.logo);
   }
+
+  form.types.forEach((p, index) => {
+    if (p.id) {
+      formData.append(`types[${index}]id`, p.id);
+    }
+    formData.append(`types[${index}]name`, p.position);
+  });
 
   // Agar hech qanday o'zgarish bo'lmasa, so‘rov yuborilmaydi
   if (!formData.has("name") && !formData.has("logo")) {

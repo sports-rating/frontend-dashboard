@@ -48,6 +48,47 @@
               />
             </div>
           </div>
+
+          <!-- Scoring Policies -->
+        <div class="col-span-3 border rounded-lg p-4 space-y-4">
+          <h3 class="text-md font-semibold text-gray-700">Спортивные виды</h3>
+
+          <div v-for="(policy, index) in form.types" :key="index" class="flex items-center gap-4">
+            <div class="w-1/2">
+              <label class="block text-sm font-medium text-gray-700">Имя</label>
+              <input
+                v-model="policy.name"
+                type="text"
+                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Имя"
+              />
+            </div>
+
+            
+
+            <!-- Remove button -->
+            <button
+              type="button"
+              @click="removePolicy(index)"
+              class="mt-6 text-red-600 hover:text-red-800"
+            >
+              Удалить
+            </button>
+          </div>
+
+          <!-- Add new row -->
+          <button
+            type="button"
+            @click="addPolicy"
+            class="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            + Добавить вид
+          </button>
+
+          <span class="text-red-500 mt-1" v-if="errors.types">
+            {{ errors.types }}
+          </span>
+        </div>
         </div>
       </section>
     </form>
@@ -90,7 +131,18 @@ const form = reactive({
   name: "",
   logo: null,
   photoName: "",
+  types: [],
 });
+
+// Policy qo‘shish
+const addPolicy = () => {
+  form.types.push({ name: '', });
+};
+
+// Policy o‘chirish
+const removePolicy = (index) => {
+  form.types.splice(index, 1);
+};
 
 const validateForm = () => {
   Object.keys(errors).forEach((key) => delete errors[key]);
@@ -128,6 +180,12 @@ const handleSubmit = async () => {
   const formData = new FormData();
   formData.append("name", form.name);
   formData.append("logo", form.logo);
+
+  let scoringPoliciesIndex = 0;
+      form.types.forEach((policies) => {
+          formData.append(`types[${scoringPoliciesIndex}]name`, policies.name);
+          scoringPoliciesIndex++;
+      });
 
   isSubmitting.value = true;
 
