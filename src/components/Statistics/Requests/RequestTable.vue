@@ -72,10 +72,12 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
             <tr
-              v-for="row in requestList"
+              v-for="(row, index) in requestList"
               :key="row.id"
               class="hover:bg-gray-50 transition"
             >
+              <td class="px-6 py-4 whitespace-nowrap">{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+              
               <!-- Sportsman → Trainer -->
               <template v-if="selectedCategory === 'sportsman_trainer'">
                 <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
@@ -259,15 +261,15 @@ const statusItems = [
 const tableHeaders = computed(() => {
   switch (selectedCategory.value) {
     case "sportsman_trainer":
-      return ["Спортсмен", "Тренер", "Спорт", "Дата", "Статус"];
+      return ["#","Спортсмен", "Тренер", "Спорт", "Дата", "Статус"];
     case "trainer_federation":
-      return ["Тренер", "Федерация", "Спорт", "Дата", "Статус"];
+      return ["#","Тренер", "Федерация", "Спорт", "Дата", "Статус"];
     case "sportsman_result":
-      return ["Спортсмен", "Событие", "Результат", "Дата", "Статус"];
+      return ["#","Спортсмен", "Событие", "Результат", "Дата", "Статус"];
     case "trainer_workplace":
-      return ["Тренер", "Учреждение", "Спорт", "Дата", "Статус"];
+      return ["#","Тренер", "Учреждение", "Спорт", "Дата", "Статус"];
     default:
-      return ["Отправитель", "Получатель", "Спорт", "Дата", "Статус"];
+      return ["#","Отправитель", "Получатель", "Спорт", "Дата", "Статус"];
   }
 });
 

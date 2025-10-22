@@ -80,7 +80,7 @@ const kpiCards = computed(() => [
   },
   {
     title: 'Ежемесячный доход',
-    value: `${data.value.general_counts?.total_monthly_revenue ?? 0} cум`,
+    value: `${data.value.general_counts?.total_monthly_revenue?.toLocaleString() ?? 0} cум`,
     icon: ['fas', 'dollar-sign'],
     iconColorClass: 'text-green-500',
     iconBackgroundColor: 'bg-green-100',

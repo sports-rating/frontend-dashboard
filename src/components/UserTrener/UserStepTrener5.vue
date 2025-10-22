@@ -138,6 +138,7 @@
 import { ref, reactive, watch, onMounted } from "vue";
 import api from "../../utils/axios";
 import Loading from "../../components/Loading.vue";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   media_ids: {
@@ -230,7 +231,7 @@ const handlePhotoUpload = async (event) => {
     }
     saveToLocalStorage();
   } catch (error) {
-    console.error("Photo upload failed:", error.response?.data || error.message);
+    ElMessage.error(error.response.data.message);
   } finally {
     isUploading.value = false;
   }
@@ -276,7 +277,7 @@ const handleVideoUpload = async (event) => {
       });
       saveToLocalStorage();
     } catch (error) {
-      console.error("Video upload failed:", error.response?.data || error.message);
+     ElMessage.error(error.response.data.message);
     } finally {
       isUploading.value = false;
     }
@@ -308,7 +309,7 @@ const handlePdfUpload = async (event) => {
     });
     saveToLocalStorage();
   } catch (error) {
-    console.error("PDF upload failed:", error.response?.data || error.message);
+    ElMessage.error(error.response.data.message);
   } finally {
     isUploading.value = false;
   }
@@ -346,7 +347,7 @@ const fetchMediaData = async () => {
     videos.value = fetchedVideos;
     pdfs.value = fetchedPdfs;
   } catch (error) {
-    console.error("Failed to fetch media data:", error.response?.data || error.message);
+    ElMessage.error(error.response.data.message);
   }
 };
 

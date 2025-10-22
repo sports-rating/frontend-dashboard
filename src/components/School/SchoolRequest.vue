@@ -262,7 +262,7 @@ const fetchRequests = async () => {
     requests.value = res.data.data.data;
     total.value = res.data.data.count;
   } catch (err) {
-    ElMessage.error("Произошла ошибка.");
+     ElMessage.error(err.response.data.message);
   } finally {
     loading.value = false;
   }
@@ -284,7 +284,7 @@ const openDetail = async (row) => {
     selectedRequest.value = res.data.data;
     dialogVisible.value = true;
   } catch (err) {
-    ElMessage.error("Ошибка загрузки сведений.");
+    ElMessage.error(err.response.data.message);
   }
 };
 
@@ -295,7 +295,7 @@ const updateStatus = async (id, status) => {
     fetchRequests();
     dialogVisible.value = false;
   } catch (err) {
-    ElMessage.error("Ошибка обновления статуса.");
+    ElMessage.error(err.response.data.message);
   }
 };
 

@@ -68,7 +68,7 @@ const paymentKpis = computed(() => [
   },
   {
     title: "Доход за месяц",
-    value: data.value ? `${data.value.total_revenue_month} cум` : "---",
+    value: data.value ? `${data.value.total_revenue_month.toLocaleString()} cум` : "---",
     icon: ["fas", "chart-line"],
     footerText: "Доход в этом месяце",
     isPositive: true,

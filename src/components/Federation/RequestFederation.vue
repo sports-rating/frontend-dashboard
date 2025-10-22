@@ -418,10 +418,9 @@ const approveRequest = async (id) => {
     await fetchRequests();
   } catch (err) {
     if (err === "cancel") {
-      ElMessage.info("Подтверждение отменено");
+      ElMessage.info(err.response.data.message);
     } else {
-      console.error("Ошибка при подтверждении:", err);
-      ElMessage.error("Ошибка при подтверждении заявки ❌");
+       ElMessage.error(err.response.data.message);
     }
   }
 };
@@ -445,10 +444,9 @@ const deleteRequest = async (id) => {
     await fetchRequests();
   } catch (err) {
     if (err === "cancel") {
-      ElMessage.info(" Oтменено");
+      ElMessage.info(err.response.data.message);
     } else {
-      console.error("Ошибка при Отменить:", err);
-      ElMessage.error("Ошибка при Отменить заявки ❌");
+       ElMessage.error(err.response.data.message);
     }
   }
 };

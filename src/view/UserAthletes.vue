@@ -208,14 +208,12 @@ const handleFileUpload = async (event) => {
       form.media_ids = [];
     }
 
-    // Eski IDni o‘chirib, yangisini qo‘shish
     form.media_ids = [response.data.data.id];
-    form.photoId = response.data.data.id; // Oxirgi yuklangan fayl ID sini saqlash
+    form.photoId = response.data.data.id; 
     form.photoName = file.name;
 
-    console.log("Yangi fayl yuklandi:", response.data.data.id);
   } catch (error) {
-    console.error("Fayl yuklashda xatolik:", error.response?.data || error.message);
+    ElMessage.error(error.response.data.message);
   } finally {
     isUploading.value = false;
   }
@@ -272,7 +270,6 @@ const handleSubmit = async () => {
       localStorage.removeItem("selectedTrainer");
       router.push("/");
     } catch (error) {
-      console.error("Submission error:", error);
       ElMessage.error(error.response.data.message);
     } finally {
       isSubmitting.value = false;

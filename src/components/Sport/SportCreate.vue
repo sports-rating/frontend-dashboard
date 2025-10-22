@@ -197,7 +197,6 @@ const handleSubmit = async () => {
     toast.success("Success to Tournament", { autoClose: 3000 });
     router.push("/sport-list");
   } catch (error) {
-    console.error("Submission error:", error);
     ElMessage.error(error.response.data.message);
   } finally {
     isSubmitting.value = false;
