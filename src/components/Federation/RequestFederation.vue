@@ -57,7 +57,10 @@
             :key="item.id"
             class="hover:bg-gray-50"
           >
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ (currentPage - 1) * itemsPerPage + index + 1 }}
+            </td>
+
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sender.full_name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sender.phone_number }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.created_time }}</td>
