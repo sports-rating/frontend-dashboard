@@ -191,6 +191,8 @@
         class="no-scrollbar"
         style="width: 100%; max-height: 15rem; overflow-y: scroll;"
       >
+        <el-table-column prop="sport.name" label="Спорт" />
+        <el-table-column prop="sport_type.name" label="Спорт тип" />
         <el-table-column prop="name" label="Полное имя" />
         <el-table-column prop="gender" label="Пол" />
         <el-table-column prop="min_age" label="Младший возраст" />

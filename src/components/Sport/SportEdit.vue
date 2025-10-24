@@ -169,7 +169,7 @@ const getData = async () => {
     initialData.name = res.data.data.name;
     initialData.logo = res.data.data.logo;
 
-    form.types = d.types.map((p) => ({
+    form.types =  res.data.data.types.map((p) => ({
       id: p.id,
       name: p.name,
     }));
@@ -194,7 +194,6 @@ const handleSubmit = async () => {
 
   const formData = new FormData();
 
-  // Faqat o'zgartirilgan maydonlarni qo'shish
   if (form.name !== initialData.name) {
     formData.append("name", form.name);
   }
@@ -203,18 +202,14 @@ const handleSubmit = async () => {
     formData.append("logo", form.logo);
   }
 
-  form.types.forEach((p, index) => {
-    if (p.id) {
-      formData.append(`types[${index}]id`, p.id);
+  form.types.forEach((type, index) => {
+    if (type.id) {
+      formData.append(`types[${index}]id`, type.id);
+      formData.append(`types[${index}]name`, type.name || type.position);
+    } else {
+      formData.append(`types[${index}]name`, type.name || type.position);
     }
-    formData.append(`types[${index}]name`, p.position);
   });
-
-  // Agar hech qanday o'zgarish bo'lmasa, so‘rov yuborilmaydi
-  if (!formData.has("name") && !formData.has("logo")) {
-    toast.info("Hech qanday o'zgarish yo'q", { autoClose: 3000 });
-    return;
-  }
 
   isSubmitting.value = true;
   try {
@@ -225,9 +220,10 @@ const handleSubmit = async () => {
     router.push("/sport-list");
   } catch (error) {
     console.error("Submission error:", error);
-    ElMessage.error(error.response.data.message);
+    ElMessage.error(error.response?.data?.message || "Xatolik yuz berdi");
   } finally {
     isSubmitting.value = false;
   }
 };
+
 </script>

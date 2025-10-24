@@ -173,6 +173,22 @@
           :value="sport.id"
         />
       </el-select>
+
+      <el-select
+        v-model="sportGroup.sport_type"
+        placeholder="Выберите Спорт тип"
+        clearable
+        filterable
+        class="w-64"
+
+      >
+        <el-option
+          v-for="type in getSportTypes(sportGroup.sport)"
+          :key="type.id"
+          :label="type.name"
+          :value="type.id"
+        />
+      </el-select>
     </div>
     <el-button 
       type="danger" 
@@ -350,6 +366,7 @@ const form = reactive({
 const addSportGroup = () => {
   form.sportGroups.push({
     sport: null,
+    sport_type:null,
     ageGroups: [{
       name: "",
       weights: [],
@@ -407,6 +424,11 @@ const removeWeight = (sportIndex, ageIndex, weightIndex) => {
 const selectedSports = computed(() => {
   return data.value.filter((sport) => form.sports.includes(sport.id));
 });
+
+const getSportTypes = (sportId) => {
+  const selected = data.value.find((s) => s.id === sportId);
+  return selected ? selected.types : [];
+};
 
 const goBack = () => {
   window.history.go(-1);
@@ -627,6 +649,7 @@ const submitForm = async () => {
         sportGroup.ageGroups.forEach((ageGroup) => {
           fd.append(`age_groups[${ageGroupIndex}]name`, ageGroup.name);
           fd.append(`age_groups[${ageGroupIndex}]sport`, sportGroup.sport);
+          fd.append(`age_groups[${ageGroupIndex}]sport_type`, sportGroup.sport_type);
           fd.append(`age_groups[${ageGroupIndex}]weights`, JSON.stringify(ageGroup.weights));
           fd.append(`age_groups[${ageGroupIndex}]gender`, ageGroup.gender);
           ageGroupIndex++;
