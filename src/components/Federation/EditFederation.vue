@@ -607,7 +607,9 @@ const submitForm = async () => {
         }
         fd.append(`age_groups[${i}]name`, ag.name);
         fd.append(`age_groups[${i}]sport`, ag.sport);
-        fd.append(`age_groups[${i}]sport_type`, ag.sport_type);
+        if (ag.sport_type != null) {
+          fd.append(`age_groups[${i}]sport_type`, ag.sport_type);
+        }
         fd.append(`age_groups[${i}]weights`, JSON.stringify(ag.weights || []));
         fd.append(`age_groups[${i}]gender`, ag.gender || "");
       });

@@ -649,7 +649,10 @@ const submitForm = async () => {
         sportGroup.ageGroups.forEach((ageGroup) => {
           fd.append(`age_groups[${ageGroupIndex}]name`, ageGroup.name);
           fd.append(`age_groups[${ageGroupIndex}]sport`, sportGroup.sport);
+          // fd.append(`age_groups[${ageGroupIndex}]sport_type`, sportGroup.sport_type);
+          if (sportGroup.sport_type != null) {
           fd.append(`age_groups[${ageGroupIndex}]sport_type`, sportGroup.sport_type);
+        }
           fd.append(`age_groups[${ageGroupIndex}]weights`, JSON.stringify(ageGroup.weights));
           fd.append(`age_groups[${ageGroupIndex}]gender`, ageGroup.gender);
           ageGroupIndex++;
