@@ -167,6 +167,22 @@
           :value="sport.id"
         />
       </el-select>
+
+      <el-select
+        v-model="sportGroup.sport_type"
+        placeholder="Выберите Спорт тип"
+        clearable
+        filterable
+        class="w-64"
+
+      >
+        <el-option
+          v-for="type in getSportTypes(sportGroup.sport)"
+          :key="type.id"
+          :label="type.name"
+          :value="type.id"
+        />
+      </el-select>
     </div>
     <el-button 
       type="danger" 
@@ -297,7 +313,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import { ElMessage } from "element-plus";
 import api from "../../utils/axios";
 import { useRoute } from "vue-router";
@@ -333,6 +349,7 @@ const form = reactive({
 const addSportGroup = () => {
   form.sportGroups.push({
     sport: null,
+    sport_type:null,
     ageGroups: [
       {
         name: "",
@@ -397,6 +414,8 @@ const getData = async () => {
 
 
 
+
+
 const getFederations = async () => {
   try {
     const res = await api.get("/federation/");
@@ -413,6 +432,11 @@ const nationalFederations = computed(() =>
 const selectedSports = computed(() =>
   data.value.filter((sport) => form.sports.includes(sport.id))
 );
+
+const getSportTypes = (sportId) => {
+  const selected = data.value.find((s) => s.id === sportId);
+  return selected ? selected.types : [];
+};
 
 onMounted(() => {
   getData();
@@ -442,20 +466,23 @@ const loadFederation = async () => {
     form.email = d.email || "";
     form.website = d.website || "";
 
-    if (d.age_groups && d.age_groups.length > 0) {
+    if (Array.isArray(d.age_groups) && d.age_groups.length > 0) {
       const sportGroupsMap = new Map();
-      
+
       d.age_groups.forEach((ag) => {
-        const sportId = ag.sport.id || ag.sport;
-        
-        if (!sportGroupsMap.has(sportId)) {
-          sportGroupsMap.set(sportId, {
+        const sportId = ag.sport?.id || ag.sport;
+        const sportTypeId = ag.sport_type?.id || ag.sport_type;
+        const key = `${sportId}_${sportTypeId || "none"}`;
+
+        if (!sportGroupsMap.has(key)) {
+          sportGroupsMap.set(key, {
             sport: sportId,
-            ageGroups: []
+            sport_type: sportTypeId || null,
+            ageGroups: [],
           });
         }
-        
-        sportGroupsMap.get(sportId).ageGroups.push({
+
+        sportGroupsMap.get(key).ageGroups.push({
           id: ag.id,
           name: ag.name,
           weights: ag.weights || [],
@@ -463,12 +490,13 @@ const loadFederation = async () => {
           gender: ag.gender,
         });
       });
-      
+
       form.sportGroups = Array.from(sportGroupsMap.values());
     } else {
       form.sportGroups = [];
     }
 
+    // Logo
     if (d.logo) {
       logoFileList.value = [
         {
@@ -482,6 +510,7 @@ const loadFederation = async () => {
       logoFileList.value = [];
     }
 
+    // Documents
     if (Array.isArray(d.documents)) {
       documentFileList.value = d.documents.map((doc) => ({
         name: doc.file.split("/").pop(),
@@ -501,6 +530,7 @@ const loadFederation = async () => {
     loading.value = false;
   }
 };
+
 
 const handleLogoChange = (file) => {
   form.logo_file = file.raw;
@@ -554,7 +584,8 @@ const submitForm = async () => {
         sportGroup.ageGroups.forEach((ageGroup) => {
           flatAgeGroups.push({
             ...ageGroup,
-            sport: sportGroup.sport
+            sport: sportGroup.sport,
+            sport_type: sportGroup.sport_type
           });
         });
       });
@@ -576,6 +607,9 @@ const submitForm = async () => {
         }
         fd.append(`age_groups[${i}]name`, ag.name);
         fd.append(`age_groups[${i}]sport`, ag.sport);
+        if (ag.sport_type != null) {
+          fd.append(`age_groups[${i}]sport_type`, ag.sport_type);
+        }
         fd.append(`age_groups[${i}]weights`, JSON.stringify(ag.weights || []));
         fd.append(`age_groups[${i}]gender`, ag.gender || "");
       });

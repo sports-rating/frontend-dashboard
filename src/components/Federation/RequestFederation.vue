@@ -57,7 +57,10 @@
             :key="item.id"
             class="hover:bg-gray-50"
           >
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ (currentPage - 1) * itemsPerPage + index + 1 }}
+            </td>
+
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sender.full_name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sender.phone_number }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.created_time }}</td>
@@ -418,10 +421,9 @@ const approveRequest = async (id) => {
     await fetchRequests();
   } catch (err) {
     if (err === "cancel") {
-      ElMessage.info("Подтверждение отменено");
+      ElMessage.info(err.response.data.message);
     } else {
-      console.error("Ошибка при подтверждении:", err);
-      ElMessage.error("Ошибка при подтверждении заявки ❌");
+       ElMessage.error(err.response.data.message);
     }
   }
 };
@@ -445,10 +447,9 @@ const deleteRequest = async (id) => {
     await fetchRequests();
   } catch (err) {
     if (err === "cancel") {
-      ElMessage.info(" Oтменено");
+      ElMessage.info(err.response.data.message);
     } else {
-      console.error("Ошибка при Отменить:", err);
-      ElMessage.error("Ошибка при Отменить заявки ❌");
+       ElMessage.error(err.response.data.message);
     }
   }
 };

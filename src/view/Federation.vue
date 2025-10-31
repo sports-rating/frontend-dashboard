@@ -26,6 +26,12 @@
         highlight-current-row
         @row-click="(row) => showUsersDialog(row.id)"
       >
+        <el-table-column
+          label="#"
+          min-width="60"
+          type="index"
+          :index="indexMethod"
+        />
         <el-table-column label="Федерация" min-width="400">
           <template #default="scope">
             <div class="flex items-center space-x-4">
@@ -185,6 +191,8 @@
         class="no-scrollbar"
         style="width: 100%; max-height: 15rem; overflow-y: scroll;"
       >
+        <el-table-column prop="sport.name" label="Спорт" />
+        <el-table-column prop="sport_type.name" label="Спорт тип" />
         <el-table-column prop="name" label="Полное имя" />
         <el-table-column prop="gender" label="Пол" />
         <el-table-column prop="min_age" label="Младший возраст" />
@@ -274,6 +282,9 @@ const federationToDelete = ref(null);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
+const indexMethod = (index) => {
+  return (currentPage.value - 1) * pageSize.value + index + 1;
+};
 
 const router = useRouter();
 const navigate = (path) => router.push(path);

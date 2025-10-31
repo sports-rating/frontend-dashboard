@@ -79,17 +79,17 @@
             <div class="relative flex items-center cursor-pointer">
               <div @click="profileToggle" class="flex items-center cursor-pointer">
                 <img
-                  src="../assets/img/profile.svg"
+                  :src="data?.profile_photo ||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
                   alt="Profile"
                   class="h-8 w-8 rounded-full"
                 />
                 <div class="flex flex-col">
                   <span class="ml-2 text-sm font-medium dark:text-white text-[#1E1E2D]"
-                    >Пулатов Мавлонбек</span
+                    >{{ data?.first_name }} {{ data?.last_name }}</span
                   >
                   <span
                     class="ml-2 text-xs font-medium dark:text-[#EFF0F3] text-[#1E1E2D]"
-                    >Админ</span
+                    >{{ data?.user_role }}</span
                   >
                 </div>
               </div>
@@ -100,17 +100,17 @@
               >
                 <div class="flex items-center space-x-3 mb-6">
                   <img
-                    src="../assets/img/profile.svg"
+                    :src="data?.profile_photo ||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
                     alt="Profile Avatar"
                     class="w-14 h-14 rounded-full"
                   />
                   <div>
                     <h3 class="font-medium dark:text-[#EFF0F3] text-[#1E1E2D]">
-                      Пулатов Мавлонбек
+                      {{ data?.first_name }} {{ data?.last_name }}
                     </h3>
-                    <span class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">Админ</span>
+                    <span class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">{{ data?.user_role }}</span>
                     <p class="text-sm dark:text-[#8B8992] text-[#1E1E2D]">
-                      polatovmavlono@gmail.com
+                      {{ data?.email }}
                     </p>
                   </div>
                 </div>
@@ -174,6 +174,7 @@ import {
   HomeIcon
 } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "../stores/auth";
+import api from "../utils/axios";
 
 const authStore = useAuthStore();
 
@@ -183,12 +184,23 @@ const currentPath = computed(() => route.path);
 const isProfile = ref(false);
 const openSubmenu = ref(null);
 const { isDarkMode, toggleDarkMode } = useDarkMode();
-
+const data = ref()
 const menuItemss = [
   { name: "Мой профиль" },
   { name: "Настройки" },
   { name: "Уведомления" },
 ];
+
+const getData = async () => {
+  try {
+    const res = await api.get("/user/profile/");
+    data.value = res.data.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+onMounted(() => getData());
 
 const handleLogout = () => {
   authStore.logout();

@@ -72,52 +72,54 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
             <tr
-              v-for="row in requestList"
+              v-for="(row, index) in requestList"
               :key="row.id"
               class="hover:bg-gray-50 transition"
             >
+              <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+              
               <!-- Sportsman → Trainer -->
               <template v-if="selectedCategory === 'sportsman_trainer'">
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.receiver?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.sport?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.sender?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.receiver?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.sport?.name }}</td>
               </template>
 
               <!-- Trainer → Federation -->
               <template v-else-if="selectedCategory === 'trainer_federation'">
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.receiver?.federation?.name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.sport?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.sender?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.receiver?.federation?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.sport?.name }}</td>
               </template>
 
               <!-- Sportsman Result Verification -->
               <template v-else-if="selectedCategory === 'sportsman_result'">
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.tournament?.name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.score }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.sender?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.tournament?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.score }}</td>
               </template>
 
               <!-- Trainer Workplace Verification -->
               <template v-else-if="selectedCategory === 'trainer_workplace'">
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.sport_institution?.name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.sport?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.sender?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.sport_institution?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.sport?.name }}</td>
               </template>
 
               <!-- Default (All) -->
               <template v-else>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.sender?.full_name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.receiver?.full_name || row.receiver?.federation?.name }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ row.new_data?.sport?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.sender?.full_name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.receiver?.full_name || row.receiver?.federation?.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap  text-sm ">{{ row.new_data?.sport?.name }}</td>
               </template>
+              <td v-if="selectedCategory === 'all'" class="px-6 py-4 whitespace-nowrap  text-sm  ">
+              {{ requestTypeMap[row.request_type] || row.request_type }}
+            </td>
 
-              <!-- Created Time -->
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ formatDate(row.created_time) }}
-              </td>
+              
 
               <!-- Status -->
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap  text-sm ">
                 <span
                   :class="[
                     'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
@@ -127,6 +129,12 @@
                   {{ statusTranslations[row.status] || row.status }}
                 </span>
               </td>
+              <!-- Created Time -->
+              <td class="px-6 py-4 whitespace-nowrap  text-sm   text-gray-500">
+                {{ formatDate(row.created_time) }}
+              </td>
+
+              
             </tr>
           </tbody>
         </table>
@@ -248,6 +256,13 @@ const categoryItems = [
   { name: "Подтверждение рабочего места", value: "trainer_workplace" },
 ];
 
+const requestTypeMap = {
+  sportsman_trainer_request: "Спортсмены → Тренер",
+  trainer_federation_request: "Тренер → Федерация",
+  sportsman_result_verification_request: "Подтверждение результатов",
+  trainer_workplace_verification_request: "Подтверждение рабочего места",
+};
+
 const statusItems = [
   { name: "Все Статусы", value: "all" },
   { name: "В ожидании", value: "pending" },
@@ -259,15 +274,15 @@ const statusItems = [
 const tableHeaders = computed(() => {
   switch (selectedCategory.value) {
     case "sportsman_trainer":
-      return ["Спортсмен", "Тренер", "Спорт", "Дата", "Статус"];
+      return ["#","Спортсмен", "Тренер", "Спорт", "Дата", "Статус"];
     case "trainer_federation":
-      return ["Тренер", "Федерация", "Спорт", "Дата", "Статус"];
+      return ["#","Тренер", "Федерация", "Спорт", "Дата", "Статус"];
     case "sportsman_result":
-      return ["Спортсмен", "Событие", "Результат", "Дата", "Статус"];
+      return ["#","Спортсмен", "Событие", "Результат", "Дата", "Статус"];
     case "trainer_workplace":
-      return ["Тренер", "Учреждение", "Спорт", "Дата", "Статус"];
+      return ["#","Тренер", "Учреждение", "Спорт", "Дата", "Статус"];
     default:
-      return ["Отправитель", "Получатель", "Спорт", "Дата", "Статус"];
+      return ["#","Отправитель", "Получатель", "Спорт", "Категория", "Статус", "Дата"];
   }
 });
 

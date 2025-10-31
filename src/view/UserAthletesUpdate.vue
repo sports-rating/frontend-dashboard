@@ -274,7 +274,7 @@ const handleFileUpload = async (event) => {
     form.media_ids.push(newPhotoId); 
     form.photoName = file.name;
   } catch (error) {
-    console.error("File upload failed:", error.response?.data || error.message);
+    ElMessage.error(error.response.data.message);
   } finally {
     isUploading.value = false;
   }

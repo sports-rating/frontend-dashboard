@@ -48,6 +48,39 @@
               />
             </div>
           </div>
+
+          <!-- Scoring Policies -->
+          <div class="col-span-3 border rounded-lg p-4 space-y-4">
+            <h3 class="text-md font-semibold text-gray-700">Спортивные виды</h3>
+
+            <div v-for="(policy, index) in form.types" :key="index" class="flex items-center gap-4">
+              <div class="w-1/2">
+              <label class="block text-sm font-medium text-gray-700">Имя</label>
+              <input
+                v-model="policy.name"
+                type="text"
+                class="mt-1 block w-full rounded-md border-gray-300 border p-2 focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Имя"
+              />
+            </div>
+              
+
+              <button type="button" @click="removePolicy(index)" class="mt-6 text-red-600 hover:text-red-800">
+                Удалить
+              </button>
+            </div>
+
+            <button
+              type="button"
+              @click="addPolicy"
+              class="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              + Добавить вид
+            </button>
+
+            <span class="text-red-500 mt-1" v-if="errors.types">{{ errors.types }}</span>
+          </div>
+
         </div>
       </section>
     </form>
@@ -92,7 +125,17 @@ const form = reactive({
   name: "",
   logo: null,
   photoName: "",
+  types: [],
 });
+
+const addPolicy = () => {
+  form.types.push({ name: '' });
+};
+
+const removePolicy = (index) => {
+  form.types.splice(index, 1);
+};
+
 
 const initialData = reactive({
   name: "",
@@ -125,6 +168,11 @@ const getData = async () => {
     // Dastlabki qiymatlarni saqlab qo'yamiz
     initialData.name = res.data.data.name;
     initialData.logo = res.data.data.logo;
+
+    form.types =  res.data.data.types.map((p) => ({
+      id: p.id,
+      name: p.name,
+    }));
   } catch (e) {
     console.log(e);
   }
@@ -146,7 +194,6 @@ const handleSubmit = async () => {
 
   const formData = new FormData();
 
-  // Faqat o'zgartirilgan maydonlarni qo'shish
   if (form.name !== initialData.name) {
     formData.append("name", form.name);
   }
@@ -155,11 +202,14 @@ const handleSubmit = async () => {
     formData.append("logo", form.logo);
   }
 
-  // Agar hech qanday o'zgarish bo'lmasa, so‘rov yuborilmaydi
-  if (!formData.has("name") && !formData.has("logo")) {
-    toast.info("Hech qanday o'zgarish yo'q", { autoClose: 3000 });
-    return;
-  }
+  form.types.forEach((type, index) => {
+    if (type.id) {
+      formData.append(`types[${index}]id`, type.id);
+      formData.append(`types[${index}]name`, type.name || type.position);
+    } else {
+      formData.append(`types[${index}]name`, type.name || type.position);
+    }
+  });
 
   isSubmitting.value = true;
   try {
@@ -170,9 +220,10 @@ const handleSubmit = async () => {
     router.push("/sport-list");
   } catch (error) {
     console.error("Submission error:", error);
-    ElMessage.error(error.response.data.message);
+    ElMessage.error(error.response?.data?.message || "Xatolik yuz berdi");
   } finally {
     isSubmitting.value = false;
   }
 };
+
 </script>
