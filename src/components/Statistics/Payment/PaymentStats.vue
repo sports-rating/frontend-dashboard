@@ -27,6 +27,18 @@
     <section>
       <LineAreaChartCard :yearlyRevenue="data?.yearly_revenue" />
     </section>
+
+      <div class="bg-white/80 backdrop-blur-xl rounded-2xl  border border-gray-100 p-6 lg:col-span-2 mt-8">
+        <h3 class="text-xl font-semibold mb-5 text-gray-800 flex items-center gap-2">
+          💰 Ежедневный доход
+        </h3>
+        <apexchart
+          type="area"
+          height="350"
+          :options="modernRevenueChartOptions"
+          :series="modernRevenueSeries"
+        />
+      </div>
   </div>
 </template>
 
@@ -81,4 +93,84 @@ const paymentKpis = computed(() => [
     isPositive: true,
   },
 ]);
+
+
+// SCRIPT SETUP qismida
+
+
+// SCRIPT SETUP
+
+const modernRevenueSeries = computed(() => [
+  {
+    name: "Доход",
+    type: "area",
+    data: data.value?.daily_revenue_last_30_days.map((i) => i.total_revenue) || [],
+  },
+  {
+    name: "Транзакции",
+    type: "line",
+    data: data.value?.daily_revenue_last_30_days.map((i) => i.total_transactions) || [],
+    // Default hidden
+    show: false,
+  },
+]);
+
+const modernRevenueChartOptions = computed(() => ({
+  chart: {
+    toolbar: { show: false },
+    stacked: false,
+    zoom: { enabled: false },
+  },
+  stroke: { width: [3, 2], curve: "smooth" },
+  fill: {
+    type: "gradient",
+    gradient: {
+      shade: "light",
+      type: "vertical",
+      shadeIntensity: 0.3,
+      opacityFrom: 0.7,
+      opacityTo: 0.05,
+      stops: [0, 100],
+    },
+  },
+  markers: {
+    size: 4,
+    colors: ["#0ea5e9"],
+    strokeColors: "#fff",
+    strokeWidth: 2,
+    shape: "circle",
+  },
+  xaxis: {
+    categories: data.value?.daily_revenue_last_30_days.map((i) => i.day) || [],
+    labels: {
+      rotate: -45,       
+      hideOverlappingLabels: true, 
+      style: { fontSize: "12px", colors: "#555" }
+    }
+  },
+  yaxis: [
+    {
+      labels: { formatter: (val) => val.toLocaleString() },
+    },
+    {
+      opposite: true,
+    },
+  ],
+  tooltip: {
+    shared: true,
+    y: [
+      { formatter: (val) => `${val.toLocaleString()} сум` },
+      { formatter: (val) => `${val} та` },
+    ],
+  },
+  colors: ["#10b981", "#0ea5e9"],
+  grid: { borderColor: "#eee", strokeDashArray: 4 },
+  legend: {
+    show: true,
+    onItemClick: { toggleDataSeries: true },
+  },
+}));
+
+
+
 </script>

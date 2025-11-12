@@ -594,7 +594,7 @@ const submitForm = async () => {
       const uniqueAgeGroups = [];
       const set = new Set();
       flatAgeGroups.forEach((ag) => {
-        const key = `${ag.name}_${ag.sport}_${ag.gender}`;
+        const key = `${ag.name}_${ag.sport}_${ag.sport_type}_${ag.gender}`;
         if (!set.has(key)) {
           set.add(key);
           uniqueAgeGroups.push(ag);

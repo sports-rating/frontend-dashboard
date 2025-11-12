@@ -25,6 +25,7 @@
         <Dashboard v-if="activeItem === 'Dashboard'"/>
         <PaymentStats v-else-if="activeItem === 'Payments'"/>
         <Request  v-else-if="activeItem === 'Requests'" />
+        <UsersStats  v-else-if="activeItem === 'Users'" />
           <el-empty v-else :image-size="200" class="mt-36" />
 
 
@@ -35,13 +36,14 @@
 import Dashboard from "../components/Statistics/Dashboard.vue"
 import PaymentStats from "../components/Statistics/Payment/PaymentStats.vue";
 import Request from "../components/Statistics/Requests/RequestTable.vue";
+import UsersStats from "../components/Statistics/Users/UsersStats.vue";
 import { ref } from 'vue';
 
 const navItems = [
     { name: 'Dashboard', iconClass: 'fas fa-home', key:'Панель управления'},
     { name: 'Payments', iconClass: 'fas fa-money-bill-wave', key:'Платежи' },
      { name: 'Requests', iconClass: 'fas fa-paper-plane', key:'Запросы' },
-//   { name: 'Users', iconClass: 'fas fa-users', key:'Пользователи' },
+  { name: 'Users', iconClass: 'fas fa-users', key:'Пользователи' },
 //   { name: 'Federations', iconClass: 'fas fa-flag' , key:'Федерации'},
 //   { name: 'Institutions', iconClass: 'fas fa-building' , key:'Institutions'},
 //   { name: 'Sports', iconClass: 'fas fa-dumbbell', key:'Спорт' },
